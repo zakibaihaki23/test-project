@@ -5,8 +5,10 @@ import router from './router'
 import store from './store'
 import http from './axios'
 import Toast from 'vue-toastification'
+import moment from 'moment'
 
 Vue.config.silent = true
+Vue.prototype.moment = moment
 Vue.use(http)
 import 'vue-toastification/dist/index.css'
 

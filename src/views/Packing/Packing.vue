@@ -36,17 +36,17 @@
     <v-row>
       <v-col cols="2">
         <template>
-          <v-autocomplete
-            style="border-radius: 15px"
-            outlined
-            label="Area"
-            solo
-          >
-          </v-autocomplete>
+          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
         </template>
       </v-col>
+
       <v-col cols="2">
-        <SelectWarehouse v-model="warehouse" @selected="warehouseSelected">
+        <SelectWarehouse
+          :areaId="area"
+          v-model="warehouseList"
+          @selected="warehouseSelected"
+          :disabled="warehouseDisabled"
+        >
         </SelectWarehouse>
         <!-- <v-autocomplete
           style="border-radius: 15px"
@@ -151,13 +151,20 @@
 
 <script>
   import SelectWarehouse from '../../components/SelectWarehouse'
+  import SelectArea from '../../components/SelectArea'
   export default {
-    components: { SelectWarehouse },
+    components: { SelectWarehouse, SelectArea },
     data() {
       return {
         page: 1,
         pageCount: 0,
         itemsPerPage: 5,
+        warehouseList: '',
+        warehouse: '',
+        warehouse_id: null,
+        warehouseDisabled: true,
+        areaId: null,
+        area: '',
         search: '',
         table: [
           {
@@ -194,14 +201,12 @@
           },
         ],
         dataTable: [],
-        warehouse: null,
-        warehouse_id: '',
       }
     },
 
     created() {
       this.renderData()
-      this.initialize()
+      this.initialize(0)
     },
     // watch: {
     //   warehouse: {
@@ -216,9 +221,22 @@
       initialize() {
         this.dataTable = [this.dataTable]
       },
-
-      //get data user dari API
       renderData() {
+        let areaId = ''
+        if (this.area) {
+          areaId = 'city_id.e:' + this.area
+        } else {
+          areaId = ''
+        }
+
+        this.$http
+          .get('/v1/warehouse', {
+            params: {
+              conditions: areaId,
+            },
+          })
+          .then((response) => {})
+
         let warehouseId = ''
         if (this.warehouse_id) {
           warehouseId = 'warehouse_id.e:' + this.warehouse_id
@@ -246,6 +264,14 @@
             console.log(error)
           })
       },
+      areaSelected(area) {
+        this.area = ''
+        if (area) {
+          this.area = area.value
+          this.warehouseDisabled = false
+        }
+        this.renderData()
+      },
       warehouseSelected(warehouse) {
         this.warehouse = ''
         this.warehouse_id = ''
@@ -253,8 +279,8 @@
           this.warehouse = warehouse
           this.warehouse_id = warehouse.value
         }
-        // console.log(this.warehouse.value)
         this.renderData()
+        // this.renderData()
       },
     },
   }

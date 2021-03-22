@@ -1,51 +1,41 @@
 <template>
   <div>
     <v-autocomplete
-      v-model="warehouseFilter"
+      v-model="warehouse"
+      label="Warehouse"
       style="border-radius: 15px; width: 250px"
       outlined
-      label="Warehouse"
       solo
-      :items="warehouse"
+      :items="items"
       item-text="name"
       item-value="value"
-      clearable
       hide-no-data
       hide-selected
       return-object
       :search-input.sync="search"
       @change="selected"
+      clearable
+      :disabled="disabled"
     >
-      <!-- <template slot="selection" slot-scope="data">
-        {{ data.item.name }}
-      </template>
-      <template slot="item" slot-scope="data">
-        {{ data.item.name }}
-      </template> -->
     </v-autocomplete>
-    <!-- <pre>
-        {{ warehouse }}
-    </pre> -->
   </div>
 </template>
 
-//
 <script>
   export default {
-    name: 'SelectWarehouse',
+    name: 'SelectFormWarehouseArea',
     data() {
       return {
-        search: null,
+        search: '',
         warehouse: null,
+        items: [],
         warehouseFilter: null,
       }
     },
-    props: ['clear'],
-    created() {
-      this.renderData()
-    },
+    props: ['clear', 'warehouse', 'disabled', 'areaId'],
+
     mounted() {
-      this.renderData()
+      this.renderData('', this.areaId)
     },
     watch: {
       // warehouse: {
@@ -61,22 +51,45 @@
         },
         deep: true,
       },
+      areaId: {
+        handler: function(val) {
+          if (val) {
+            this.warehouse = null
+            this.renderData('', val)
+          }
+        },
+      },
     },
     methods: {
-      renderData() {
-        this.$http.get('/v1/warehouse').then((response) => {
-          this.warehouse = response.data.data
+      renderData(search, areaId) {
+        if (areaId) {
+          areaId = 'city_id.e:' + areaId
+        } else {
+          areaId = ''
+        }
 
-          this.warehouse = []
-          let array = response.data.data
-          for (let i = 0; i < array.length; i++) {
-            this.warehouse.push({
-              name: array[i].warehouse_name,
-              value: array[i].id,
-            })
-          }
-        })
+        this.$http
+          .get('/v1/warehouse', {
+            params: {
+              conditions: areaId,
+            },
+          })
+          .then((response) => {
+            this.items = response.data.data
+
+            this.items = []
+            let array = response.data.data
+            if (array != null) {
+              for (let i = 0; i < array.length; i++) {
+                this.items.push({
+                  name: array[i].warehouse_name,
+                  value: array[i].id,
+                })
+              }
+            }
+          })
       },
+
       selected(event) {
         this.$emit('selected', event)
       },
