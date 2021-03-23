@@ -64,81 +64,77 @@
     </v-row>
     <br />
     <div>
-      <v-card>
-        <v-data-table
-          loading-text="Please Wait...."
-          :mobile-breakpoint="0"
-          :headers="table"
-          :items="dataTable"
-          :page.sync="page"
-          :items-per-page="itemsPerPage"
-          class="elevation-1"
-          :search="search"
-          @page-count="pageCount = $event"
-        >
-          <template v-slot:item="props">
-            <tr>
-              <td>{{ props.item.code }}</td>
-              <td>{{ props.item.name }}</td>
-              <td>{{ props.item.phone_number }}</td>
-              <td>{{ props.item.address }}</td>
-              <td>{{ props.item.helper_type.type_name }}</td>
-              <td>{{ props.item.warehouse.warehouse_name }}</td>
+      <v-data-table
+        loading-text="Please Wait...."
+        :headers="table"
+        :items="dataTable"
+        :page.sync="page"
+        :items-per-page="itemsPerPage"
+        :search="search"
+        @page-count="pageCount = $event"
+      >
+        <template v-slot:item="props">
+          <tr>
+            <td>{{ props.item.code }}</td>
+            <td>{{ props.item.name }}</td>
+            <td>{{ props.item.phone_number }}</td>
+            <td>{{ props.item.address }}</td>
+            <td>{{ props.item.helper_type.type_name }}</td>
+            <td>{{ props.item.warehouse.warehouse_name }}</td>
 
-              <td>
-                <div v-if="props.item.is_active == 0">{{ 'Archive' }}</div>
-                <div v-else>{{ 'Unarchive' }}</div>
-              </td>
-              <td>
-                <v-menu offset-y>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" icon>
-                      <v-icon dark>
-                        mdi-dots-horizontal
-                      </v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <template class="menu">
-                      <v-list-item
-                        :to="{
-                          path: `/helper/update-helper/${props.item.id}`,
-                        }"
-                        link
-                        style="width: 150px; "
-                      >
-                        <div>
-                          <v-list-item-title
-                            :to="{ path: '/helper/update-helper' }"
-                            link
-                            >Update</v-list-item-title
-                          >
-                        </div>
-                      </v-list-item>
-                    </template>
-                    <v-divider
-                      style="margin-left: 10px;margin-right: 10px"
-                    ></v-divider>
-                    <v-list-item link>
-                      <v-list-item-title>
-                        <div
-                          @click="archive(props.item.id)"
-                          v-if="props.item.is_active == 0"
+            <td>
+              <div v-if="props.item.is_active == 0">{{ 'Archive' }}</div>
+              <div v-else>{{ 'Unarchive' }}</div>
+            </td>
+            <td>
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" v-on="on" icon>
+                    <v-icon dark>
+                      mdi-dots-horizontal
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <template class="menu">
+                    <v-list-item
+                      :to="{
+                        path: `/helper/update-helper/${props.item.id}`,
+                      }"
+                      link
+                      style="width: 150px; "
+                    >
+                      <div>
+                        <v-list-item-title
+                          :to="{ path: '/helper/update-helper' }"
+                          link
+                          >Update</v-list-item-title
                         >
-                          {{ 'Unarchive' }}
-                        </div>
-                        <div @click="unarchive(props.item.id)" v-else>
-                          {{ 'Archive' }}
-                        </div>
-                      </v-list-item-title>
+                      </div>
                     </v-list-item>
-                  </v-list>
-                </v-menu>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </v-card>
+                  </template>
+                  <v-divider
+                    style="margin-left: 10px;margin-right: 10px"
+                  ></v-divider>
+                  <v-list-item link>
+                    <v-list-item-title>
+                      <div
+                        @click="archive(props.item.id)"
+                        v-if="props.item.is_active == 0"
+                      >
+                        {{ 'Unarchive' }}
+                      </div>
+                      <div @click="unarchive(props.item.id)" v-else>
+                        {{ 'Archive' }}
+                      </div>
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
     </div>
   </div>
 </template>
@@ -311,7 +307,11 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  .mytable table tr {
+    border: none;
+  }
+
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -359,5 +359,11 @@
   }
   .v-sheet.v-list {
     background: #e8eff2;
+  }
+  thead[data-v-a9ed13f6] {
+    background: #f0f2f7;
+    border: 1px solid #dee2e6;
+    box-sizing: border-box;
+    border-radius: 20px;
   }
 </style>

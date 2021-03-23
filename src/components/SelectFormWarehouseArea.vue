@@ -44,7 +44,7 @@
       // },
       clear: {
         handler: function(val) {
-          this.renderData('')
+          this.renderData()
         },
         deep: true,
       },
