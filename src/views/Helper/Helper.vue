@@ -10,7 +10,7 @@
             >
           </div>
         </v-col>
-        <v-col md="6" offset="6">
+        <v-col md="6" offset="5">
           <div class="search">
             <v-text-field
               v-model="search"
@@ -22,6 +22,37 @@
             >
             </v-text-field>
           </div>
+        </v-col>
+        <v-col>
+          <!-- <v-menu offset-y>
+            <template
+              v-slot:activator="{ on, attrs }"
+              style="text-align: center"
+            >
+              <v-btn
+                style="background: #4662D4; color: white; border-radius: 50%; cursor: pointer; top: 55px; margin-right: 50px; right: 35px"
+                fab
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>
+                  mdi-format-align-justify
+                </v-icon>
+              </v-btn>
+            </template>
+            <template class="menu">
+              <v-checkbox
+                dense
+                light
+                multiple
+                v-model="selected"
+                label="John"
+                value="John"
+                style="width: 100px"
+              ></v-checkbox>
+            </template>
+          </v-menu> -->
         </v-col>
       </v-row>
     </v-container>
@@ -72,6 +103,7 @@
         :items-per-page="itemsPerPage"
         :search="search"
         @page-count="pageCount = $event"
+        hide-default-footer
       >
         <template v-slot:item="props">
           <tr>
@@ -105,11 +137,7 @@
                       style="width: 150px; "
                     >
                       <div>
-                        <v-list-item-title
-                          :to="{ path: '/helper/update-helper' }"
-                          link
-                          >Update</v-list-item-title
-                        >
+                        <v-list-item-title>Update</v-list-item-title>
                       </div>
                     </v-list-item>
                   </template>
@@ -117,7 +145,7 @@
                     style="margin-left: 10px;margin-right: 10px"
                   ></v-divider>
                   <v-list-item link>
-                    <v-list-item-title>
+                    <v-list-item-title link>
                       <div
                         @click="archive(props.item.id)"
                         v-if="props.item.is_active == 0"
@@ -135,6 +163,39 @@
           </tr>
         </template>
       </v-data-table>
+      <v-row>
+        <v-col cols="2" style="margin-top: 30px; margin-left: 20px">
+          <v-pagination
+            prev-icon="mdi-chevron-left"
+            next-icon="mdi-chevron-right"
+            color="#4662d4"
+            v-model="page"
+            :length="pageCount"
+          ></v-pagination>
+        </v-col>
+        <v-col cols="2" style="margin-top: 20px; margin-left: 20px;">
+          <div class="text-center pt-2">
+            <v-select
+              :value="items"
+              :items="items"
+              style="border-radius: 10px; width: 150px;"
+              outlined
+              solo
+              hide-no-data
+              hide-selected
+              return-object
+              label="Items per page"
+              type="number"
+              min="-1"
+              max="15"
+              @input="itemsPerPage = parseInt($event, 10)"
+            ></v-select>
+          </div>
+        </v-col>
+        <v-col cols="2" v-model="total">
+          <p style="margin-top: 45px; color: gray">Total {{ total }} Data</p>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -148,8 +209,9 @@
     data() {
       return {
         page: 1,
-        pageCount: 0,
-        itemsPerPage: 5,
+        pageCount: 5,
+        itemsPerPage: 20,
+        items: ['5/page', '10/page', '15/page', '20/page'],
         search: '',
         table: [
           {
@@ -198,6 +260,7 @@
           },
         ],
         dataTable: [],
+        total: [],
         id: '',
         warehouse: null,
         warehouse_id: '',
@@ -225,6 +288,7 @@
     methods: {
       initialize() {
         this.dataTable = [this.dataTable]
+        this.total = [this.total]
       },
 
       //get data user dari API
@@ -259,6 +323,8 @@
 
             this.dataTable = response.data.data
 
+            this.total = response.data.total
+
             if (this.dataTable === null) {
               this.dataTable = []
             }
@@ -267,22 +333,34 @@
 
       //fungsi untuk unarchive
       unarchive(id) {
-        this.$http.put('/v1/user/' + id + '/archive', {
-          Headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        window.location.reload()
+        this.$http
+          .put('/v1/user/' + id + '/archive', {
+            // Headers: {
+            //   'Content-Type': 'application/json',
+            // },
+          })
+          .then((response) => {
+            window.location.reload()
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       },
 
       //fungsi untuk archive
       archive(id) {
-        this.$http.put('/v1/user/' + id + '/unarchive', {
-          Headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        window.location.reload()
+        this.$http
+          .put('/v1/user/' + id + '/unarchive', {
+            // Headers: {
+            //   'Content-Type': 'application/json',
+            // },
+          })
+          .then((response) => {
+            window.location.reload()
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       },
 
       warehouseSelected(warehouse) {
@@ -333,9 +411,8 @@
     padding: 5px;
   }
   .search {
-    padding-left: 100px;
+    padding-left: 350px;
     padding-right: 50px;
-
     margin-top: 50px;
   }
   thead {
@@ -359,11 +436,5 @@
   }
   .v-sheet.v-list {
     background: #e8eff2;
-  }
-  thead[data-v-a9ed13f6] {
-    background: #f0f2f7;
-    border: 1px solid #dee2e6;
-    box-sizing: border-box;
-    border-radius: 20px;
   }
 </style>

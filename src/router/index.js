@@ -95,16 +95,16 @@ const routes = [
       next()
     },
     children: [
-      {
-        name: 'Create Picking',
-        component: () => import('../views/Picking/CreatePicking'),
-        path: '/picking/create-picking',
-      },
-      {
-        name: 'Update Picking',
-        component: () => import('../views/Picking/UpdatePicking'),
-        path: '/picking/update-picking/:id',
-      },
+      // {
+      //   name: 'Create Picking',
+      //   component: () => import('../views/Picking/CreatePicking'),
+      //   path: '/picking/create-picking',
+      // },
+      // {
+      //   name: 'Update Picking',
+      //   component: () => import('../views/Picking/UpdatePicking'),
+      //   path: '/picking/update-picking/:id',
+      // },
       {
         name: 'Create Packing',
         component: () => import('../views/Packing/CreatePacking'),
@@ -172,29 +172,29 @@ const routes = [
       },
     ],
   },
-  {
-    name: 'Picking',
-    component: MainLayout,
-    icon: 'mdi-import',
-    path: '/picking',
-    open: false,
-    beforeEnter: (to, from, next) => {
-      if (!store.getters[('auth/authenticated', 'auth/user')]) {
-        return next({
-          name: 'Login',
-        })
-      }
-      next()
-    },
-    children: [
-      {
-        name: 'Picking List',
-        component: () => import('../views/Picking/Picking'),
-        path: '',
-        meta: { hideNavigation: true },
-      },
-    ],
-  },
+  // {
+  //   name: 'Picking',
+  //   component: MainLayout,
+  //   icon: 'mdi-import',
+  //   path: '/picking',
+  //   open: false,
+  //   beforeEnter: (to, from, next) => {
+  //     if (!store.getters[('auth/authenticated', 'auth/user')]) {
+  //       return next({
+  //         name: 'Login',
+  //       })
+  //     }
+  //     next()
+  //   },
+  //   children: [
+  //     {
+  //       name: 'Picking List',
+  //       component: () => import('../views/Picking/Picking'),
+  //       path: '',
+  //       meta: { hideNavigation: true },
+  //     },
+  //   ],
+  // },
   {
     name: 'Report',
     component: MainLayout,

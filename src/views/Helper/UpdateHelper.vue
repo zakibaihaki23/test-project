@@ -27,8 +27,7 @@
           </v-text-field>
 
           <p>Type <span style="color: red">*</span></p>
-          <v-select label="Type" v-model="types" :items="typesValue" solo>
-          </v-select>
+          <v-select v-model="types" :items="typesValue" solo> </v-select>
           <p>Address <span style="color: red">*</span></p>
           <v-textarea label="Address" v-model="editedItem.address" solo>
           </v-textarea>
@@ -133,33 +132,40 @@
     created() {
       this.renderData()
     },
+
     methods: {
       //untuk mendapatkan data dari API ke dalam format text-field
       renderData() {
-        this.$http.get('/v1/user/' + this.$route.params.id).then((response) => {
-          this.editedItem.code = response.data.data.code
-          this.editedItem.email = response.data.data.email
-          this.editedItem.phone_no = response.data.data.phone_number
-          this.warehouse_list = response.data.data.warehouse.warehouse_name
-          this.editedItem.name = response.data.data.name
-          this.editedItem.warehouse_name = this.editedItem.type =
-            response.data.data.type
-          this.editedItem.address = response.data.data.address
-          this.editedItem.password = response.data.data.password
-          this.types = response.data.data.types
-          this.editedItem.confirm_password = response.data.data.password
-          this.update = true
-          this.$http.get('/v1/warehouse').then((response) => {
-            this.warehouse = []
-            let array = response.data.data
-            for (let i = 0; i < array.length; i++) {
-              this.warehouse.push({
-                name: array[i].warehouse_name,
-                value: array[i].id,
-              })
-            }
+        this.$http
+          .get('/v1/user/' + this.$route.params.id, {
+            params: {
+              embeds: 'helper_type_id,warehouse_id',
+            },
           })
-        })
+          .then((response) => {
+            this.editedItem.code = response.data.data.code
+            this.editedItem.email = response.data.data.email
+            this.editedItem.phone_no = response.data.data.phone_number
+            this.warehouse_list = response.data.data.warehouse.warehouse_name
+            this.editedItem.name = response.data.data.name
+            this.warehouse_list = response.data.data.warehouse.warehouse_name
+            this.editedItem.address = response.data.data.address
+            this.editedItem.password = response.data.data.password
+            this.types = response.data.data.helper_type.type_name
+            this.editedItem.confirm_password = response.data.data.password
+            this.update = true
+
+            this.$http.get('/v1/warehouse').then((response) => {
+              this.warehouse = []
+              let array = response.data.data
+              for (let i = 0; i < array.length; i++) {
+                this.warehouse.push({
+                  name: array[i].warehouse_name,
+                  value: array[i].id,
+                })
+              }
+            })
+          })
       },
       //menyimpan data update ke dalam API
       save() {
