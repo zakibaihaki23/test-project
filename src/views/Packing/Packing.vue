@@ -206,7 +206,7 @@
           },
           {
             text: 'Warehouse',
-            value: 'warehouse_name',
+            value: 'warehouse.warehouse_name',
             align: 'left',
             class: '  black--text title',
           },
@@ -231,7 +231,11 @@
             sortable: false,
           },
         ],
-        dataTable: [],
+        dataTable: {
+          warehouse: {
+            warehouse_name: '',
+          },
+        },
         total: [],
       }
     },
@@ -280,7 +284,7 @@
         this.$http
           .get('/v1/packing', {
             params: {
-              orderby: '-id',
+              orderby: '-id,warehouse_id',
               conditions: warehouseId,
             },
           })

@@ -5,9 +5,7 @@
       <v-row no-gutters>
         <v-col md="6">
           <div>
-            <v-btn :to="{ path: '/helper/registration-helper' }"
-              >Registration Helper</v-btn
-            >
+            <v-btn :to="{ path: '/helper/create-helper' }">Create Helper</v-btn>
           </div>
         </v-col>
         <v-col md="6" offset="5">
@@ -112,6 +110,7 @@
             <td>{{ props.item.phone_number }}</td>
             <td>{{ props.item.address }}</td>
             <td>{{ props.item.helper_type.type_name }}</td>
+
             <td>{{ props.item.warehouse.warehouse_name }}</td>
 
             <td>
@@ -239,14 +238,13 @@
 
           {
             text: 'Type',
-            value: 'helper_type.type_name',
+            value: 'type_name',
             class: 'black--text title',
           },
           {
             text: 'Warehouse',
-            value: 'warehouse.warehouse_name',
+            value: 'warehouse_name',
             class: 'black--text title',
-            keys: ['warehouse.warehouse_name'],
           },
           {
             text: 'Status',
@@ -259,7 +257,14 @@
             sortable: false,
           },
         ],
-        dataTable: [],
+        dataTable: {
+          warehouse: {
+            warehouse_name: '',
+          },
+          helper_type: {
+            type_name: '',
+          },
+        },
         total: [],
         id: '',
         warehouse: null,
@@ -267,6 +272,7 @@
         type: '',
         status: null,
         is_active: null,
+        warehouseList: [],
       }
     },
     created() {
@@ -322,7 +328,6 @@
             // let that = this;
 
             this.dataTable = response.data.data
-
             this.total = response.data.total
 
             if (this.dataTable === null) {

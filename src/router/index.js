@@ -54,10 +54,10 @@ const routes = [
     ],
   },
   {
-    name: 'Create Helper',
+    name: 'Helper Create',
     component: MainLayout,
     subtitle: 'Components',
-    path: '/helper/create-helper',
+    path: '/helper/helper-create',
     open: false,
     beforeEnter: (to, from, next) => {
       if (!store.getters['auth/authenticated']) {
@@ -69,9 +69,9 @@ const routes = [
     },
     children: [
       {
-        name: 'Registration Helper',
-        component: () => import('../views/Helper/RegistrationHelper'),
-        path: '/helper/registration-helper',
+        name: 'Create Helper',
+        component: () => import('../views/Helper/CreateHelper'),
+        path: '/helper/create-helper',
       },
       {
         name: 'Update Helper',

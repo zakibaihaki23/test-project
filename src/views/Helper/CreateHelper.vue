@@ -1,6 +1,6 @@
 <template>
   <div class="regist">
-    <h1>REGISTRATION HELPER</h1>
+    <h1>CREATE HELPER</h1>
     <v-row no-gutters>
       <v-col md="6">
         <div class="form-right">
@@ -19,8 +19,8 @@
           >
           </v-select>
 
-          <p>Address <span style="color: red">*</span></p>
-          <v-textarea v-model="defaultItem.address" label="Address *" solo>
+          <p>Address</p>
+          <v-textarea v-model="defaultItem.address" label="Address" solo>
           </v-textarea>
         </div>
       </v-col>

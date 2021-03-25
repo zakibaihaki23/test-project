@@ -13,8 +13,9 @@
           <v-select
             :items="warehouse"
             v-model="warehouse_list"
-            item-text="name"
-            item-value="value"
+            item-text="warehouse_name"
+            item-value="id"
+            @selected="warehouseSelected"
             solo
           >
           </v-select>
@@ -27,7 +28,16 @@
           </v-text-field>
 
           <p>Type <span style="color: red">*</span></p>
-          <v-select v-model="types" :items="typesValue" solo> </v-select>
+          <v-select
+            v-model="types"
+            :items="typesValue"
+            item-text="type_name"
+            item-value="id"
+            @selected="typeSelected"
+            solo
+          >
+          </v-select>
+
           <p>Address <span style="color: red">*</span></p>
           <v-textarea label="Address" v-model="editedItem.address" solo>
           </v-textarea>
@@ -105,15 +115,17 @@
         editedIndex: -1,
         warehouse: '',
         warehouse_list: '',
+        warehouse_id: '',
         types: '',
+        types_id: '',
         typesValue: [
           {
-            text: 'Help Picker',
-            value: 'help_picker',
+            type_name: 'Help Picker',
+            id: '65536',
           },
           {
-            text: 'Helper',
-            value: 'helper',
+            type_name: 'Help Packer',
+            id: '131072',
           },
         ],
         editedItem: {
@@ -146,22 +158,21 @@
             this.editedItem.code = response.data.data.code
             this.editedItem.email = response.data.data.email
             this.editedItem.phone_no = response.data.data.phone_number
-            this.warehouse_list = response.data.data.warehouse.warehouse_name
             this.editedItem.name = response.data.data.name
-            this.warehouse_list = response.data.data.warehouse.warehouse_name
             this.editedItem.address = response.data.data.address
             this.editedItem.password = response.data.data.password
-            this.types = response.data.data.helper_type.type_name
             this.editedItem.confirm_password = response.data.data.password
             this.update = true
+            this.typeSelected(response.data.data.helper_type)
+            this.warehouseSelected(response.data.data.warehouse)
 
             this.$http.get('/v1/warehouse').then((response) => {
               this.warehouse = []
               let array = response.data.data
               for (let i = 0; i < array.length; i++) {
                 this.warehouse.push({
-                  name: array[i].warehouse_name,
-                  value: array[i].id,
+                  warehouse_name: array[i].warehouse_name,
+                  id: array[i].id,
                 })
               }
             })
@@ -173,7 +184,7 @@
           .put('/v1/user/' + this.$route.params.id, {
             name: this.editedItem.name,
             email: this.editedItem.email,
-            helper_type_id: this.warehouse_list,
+            helper_type_id: this.types.id,
             phone_number: this.editedItem.phone_no,
             warehouse_id: this.warehouse_list,
             password: this.editedItem.password,
@@ -200,6 +211,22 @@
           .catch((error) => {
             console.log(error)
           })
+      },
+      typeSelected(d) {
+        this.types = ''
+        this.types_id = ''
+        if (d) {
+          this.types = d
+          this.types_id = d.id
+        }
+      },
+      warehouseSelected(d) {
+        this.warehouse_list = ''
+        this.warehouse_id = ''
+        if (d) {
+          this.warehouse_list = d
+          this.warehouse_id = d.id
+        }
       },
     },
   }
