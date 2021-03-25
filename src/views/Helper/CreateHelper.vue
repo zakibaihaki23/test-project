@@ -18,10 +18,6 @@
             :items="types"
           >
           </v-select>
-
-          <p>Address</p>
-          <v-textarea v-model="defaultItem.address" label="Address" solo>
-          </v-textarea>
         </div>
       </v-col>
       <v-col md="6">
@@ -44,6 +40,11 @@
           >
           </v-select>
         </div>
+      </v-col>
+      <v-col md="12" style="padding-right: 90px">
+        <p>Address</p>
+        <v-textarea v-model="defaultItem.address" label="Address" solo>
+        </v-textarea>
       </v-col>
     </v-row>
 
@@ -177,14 +178,7 @@
             this.$toast.success('Data has been saved successfully')
           })
           .catch((error) => {
-            this.$toast.error(error.response.data.errors.name)
-            this.$toast.error(error.response.data.errors.phone_number)
-            this.$toast.error(error.response.data.errors.helper_type_id)
-            this.$toast.error(error.response.data.errors.warehouse_id)
-            this.$toast.error(error.response.data.errors.address)
-            this.$toast.error(error.response.data.errors.email)
-            this.$toast.error(error.response.data.errors.password)
-            this.$toast.error(error.response.data.errors.confirm_password)
+            this.$toast.error('Field must be filled')
           })
       },
     },

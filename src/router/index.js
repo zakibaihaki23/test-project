@@ -172,29 +172,6 @@ const routes = [
       },
     ],
   },
-  // {
-  //   name: 'Picking',
-  //   component: MainLayout,
-  //   icon: 'mdi-import',
-  //   path: '/picking',
-  //   open: false,
-  //   beforeEnter: (to, from, next) => {
-  //     if (!store.getters[('auth/authenticated', 'auth/user')]) {
-  //       return next({
-  //         name: 'Login',
-  //       })
-  //     }
-  //     next()
-  //   },
-  //   children: [
-  //     {
-  //       name: 'Picking List',
-  //       component: () => import('../views/Picking/Picking'),
-  //       path: '',
-  //       meta: { hideNavigation: true },
-  //     },
-  //   ],
-  // },
   {
     name: 'Report',
     component: MainLayout,

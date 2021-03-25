@@ -2,13 +2,36 @@
   <div class="regist">
     <h1>UPDATE HELPER</h1>
     <v-row no-gutters>
-      <v-col md="6">
-        <div class="form-right">
+      <v-col md="6" style="margin-right: 90px">
+        <div class="form-right-1">
           <p>Helper ID <span style="color: red">*</span></p>
           <v-text-field disabled v-model="editedItem.code" solo> </v-text-field>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col md="6">
+        <div class="form-right">
+          <p>Name <span style="color: red">*</span></p>
+          <v-text-field label="Name" v-model="editedItem.name" solo>
+          </v-text-field>
           <p>Phone Number*</p>
           <v-text-field label="Phone Number" v-model="editedItem.phone_no" solo>
           </v-text-field>
+        </div>
+      </v-col>
+      <v-col md="6">
+        <div class="form-right">
+          <p>Type <span style="color: red">*</span></p>
+          <v-select
+            v-model="types"
+            :items="typesValue"
+            item-text="type_name"
+            item-value="id"
+            @selected="typeSelected"
+            solo
+          >
+          </v-select>
           <p>Warehouse <span style="color: red">*</span></p>
           <v-select
             :items="warehouse"
@@ -21,24 +44,9 @@
           </v-select>
         </div>
       </v-col>
-      <v-col md="6">
-        <div class="form-right">
-          <p>Name <span style="color: red">*</span></p>
-          <v-text-field label="Name" v-model="editedItem.name" solo>
-          </v-text-field>
-
-          <p>Type <span style="color: red">*</span></p>
-          <v-select
-            v-model="types"
-            :items="typesValue"
-            item-text="type_name"
-            item-value="id"
-            @selected="typeSelected"
-            solo
-          >
-          </v-select>
-
-          <p>Address <span style="color: red">*</span></p>
+      <v-col md="12" style="padding-right: 90px">
+        <div>
+          <p>Address</p>
           <v-textarea label="Address" v-model="editedItem.address" solo>
           </v-textarea>
         </div>
@@ -184,32 +192,19 @@
           .put('/v1/user/' + this.$route.params.id, {
             name: this.editedItem.name,
             email: this.editedItem.email,
-            helper_type_id: this.types.id,
+            helper_type_id: this.types_id,
             phone_number: this.editedItem.phone_no,
-            warehouse_id: this.warehouse_list,
+            warehouse_id: this.warehouse_list.id,
             password: this.editedItem.password,
             confirm_password: this.editedItem.confirm_password,
           })
 
           .then((response) => {
             this.$router.push('/helper')
-            this.$toast.success('Data has been update successfully', {
-              position: 'top-right',
-              timeout: 5000,
-              closeOnClick: true,
-              pauseOnFocusLoss: false,
-              pauseOnHover: false,
-              draggable: true,
-              draggablePercent: 0.6,
-              showCloseButtonOnHover: false,
-              hideProgressBar: true,
-              closeButton: 'button',
-              icon: true,
-              rtl: false,
-            })
+            this.$toast.success('Data has been update successfully')
           })
           .catch((error) => {
-            console.log(error)
+            this.$toast.error('Field must be filled')
           })
       },
       typeSelected(d) {
@@ -238,6 +233,9 @@
     padding-right: 50px;
   }
   .form-right {
+    padding-right: 90px;
+  }
+  .form-right-1 {
     margin-top: 50px;
     padding-right: 90px;
   }

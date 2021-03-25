@@ -114,8 +114,8 @@
             <td>{{ props.item.warehouse.warehouse_name }}</td>
 
             <td>
-              <div v-if="props.item.is_active == 0">{{ 'Archive' }}</div>
-              <div v-else>{{ 'Unarchive' }}</div>
+              <div v-if="props.item.is_active == 0">{{ 'Inactive' }}</div>
+              <div v-else>{{ 'Active' }}</div>
             </td>
             <td>
               <v-menu offset-y>
@@ -146,13 +146,13 @@
                   <v-list-item link>
                     <v-list-item-title link>
                       <div
-                        @click="archive(props.item.id)"
+                        @click="unarchive(props.item.id)"
                         v-if="props.item.is_active == 0"
                       >
-                        {{ 'Unarchive' }}
+                        {{ 'Active' }}
                       </div>
-                      <div @click="unarchive(props.item.id)" v-else>
-                        {{ 'Archive' }}
+                      <div @click="archive(props.item.id)" v-else>
+                        {{ 'Inactive' }}
                       </div>
                     </v-list-item-title>
                   </v-list-item>
@@ -337,7 +337,7 @@
       },
 
       //fungsi untuk unarchive
-      unarchive(id) {
+      archive(id) {
         this.$http
           .put('/v1/user/' + id + '/archive', {
             // Headers: {
@@ -345,7 +345,8 @@
             // },
           })
           .then((response) => {
-            window.location.reload()
+            this.$toast.success('User Not Active')
+            this.renderData()
           })
           .catch((error) => {
             console.log(error)
@@ -353,7 +354,7 @@
       },
 
       //fungsi untuk archive
-      archive(id) {
+      unarchive(id) {
         this.$http
           .put('/v1/user/' + id + '/unarchive', {
             // Headers: {
@@ -361,7 +362,8 @@
             // },
           })
           .then((response) => {
-            window.location.reload()
+            this.$toast.success('User Active')
+            this.renderData()
           })
           .catch((error) => {
             console.log(error)
