@@ -122,14 +122,18 @@
         warehouse: '',
         warehouseList: '',
         note: '',
-        warehouse_id: null,
+        warehouse_id: '',
         area: '',
-        areaId: null,
+        areaId: '',
         warehouseDisabled: true,
         total_order: '',
         delivery_date: '',
-        date: new Date().toISOString().substr(0, 10),
-        dateFormatted: '',
+        date: new Date(Date.now() + 3600 * 1000 * 24)
+          .toISOString()
+          .substr(0, 10),
+        dateFormatted: new Date(Date.now() + 3600 * 1000 * 24)
+          .toISOString()
+          .substr(0, 10),
         modal: false,
       }
     },
@@ -219,12 +223,10 @@
         }
         this.renderData()
       },
-      warehouseSelected(warehouse) {
-        this.warehouse = ''
+      warehouseSelected(val) {
         this.warehouse_id = ''
-        if (warehouse) {
-          //   this.warehouse = d
-          this.warehouse_id = warehouse.value
+        if (val) {
+          this.warehouse_id = val.value
         }
       },
     },

@@ -14,6 +14,7 @@
       return-object
       :search-input.sync="search"
       @change="selected"
+      clearable
     >
     </v-autocomplete>
   </div>
@@ -26,7 +27,7 @@
     data() {
       return {
         search: null,
-        area: null,
+        area: '',
         areaSelected: null,
       }
     },

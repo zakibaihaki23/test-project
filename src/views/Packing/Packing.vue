@@ -43,7 +43,7 @@
       <v-col cols="2">
         <SelectWarehouse
           :areaId="area"
-          v-model="warehouseList"
+          v-model="warehouse"
           @selected="warehouseSelected"
           :disabled="warehouseDisabled"
         >
@@ -71,80 +71,110 @@
     </v-row>
     <br />
     <div>
-      <v-card>
-        <v-data-table
-          loading-text="Please Wait...."
-          :mobile-breakpoint="0"
-          :headers="table"
-          :items="dataTable"
-          :page.sync="page"
-          :items-per-page="itemsPerPage"
-          class="elevation-1"
-          :search="search"
-          @page-count="pageCount = $event"
-        >
-          <template v-slot:item="props">
-            <tr>
-              <td>{{ props.item.document_code }}</td>
-              <td>{{ props.item.warehouse.warehouse_name }}</td>
-              <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td>
-              <td>{{ props.item.note }}</td>
-              <td>
-                <div v-if="props.item.status == 1">
-                  {{ 'Done' }}
-                </div>
-                <div v-else>{{ 'New' }}</div>
-              </td>
-              <td>
-                <v-menu offset-y>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" icon>
-                      <v-icon dark>
-                        mdi-dots-horizontal
-                      </v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <template class="menu">
-                      <v-list-item
-                        :to="{
-                          path: `/helper/update-helper/${props.item.id}`,
-                        }"
-                        link
-                        style="width: 150px; "
-                      >
-                        <div>
-                          <v-list-item-title
-                            :to="{ path: '/helper/update-helper' }"
-                            link
-                            >Input Packing</v-list-item-title
-                          >
-                        </div>
-                      </v-list-item>
-                    </template>
-                    <v-divider
-                      style="margin-left: 10px;margin-right: 10px"
-                    ></v-divider>
-                    <v-list-item link>
-                      <v-list-item-title>
-                        <div
-                          @click="archive(props.item.id)"
-                          v-if="props.item.is_active == 0"
+      <v-data-table
+        loading-text="Please Wait...."
+        :headers="table"
+        :items="dataTable"
+        :page.sync="page"
+        :items-per-page="itemsPerPage"
+        :search="search"
+        @page-count="pageCount = $event"
+        hide-default-footer
+      >
+        <template v-slot:item="props">
+          <tr>
+            <td>{{ props.item.document_code }}</td>
+            <td>{{ props.item.warehouse.warehouse_name }}</td>
+            <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td>
+            <td>{{ props.item.note }}</td>
+            <td>
+              <div v-if="props.item.status == 1">
+                {{ 'Done' }}
+              </div>
+              <div v-else>{{ 'New' }}</div>
+            </td>
+            <td>
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" v-on="on" icon>
+                    <v-icon dark>
+                      mdi-dots-horizontal
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <template class="menu">
+                    <v-list-item
+                      :to="{
+                        path: `/helper/update-helper/${props.item.id}`,
+                      }"
+                      link
+                      style="width: 150px; "
+                    >
+                      <div>
+                        <v-list-item-title
+                          :to="{ path: '/helper/update-helper' }"
+                          link
+                          >Input Packing</v-list-item-title
                         >
-                          {{ 'Active' }}
-                        </div>
-                        <div @click="unarchive(props.item.id)" v-else>
-                          {{ 'Inactive' }}
-                        </div>
-                      </v-list-item-title>
+                      </div>
                     </v-list-item>
-                  </v-list>
-                </v-menu>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </v-card>
+                  </template>
+                  <v-divider
+                    style="margin-left: 10px;margin-right: 10px"
+                  ></v-divider>
+                  <v-list-item link>
+                    <v-list-item-title>
+                      <div
+                        @click="archive(props.item.id)"
+                        v-if="props.item.is_active == 0"
+                      >
+                        {{ 'Active' }}
+                      </div>
+                      <div @click="unarchive(props.item.id)" v-else>
+                        {{ 'Inactive' }}
+                      </div>
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+      <v-row>
+        <v-col cols="2" style="margin-top: 30px; margin-left: 20px">
+          <v-pagination
+            prev-icon="mdi-chevron-left"
+            next-icon="mdi-chevron-right"
+            color="#4662d4"
+            v-model="page"
+            :length="pageCount"
+          ></v-pagination>
+        </v-col>
+        <v-col cols="2" style="margin-top: 20px; margin-left: 20px;">
+          <div class="text-center pt-2">
+            <v-select
+              :value="items"
+              :items="items"
+              style="border-radius: 10px; width: 150px;"
+              outlined
+              solo
+              hide-no-data
+              hide-selected
+              return-object
+              label="Items per page"
+              type="number"
+              min="-1"
+              max="15"
+              @input="itemsPerPage = parseInt($event, 10)"
+            ></v-select>
+          </div>
+        </v-col>
+        <v-col cols="2" v-model="total">
+          <p style="margin-top: 45px; color: gray">Total {{ total }} Data</p>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -157,8 +187,9 @@
     data() {
       return {
         page: 1,
-        pageCount: 0,
-        itemsPerPage: 5,
+        pageCount: 5,
+        itemsPerPage: 20,
+        items: ['5/page', '10/page', '15/page', '20/page'],
         warehouseList: '',
         warehouse: '',
         warehouse_id: null,
@@ -201,6 +232,7 @@
           },
         ],
         dataTable: [],
+        total: [],
       }
     },
 
@@ -220,6 +252,7 @@
     methods: {
       initialize() {
         this.dataTable = [this.dataTable]
+        this.total = [this.total]
       },
       renderData() {
         let areaId = ''
@@ -255,6 +288,7 @@
             // let that = this;
 
             this.dataTable = response.data.data
+            this.total = response.data.total
 
             if (this.dataTable === null) {
               this.dataTable = []
@@ -266,11 +300,18 @@
       },
       areaSelected(area) {
         this.area = ''
-        if (area) {
+        this.areaId = ''
+        if (area !== null) {
           this.area = area.value
           this.warehouseDisabled = false
         }
         this.renderData()
+        if (area == null) {
+          this.warehouse = ''
+          this.warehouse_id = ''
+          this.warehouse = this.warehouseDisabled = true
+        }
+        this.renderData('')
       },
       warehouseSelected(warehouse) {
         this.warehouse = ''
@@ -280,13 +321,15 @@
           this.warehouse_id = warehouse.value
         }
         this.renderData()
-        // this.renderData()
       },
     },
   }
 </script>
 
 <style scoped>
+  .mytable table tr {
+    border: none;
+  }
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
