@@ -167,16 +167,8 @@
       ],
       items: [
         {
-          name: 'Packing',
+          name: 'Report Packing',
           path: '/report/packing',
-        },
-        {
-          name: 'Picking',
-          path: '/report/picking',
-        },
-        {
-          name: 'Picking Item',
-          path: '/report/picking-item',
         },
       ],
     }),

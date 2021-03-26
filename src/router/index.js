@@ -81,7 +81,7 @@ const routes = [
     ],
   },
   {
-    name: 'Picking & Picking Create',
+    name: 'Packing Page Create',
     component: MainLayout,
     subtitle: 'Components',
     path: '/picking/picking-create',
@@ -95,25 +95,15 @@ const routes = [
       next()
     },
     children: [
-      // {
-      //   name: 'Create Picking',
-      //   component: () => import('../views/Picking/CreatePicking'),
-      //   path: '/picking/create-picking',
-      // },
-      // {
-      //   name: 'Update Picking',
-      //   component: () => import('../views/Picking/UpdatePicking'),
-      //   path: '/picking/update-picking/:id',
-      // },
       {
-        name: 'Create Packing',
+        name: 'Create Packing Order',
         component: () => import('../views/Packing/CreatePacking'),
-        path: '/packing/create-packing',
+        path: '/packing-order/create',
       },
       {
-        name: 'Input Packing',
-        component: () => import('../views/Packing/InputPacking'),
-        path: '/packing/input-packing/:id',
+        name: 'Packing Order Detail',
+        component: () => import('../views/Packing/Detail'),
+        path: '/packing-order/:id',
       },
       {
         name: 'Packing Item',
@@ -151,10 +141,10 @@ const routes = [
     ],
   },
   {
-    name: 'Packing',
+    name: 'Packable Item',
     component: MainLayout,
-    icon: 'mdi-package-variant-closed',
-    path: '/packing',
+    icon: 'mdi-cart-plus',
+    path: '/packable-item',
     open: false,
     beforeEnter: (to, from, next) => {
       if (!store.getters['auth/authenticated']) {
@@ -166,8 +156,30 @@ const routes = [
     },
     children: [
       {
-        name: 'Packing List',
-        component: () => import('../views/Packing/Packing'),
+        name: 'Packable Item List',
+        component: () => import('../views/Packing/PackableItem'),
+        path: '',
+      },
+    ],
+  },
+  {
+    name: 'Packing Order',
+    component: MainLayout,
+    icon: 'mdi-package-variant-closed',
+    path: '/packing-order',
+    open: false,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters['auth/authenticated']) {
+        return next({
+          name: 'Login',
+        })
+      }
+      next()
+    },
+    children: [
+      {
+        name: 'Packing Order List',
+        component: () => import('../views/Packing/PackingOrderList'),
         path: '',
       },
     ],
@@ -189,20 +201,20 @@ const routes = [
     children: [
       {
         name: 'Report Packing',
-        component: () => import('../views/Report/Packing'),
+        component: () => import('../views/Report/ReportPackingOrder'),
         path: '/report/packing',
         meta: { hideNavigation: true },
       },
       {
-        name: 'Report Picking',
-        component: () => import('../views/Report/Picking'),
-        path: '/report/picking',
+        name: '',
+
+        path: '/report/packing-order',
         meta: { hideNavigation: true },
       },
       {
-        name: 'Picking Item',
-        component: () => import('../views/Report/PickingItem'),
-        path: '/report/picking-item',
+        name: '',
+
+        path: '/report/packing-order',
         meta: { hideNavigation: true },
       },
     ],

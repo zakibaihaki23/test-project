@@ -8,7 +8,7 @@
             <v-btn :to="{ path: '/helper/create-helper' }">Create Helper</v-btn>
           </div>
         </v-col>
-        <v-col md="6" offset="5">
+        <v-col md="6" offset="6">
           <div class="search">
             <v-text-field
               v-model="search"
@@ -418,7 +418,7 @@
     padding: 5px;
   }
   .search {
-    padding-left: 350px;
+    padding-left: 100px;
     padding-right: 50px;
     margin-top: 50px;
   }

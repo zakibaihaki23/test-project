@@ -1,11 +1,11 @@
 <template>
   <div class="helper">
-    <h2>PACKING LIST</h2>
+    <h2>PACKING ORDER LIST</h2>
     <v-container>
       <v-row no-gutters>
         <v-col md="6">
           <div>
-            <v-btn :to="{ path: '/packing/create-packing' }"
+            <v-btn :to="{ path: '/packing-order/create' }"
               >Create Packing</v-btn
             >
           </div>
@@ -22,7 +22,6 @@
               label="Search...."
               solo
               hide-details
-              append-outer-icon="mdi-format-align-justify"
             >
             </v-text-field>
           </div>
@@ -60,13 +59,38 @@
         ></v-autocomplete> -->
       </v-col>
       <v-col cols="3">
-        <v-select
-          style="border-radius: 15px"
-          outlined
-          prepend-inner-icon="mdi-calendar"
-          label="Delivery Date"
-          solo
-        ></v-select>
+        <v-menu
+          ref="menu"
+          v-model="delivery_date_model"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on }">
+            <div v-on="on">
+              <v-text-field
+                style="border-radius: 15px"
+                prepend-inner-icon="mdi-calendar"
+                readonly
+                outlined
+                clearable
+                @click:clear=";(delivery_date = ''), renderData(search)"
+                :value="format_delivery_date"
+                solo
+              >
+                <template v-slot:label>
+                  Delivery Date
+                </template>
+              </v-text-field>
+            </div>
+          </template>
+          <v-date-picker
+            no-title
+            v-model="delivery_date"
+            @input=";(delivery_date_model = false), renderData(search)"
+          ></v-date-picker>
+        </v-menu>
       </v-col>
     </v-row>
     <br />
@@ -89,9 +113,9 @@
             <td>{{ props.item.note }}</td>
             <td>
               <div v-if="props.item.status == 1">
-                {{ 'Done' }}
+                {{ 'Active' }}
               </div>
-              <div v-else>{{ 'New' }}</div>
+              <div v-else>{{ 'Finished' }}</div>
             </td>
             <td>
               <v-menu offset-y>
@@ -105,6 +129,17 @@
                 <v-list>
                   <template class="menu">
                     <v-list-item
+                      :to="{ path: `/packing-order/${props.item.id}` }"
+                      link
+                    >
+                      <div>
+                        <v-list-item-title>Detail</v-list-item-title>
+                      </div>
+                    </v-list-item>
+                    <v-divider
+                      style="margin-left: 10px;margin-right: 10px"
+                    ></v-divider>
+                    <v-list-item
                       :to="{
                         path: `/helper/update-helper/${props.item.id}`,
                       }"
@@ -112,14 +147,18 @@
                       style="width: 150px; "
                     >
                       <div>
-                        <v-list-item-title
-                          :to="{ path: '/helper/update-helper' }"
-                          link
-                          >Input Packing</v-list-item-title
-                        >
+                        <v-list-item-title>Update</v-list-item-title>
                       </div>
                     </v-list-item>
                   </template>
+                  <v-divider
+                    style="margin-left: 10px;margin-right: 10px"
+                  ></v-divider>
+                  <v-list-item link>
+                    <v-list-item-title>
+                      Cancel
+                    </v-list-item-title>
+                  </v-list-item>
                   <v-divider
                     style="margin-left: 10px;margin-right: 10px"
                   ></v-divider>
@@ -192,6 +231,8 @@
         items: ['5/page', '10/page', '15/page', '20/page'],
         warehouseList: '',
         warehouse: '',
+        delivery_date_model: '',
+        delivery_date: '',
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
@@ -199,7 +240,7 @@
         search: '',
         table: [
           {
-            text: 'Packing Code',
+            text: 'Packing Order Code',
             value: 'document_code',
             align: 'left',
             class: ' black--text title',
@@ -244,26 +285,46 @@
       this.renderData()
       this.initialize(0)
     },
-    // watch: {
-    //   warehouse: {
-    //     handler: function(val) {
-    //       let that = this
-    //       that.renderData = this.warehouse
-    //     },
-    //     deep: true,
-    //   },
-    // },
+    watch: {
+      search: {
+        handler: function(val) {
+          let that = this
+          that.renderData(val)
+        },
+        deep: true,
+      },
+    },
+    computed: {
+      format_delivery_date() {
+        if (this.delivery_date)
+          return this.$moment(this.delivery_date).format('DD/MM/YYYY')
+      },
+    },
     methods: {
+      formatDate(val) {
+        return this.$moment(val).format('DD/MM/YYYY')
+      },
       initialize() {
         this.dataTable = [this.dataTable]
         this.total = [this.total]
       },
-      renderData() {
+      renderData(search) {
         let areaId = ''
         if (this.area) {
           areaId = 'city_id.e:' + this.area
         } else {
           areaId = ''
+        }
+
+        let delivery_date = ''
+        if (this.delivery_date) {
+          if (this.warehouse_id) {
+            delivery_date = '|delivery_date:' + this.delivery_date
+          } else {
+            delivery_date = 'delivery_date:' + this.delivery_date
+          }
+        } else {
+          delivery_date = ''
         }
 
         this.$http
@@ -285,7 +346,7 @@
           .get('/v1/packing', {
             params: {
               orderby: '-id,warehouse_id',
-              conditions: warehouseId,
+              conditions: warehouseId + delivery_date,
             },
           })
           .then((response) => {
