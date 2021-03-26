@@ -2,33 +2,51 @@
   <div class="regist">
     <h1>UPDATE HELPER</h1>
     <v-row no-gutters>
-      <v-col md="6">
-        <div class="form-right">
+      <v-col md="6" style="margin-right: 90px">
+        <div class="form-right-1">
           <p>Helper ID <span style="color: red">*</span></p>
           <v-text-field disabled v-model="editedItem.code" solo> </v-text-field>
-          <p>Phone Number*</p>
-          <v-text-field label="Phone Number" v-model="editedItem.phone_no" solo>
-          </v-text-field>
-          <p>Warehouse <span style="color: red">*</span></p>
-          <v-select
-            :items="warehouse"
-            v-model="warehouse_list"
-            item-text="name"
-            item-value="value"
-            solo
-          >
-          </v-select>
         </div>
       </v-col>
+    </v-row>
+    <v-row no-gutters>
       <v-col md="6">
         <div class="form-right">
           <p>Name <span style="color: red">*</span></p>
           <v-text-field label="Name" v-model="editedItem.name" solo>
           </v-text-field>
-
+          <p>Phone Number*</p>
+          <v-text-field label="Phone Number" v-model="editedItem.phone_no" solo>
+          </v-text-field>
+        </div>
+      </v-col>
+      <v-col md="6">
+        <div class="form-right">
           <p>Type <span style="color: red">*</span></p>
-          <v-select v-model="types" :items="typesValue" solo> </v-select>
-          <p>Address <span style="color: red">*</span></p>
+          <v-select
+            v-model="types"
+            :items="typesValue"
+            item-text="type_name"
+            item-value="id"
+            @selected="typeSelected"
+            solo
+          >
+          </v-select>
+          <p>Warehouse <span style="color: red">*</span></p>
+          <v-select
+            :items="warehouse"
+            v-model="warehouse_list"
+            item-text="warehouse_name"
+            item-value="id"
+            @selected="warehouseSelected"
+            solo
+          >
+          </v-select>
+        </div>
+      </v-col>
+      <v-col md="12" style="padding-right: 90px">
+        <div>
+          <p>Address</p>
           <v-textarea label="Address" v-model="editedItem.address" solo>
           </v-textarea>
         </div>
@@ -105,15 +123,17 @@
         editedIndex: -1,
         warehouse: '',
         warehouse_list: '',
+        warehouse_id: '',
         types: '',
+        types_id: '',
         typesValue: [
           {
-            text: 'Help Picker',
-            value: 'help_picker',
+            type_name: 'Help Picker',
+            id: '65536',
           },
           {
-            text: 'Helper',
-            value: 'helper',
+            type_name: 'Help Packer',
+            id: '131072',
           },
         ],
         editedItem: {
@@ -146,22 +166,21 @@
             this.editedItem.code = response.data.data.code
             this.editedItem.email = response.data.data.email
             this.editedItem.phone_no = response.data.data.phone_number
-            this.warehouse_list = response.data.data.warehouse.warehouse_name
             this.editedItem.name = response.data.data.name
-            this.warehouse_list = response.data.data.warehouse.warehouse_name
             this.editedItem.address = response.data.data.address
             this.editedItem.password = response.data.data.password
-            this.types = response.data.data.helper_type.type_name
             this.editedItem.confirm_password = response.data.data.password
             this.update = true
+            this.typeSelected(response.data.data.helper_type)
+            this.warehouseSelected(response.data.data.warehouse)
 
             this.$http.get('/v1/warehouse').then((response) => {
               this.warehouse = []
               let array = response.data.data
               for (let i = 0; i < array.length; i++) {
                 this.warehouse.push({
-                  name: array[i].warehouse_name,
-                  value: array[i].id,
+                  warehouse_name: array[i].warehouse_name,
+                  id: array[i].id,
                 })
               }
             })
@@ -173,33 +192,36 @@
           .put('/v1/user/' + this.$route.params.id, {
             name: this.editedItem.name,
             email: this.editedItem.email,
-            helper_type_id: this.warehouse_list,
+            helper_type_id: this.types_id,
             phone_number: this.editedItem.phone_no,
-            warehouse_id: this.warehouse_list,
+            warehouse_id: this.warehouse_list.id,
             password: this.editedItem.password,
             confirm_password: this.editedItem.confirm_password,
           })
 
           .then((response) => {
             this.$router.push('/helper')
-            this.$toast.success('Data has been update successfully', {
-              position: 'top-right',
-              timeout: 5000,
-              closeOnClick: true,
-              pauseOnFocusLoss: false,
-              pauseOnHover: false,
-              draggable: true,
-              draggablePercent: 0.6,
-              showCloseButtonOnHover: false,
-              hideProgressBar: true,
-              closeButton: 'button',
-              icon: true,
-              rtl: false,
-            })
+            this.$toast.success('Data has been update successfully')
           })
           .catch((error) => {
-            console.log(error)
+            this.$toast.error('Field must be filled')
           })
+      },
+      typeSelected(d) {
+        this.types = ''
+        this.types_id = ''
+        if (d) {
+          this.types = d
+          this.types_id = d.id
+        }
+      },
+      warehouseSelected(d) {
+        this.warehouse_list = ''
+        this.warehouse_id = ''
+        if (d) {
+          this.warehouse_list = d
+          this.warehouse_id = d.id
+        }
       },
     },
   }
@@ -211,6 +233,9 @@
     padding-right: 50px;
   }
   .form-right {
+    padding-right: 90px;
+  }
+  .form-right-1 {
     margin-top: 50px;
     padding-right: 90px;
   }

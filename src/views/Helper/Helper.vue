@@ -5,9 +5,7 @@
       <v-row no-gutters>
         <v-col md="6">
           <div>
-            <v-btn :to="{ path: '/helper/registration-helper' }"
-              >Registration Helper</v-btn
-            >
+            <v-btn :to="{ path: '/helper/create-helper' }">Create Helper</v-btn>
           </div>
         </v-col>
         <v-col md="6" offset="5">
@@ -112,11 +110,12 @@
             <td>{{ props.item.phone_number }}</td>
             <td>{{ props.item.address }}</td>
             <td>{{ props.item.helper_type.type_name }}</td>
+
             <td>{{ props.item.warehouse.warehouse_name }}</td>
 
             <td>
-              <div v-if="props.item.is_active == 0">{{ 'Archive' }}</div>
-              <div v-else>{{ 'Unarchive' }}</div>
+              <div v-if="props.item.is_active == 0">{{ 'Inactive' }}</div>
+              <div v-else>{{ 'Active' }}</div>
             </td>
             <td>
               <v-menu offset-y>
@@ -147,13 +146,13 @@
                   <v-list-item link>
                     <v-list-item-title link>
                       <div
-                        @click="archive(props.item.id)"
+                        @click="unarchive(props.item.id)"
                         v-if="props.item.is_active == 0"
                       >
-                        {{ 'Unarchive' }}
+                        {{ 'Active' }}
                       </div>
-                      <div @click="unarchive(props.item.id)" v-else>
-                        {{ 'Archive' }}
+                      <div @click="archive(props.item.id)" v-else>
+                        {{ 'Inactive' }}
                       </div>
                     </v-list-item-title>
                   </v-list-item>
@@ -239,14 +238,13 @@
 
           {
             text: 'Type',
-            value: 'helper_type.type_name',
+            value: 'type_name',
             class: 'black--text title',
           },
           {
             text: 'Warehouse',
-            value: 'warehouse.warehouse_name',
+            value: 'warehouse_name',
             class: 'black--text title',
-            keys: ['warehouse.warehouse_name'],
           },
           {
             text: 'Status',
@@ -259,7 +257,14 @@
             sortable: false,
           },
         ],
-        dataTable: [],
+        dataTable: {
+          warehouse: {
+            warehouse_name: '',
+          },
+          helper_type: {
+            type_name: '',
+          },
+        },
         total: [],
         id: '',
         warehouse: null,
@@ -267,6 +272,7 @@
         type: '',
         status: null,
         is_active: null,
+        warehouseList: [],
       }
     },
     created() {
@@ -322,7 +328,6 @@
             // let that = this;
 
             this.dataTable = response.data.data
-
             this.total = response.data.total
 
             if (this.dataTable === null) {
@@ -332,7 +337,7 @@
       },
 
       //fungsi untuk unarchive
-      unarchive(id) {
+      archive(id) {
         this.$http
           .put('/v1/user/' + id + '/archive', {
             // Headers: {
@@ -340,7 +345,8 @@
             // },
           })
           .then((response) => {
-            window.location.reload()
+            this.$toast.success('User Not Active')
+            this.renderData()
           })
           .catch((error) => {
             console.log(error)
@@ -348,7 +354,7 @@
       },
 
       //fungsi untuk archive
-      archive(id) {
+      unarchive(id) {
         this.$http
           .put('/v1/user/' + id + '/unarchive', {
             // Headers: {
@@ -356,7 +362,8 @@
             // },
           })
           .then((response) => {
-            window.location.reload()
+            this.$toast.success('User Active')
+            this.renderData()
           })
           .catch((error) => {
             console.log(error)

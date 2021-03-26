@@ -102,7 +102,11 @@
               <v-col
                 cols="5"
                 >
-                <v-btn style=
+                <v-btn
+                depressed
+                :loading="isSelecting"
+                @click="onButtonClick"
+                style=
                 "margin-left:24px;
                  width: 200px;
                  height: 35px;
@@ -114,7 +118,17 @@
                  cursor: pointer;
                  padding: 5px;
                 "
-                >choose file</v-btn></v-col>
+                >
+                
+                choose file</v-btn>
+                <input
+                  ref="uploader"
+                  class="d-none"
+                  type="file"
+                  accept="image/*"
+                  @change="onFileChanged"
+                >
+                </v-col>
               <v-col>
                 <span style="margin-left:121px;"
                 >Or</span></v-col>
@@ -126,6 +140,8 @@
             </v-row>
             <br>
           </v-container>
+
+
 
           <!-- CONTAINER KE-2 -->
           <v-container v-if="this.file>0">
@@ -344,6 +360,11 @@
   export default {
     components: { SelectWarehouse, SelectArea },
     data() {
+
+        
+
+
+
       return {
         dialog: false,
         item: '',
@@ -404,6 +425,25 @@
         localStorage.uom = this.uom
         window.location.reload()
       },
+
+
+      // FUNGSI UPLOAD
+      onButtonClick() {
+        this.isSelecting = true;
+        window.addEventListener(
+        "focus",
+          () => {
+            this.isSelecting = false;
+            },
+          { once: true }
+          );
+
+          this.$refs.uploader.click();
+        },
+      onFileChanged(e) {
+        this.selectedFile = e.target.files[0];
+        }
+  
     },
   }
 </script>

@@ -4,6 +4,7 @@
       v-model="areaSelected"
       label="Area"
       solo
+      outlined
       :items="area"
       item-text="city_name"
       item-value="id"

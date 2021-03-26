@@ -1,10 +1,6 @@
 <template>
   <div class="regist">
     <h1>CREATE PACKING</h1>
-    
-
-
-    <!-- BAGIAN KIRI -->
     <v-row no-gutters>
       <v-col md="6">
         <div class="form-right">
@@ -19,7 +15,6 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                outlined
                 v-model="dateFormatted"
                 label="Delivery Date *"
                 prepend-inner-icon="mdi-calendar"
@@ -49,21 +44,7 @@
               </v-btn>
             </v-date-picker>
           </v-dialog>
-
-          <p>Area <span style="color: red">*</span></p>
-          <SelectFormArea
-            v-model="area" 
-            @selected="areaSelected">
-          </SelectFormArea>
-
-        </div>
-      </v-col>
-
-      <!-- BAGIAN KANAN -->
-      <v-col md="6">
-        <div
-        class="form-right">
-          <p style="margin-top:177px;">Warehouse <span style="color: red">*</span></p>
+          <p>Warehouse <span style="color: red">*</span></p>
           <SelectFormWarehouseArea
             v-model="warehouseList"
             @selected="warehouseSelected"
@@ -71,95 +52,44 @@
             :disabled="warehouseDisabled"
           >
           </SelectFormWarehouseArea>
-         
-          <!-- <p>Total Order <span style="color: red">*</span></p>
-          <v-text-field label="Total Order *" v-model="total_order" solo>
-          </v-text-field> -->
+          <!-- <v-select
+            :items="warehouse"
+            item-text="name"
+            item-value="value"
+            label="Warehouse *"
+            solo
+            v-model="warehouseList"
+          >
+          </v-select> -->
         </div>
       </v-col>
-
-
-      <!-- BAGIAN BAWAH -->
-      <v-col md="12">
-        <p>Note <span style="color: red"></span></p>
-          <v-textarea outlined label="Note" v-model="note" solo> </v-textarea>
+      <v-col md="6">
+        <div class="form-right">
+          <p>Area <span style="color: red">*</span></p>
+          <SelectFormArea v-model="area" @selected="areaSelected">
+          </SelectFormArea>
+          <!-- <v-select
+            label="Area *"
+            :items="area"
+            v-model="areaList"
+            item-value="value"
+            solo
+            item-text="name"
+          >
+          </v-select> -->
+          <p>Note <span style="color: red">*</span></p>
+          <v-textarea label="Note *" v-model="note" solo> </v-textarea>
+          <p>Total Order <span style="color: red">*</span></p>
+          <v-text-field label="Total Order *" v-model="total_order" solo>
+          </v-text-field>
+        </div>
       </v-col>
-
     </v-row>
 
-    <br>
-    <br>
-    <br>
-
-    <!-- BAGIAN TABEL -->
-    <div>
-      <v-data-table
-        loading-text="Please Wait...."
-        :headers="table"
-        :items="dataTable"
-        :page.sync="page"
-        :items-per-page="itemsPerPage"
-        :search="search"
-        @page-count="pageCount = $event"
-        hide-default-footer
-      >
-        <template v-slot:item="props">
-          <tr>
-            <td>{{ props.item.group_name }}</td>
-            <td><pre>{{ props.item.item_uom.item_uom_name }}</pre></td>
-            <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
-            <td>{{ props.item.total_order }}</td>
-            <td>
-              <FormInputPacker v-model="packer" @selected="inputPacker">
-
-              </FormInputPacker>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-
-
-
-      <!-- BAGIAN NUMBER TABEL -->
-      <v-row>
-        <v-col cols="2" style="margin-top: 30px; margin-left: 20px">
-          <v-pagination
-            prev-icon="mdi-chevron-left"
-            next-icon="mdi-chevron-right"
-            color="#4662d4"
-            v-model="page"
-            :length="pageCount"
-          ></v-pagination>
-        </v-col>
-        <v-col cols="2" style="margin-top: 20px; margin-left: 20px;">
-          <div class="text-center pt-2">
-            <v-select
-              :value="items"
-              :items="items"
-              style="border-radius: 10px; width: 150px;"
-              outlined
-              solo
-              hide-no-data
-              hide-selected
-              return-object
-              label="Items per page"
-              type="number"
-              min="-1"
-              max="15"
-              @input="itemsPerPage = parseInt($event, 10)"
-            ></v-select>
-          </div>
-        </v-col>
-        <v-col cols="2" v-model="total">
-          <p style="margin-top: 45px; color: gray">Total {{ total }} Data</p>
-        </v-col>
-      </v-row>
-    </div>
-
-
-
-
-    <!-- BAGIAN FOOTER -->
+    <br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
     <br /><br />
     <br />
     <v-divider></v-divider>
@@ -185,12 +115,8 @@
 <script>
   import SelectFormArea from '../../components/SelectFormArea'
   import SelectFormWarehouseArea from '../../components/SelectFormWarehouseArea'
-  import FormInputPacker from '../../components/TabelCreatePacking/FormInputPacker'
-  
   export default {
-    
-    components: { SelectFormArea, SelectFormWarehouseArea, FormInputPacker },
-    
+    components: { SelectFormArea, SelectFormWarehouseArea },
     data() {
       return {
         warehouse: '',
@@ -199,7 +125,6 @@
         warehouse_id: '',
         area: '',
         areaId: '',
-        packer: '',
         warehouseDisabled: true,
         total_order: '',
         delivery_date: '',
@@ -210,55 +135,11 @@
           .toISOString()
           .substr(0, 10),
         modal: false,
-
-
-        // SKRIP TABEL
-        page: 1,
-        pageCount: 5,
-        itemsPerPage: 10,
-        items: ['5/page', '10/page', '15/page', '20/page'],
-        table: [
-          {
-            text: 'Item',
-            align: 'left',
-            with: '10%',
-            class: ' black--text title',
-          },
-          {
-            text: 'UOM',
-            align: 'left',
-            with: '10%',
-            class: '  black--text title',
-          },
-          {
-            text: 'Total Order',
-            align: 'left',
-            with: '10%',
-            class: '  black--text title',
-          },
-          {
-            text: 'Packer',
-            align: 'left',
-            with: '10%',
-            class: '  black--text title',
-          },
-        ],
-        // dataTable: {
-        //   warehouse: {
-        //     warehouse_name: '',
-        //   },
-        // },
-        total: [],
-
       }
     },
-
-
     created() {
       this.renderData()
-      
     },
-
     computed: {
       computedDateFormatted() {
         return this.formatDate(this.date)
@@ -270,10 +151,6 @@
         this.dateFormatted = this.formatDate(this.date)
       },
     },
-
-
-
-
     methods: {
       formatDate(date) {
         if (!date) return null
@@ -281,15 +158,23 @@
         const [year, month, day] = date.split('-')
         return `${day}/${month}/${year}`
       },
-      
       parseDate(date) {
         if (!date) return null
 
         const [month, day, year] = date.split('/')
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
-
       renderData() {
+        // this.$http.get('/v1/city').then((response) => {
+        //   this.area = []
+        //   let array = response.data.data
+        //   for (let i = 0; i < array.length; i++) {
+        //     this.area.push({
+        //       name: array[i].city_name,
+        //       value: array[i].id,
+        //     })
+        //   }
+        // })
         let areaId = ''
         if (this.area) {
           areaId = 'city_id.e:' + this.area
@@ -298,33 +183,23 @@
         }
 
         this.$http
-          .get('/v1/inventory/group', {
+          .get('/v1/warehouse', {
             params: {
-              embeds: 'item_uom_id',
+              conditions: areaId,
             },
           })
           .then((response) => {
-            let that = this;
-            that.dataTable = response.data.data
-            that.total = response.data.total
-
-            if (that.dataTable === null) {
-              that.dataTable = []
-            }
+            // this.warehouse = []
+            // let array = response.data.data
+            // for (let i = 0; i < array.length; i++) {
+            //   this.warehouse.push({
+            //     name: array[i].warehouse_name,
+            //     value: array[i].id,
+            //   })
+            //   console.log(this.warehouse)
+            // }
           })
-          .catch((error) => {
-            console.log(error)
-          })
-
-        // let warehouseId = ''
-        // if (this.warehouse_id) {
-        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        // } else {
-        //   warehouseId = ''
-        // }
-
       },
-
       save() {
         this.$http
           .post('/v1/packing', {
@@ -348,24 +223,15 @@
         }
         this.renderData()
       },
-      
       warehouseSelected(val) {
         this.warehouse_id = ''
         if (val) {
           this.warehouse_id = val.value
         }
       },
-      inputPacker(val) {
-        this.packer = ''
-        if(val) {
-          this.packer = val.id
-        }
-      }
     },
   }
 </script>
-
-
 
 <style scoped>
   .regist {
