@@ -4,6 +4,7 @@
       v-model="warehouse"
       label="Warehouse"
       solo
+      outlined
       :items="items"
       item-text="name"
       item-value="value"

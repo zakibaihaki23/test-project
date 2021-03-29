@@ -171,59 +171,27 @@
       <v-data-table
         :headers="headers"
         :items="data"
-        hide-default-footer
         :search="search"
         :page.sync="page"
-        :items-per-page="itemsPerPage"
+        :items-per-page="20"
         @page-count="pageCount = $event"
       >
         <template v-slot:item="props">
           <tr>
             <td>
-              {{ props.item.item }}
+              {{ props.item.item.item_name }}
               <br />
-              <span style="color: grey">{{ props.item.uom }}</span>
+              <span style="color: grey">{{
+                props.item.item.item_uom.item_uom_name
+              }}</span>
             </td>
             <td>{{ props.item.total_order }}</td>
-            <td>{{ props.item.total_pack_pack }}</td>
-            <td>{{ props.item.total_pack_kg }}</td>
-            <td>{{ props.item.packer }}</td>
+            <td>{{ props.item.total_packing }}</td>
+            <td>{{ props.item.weight }}</td>
+            <td>{{ props.item.helper.code }} - {{ props.item.helper.name }}</td>
           </tr>
         </template>
       </v-data-table>
-      <v-row>
-        <v-col md="2" style="margin-top: 30px; margin-left: 20px">
-          <v-pagination
-            prev-icon="mdi-chevron-left"
-            next-icon="mdi-chevron-right"
-            color="#4662d4"
-            v-model="page"
-            :length="pageCount"
-          ></v-pagination>
-        </v-col>
-        <v-col cols="2" style="margin-top: 20px; margin-left: 20px;">
-          <div class="text-center pt-2">
-            <v-select
-              :value="items"
-              :items="items"
-              style="border-radius: 10px; width: 150px;"
-              outlined
-              solo
-              hide-no-data
-              hide-selected
-              return-object
-              label="Items per page"
-              type="number"
-              min="-1"
-              max="15"
-              @input="itemsPerPage = parseInt($event, 10)"
-            ></v-select>
-          </div>
-        </v-col>
-        <v-col cols="1" v-model="total">
-          <p style="margin-top: 45px; color: gray">Total {{ total }} Data</p>
-        </v-col>
-      </v-row>
     </div>
 
     <br />
@@ -256,22 +224,13 @@
         dialog: false,
         item: '',
         uom: '',
-        page: 1,
-        pageCount: 5,
-        itemsPerPage: 20,
-        items: ['5/page', '10/page', '15/page', '20/page'],
         search: '',
         file: 0,
         packing_code: '',
         headers: [
-          // {
-          //   text: 'No.',
-          //   value: 'no',
-          //   sortable: false,
-          // },
           {
             text: 'Item',
-            value: 'item',
+            value: 'item_name',
             sortable: false,
           },
           {
@@ -281,12 +240,12 @@
           },
           {
             text: 'Total Packing (Pack)',
-            value: 'total_pack_pack',
+            value: 'total_packing',
             sortable: false,
           },
           {
             text: 'Total Packing (KG)',
-            value: 'total_pack_kg',
+            value: 'weight',
             sortable: false,
           },
           {
@@ -295,53 +254,7 @@
             sortable: false,
           },
         ],
-        data: [
-          {
-            no: '1',
-            item: 'Buncis',
-            uom: 'KG',
-            total_order: '74',
-            total_pack_pack: '90',
-            total_pack_kg: '90',
-            packer: 'HC0001 - Akmal Fauzan',
-          },
-          {
-            no: '2',
-            item: 'Baby Buncis',
-            uom: 'KG',
-            total_order: '74',
-            total_pack_pack: '90',
-            total_pack_kg: '190',
-            packer: 'HC0001 - Jessa',
-          },
-          {
-            no: '3',
-            item: 'Jagung Manis',
-            uom: 'KG',
-            total_order: '74',
-            total_pack_pack: '90',
-            total_pack_kg: '90',
-            packer: 'HC0001 - Akmal Fauzan',
-          },
-          {
-            no: '4',
-            item: 'Kacang Panjang',
-            uom: 'KG',
-            total_order: '74',
-            total_pack_pack: '90',
-            total_pack_kg: '90',
-            packer: 'HC0001 - Akmal Fauzan',
-          },
-          {
-            no: '5',
-            item: 'Labu Siam Acar',
-            uom: 'KG',
-            total_order: '74',
-            total_pack_pack: '90',
-            total_pack_kg: '90',
-            packer: 'HC0001 - Akmal Fauzan',
-          },
-        ],
+        data: [],
       }
     },
     created() {
@@ -350,13 +263,11 @@
     methods: {
       renderData() {
         this.$http
-          .get('/v1/packing/' + this.$route.params.id, {
-            params: {
-              conditions: 'id.e',
-            },
-          })
+          .get('/v1/packing/' + this.$route.params.id)
+
           .then((response) => {
             this.packing_code = response.data.data.document_code
+            this.data = response.data.data.packing_items
           })
       },
       save() {

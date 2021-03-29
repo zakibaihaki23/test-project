@@ -8,7 +8,7 @@
             v-model="dialog"
             persistent
             max-width="491px"
-            style="border-radius: 20px"
+            style="border-radius: 1000px"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn v-bind="attrs" v-on="on">Create Item</v-btn>
@@ -89,31 +89,21 @@
     <br />
     <br />
     <br />
-    <br />
-    <br />
-    <br />
-    <br />
+
     <div>
       <v-data-table
+        loading-text="Please Wait...."
         :headers="headers"
-        :items="data"
-        hide-default-footer
-        hide-default-header
+        :items="dataTable"
+        :page.sync="page"
+        :items-per-page="20"
+        :search="search"
+        @page-count="pageCount = $event"
       >
-        <template v-slot:header="{ props: { headers } }">
-          <thead>
-            <tr>
-              <th v-for="h in headers" :class="h.class" :key="h.value">
-                <span>{{ h.text }}</span>
-              </th>
-            </tr>
-          </thead>
-        </template>
         <template v-slot:item="props">
           <tr>
-            <td>{{ props.item.no }}</td>
-            <td>{{ props.item.item }}</td>
-            <td>{{ props.item.uom }}</td>
+            <td>{{ props.item.group_name }}</td>
+            <td>{{ props.item.item_uom.item_uom_name }}</td>
             <td>
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
@@ -158,59 +148,59 @@
     components: { SelectWarehouse, SelectArea },
     data() {
       return {
+        page: 1,
         dialog: false,
+        search: '',
         item: '',
         uom: '',
         headers: [
-          {
-            text: 'No.',
-            value: 'no',
-            sortable: false,
-          },
+          // {
+          //   text: 'No.',
+          //   value: 'no',
+          //   sortable: false,
+          // },
           {
             text: 'Item',
-            value: 'item',
+            value: 'group_name',
           },
           {
             text: 'UOM',
-            value: 'uom',
-            sortable: false,
+            value: 'item_uom.item_uom_name',
           },
           {
             value: 'actions',
             sortable: false,
           },
         ],
-        data: [
-          {
-            no: '1',
-            item: 'Buncis',
-            uom: 'KG',
-          },
-          {
-            no: '2',
-            item: 'Baby Buncis',
-            uom: 'KG',
-          },
-          {
-            no: '3',
-            item: 'Jagung Manis',
-            uom: 'KG',
-          },
-          {
-            no: '4',
-            item: 'Kacang Panjang',
-            uom: 'KG',
-          },
-          {
-            no: '5',
-            item: 'Labu Isam Acar',
-            uom: 'KG',
-          },
-        ],
+        dataTable: [],
+        total: [],
       }
     },
+    created() {
+      this.renderData()
+    },
     methods: {
+      initialize() {
+        this.dataTable = [this.dataTable]
+        this.total = [this.total]
+      },
+      renderData() {
+        this.$http
+          .get('/v1/inventory/group', {
+            params: {
+              embeds: 'item_uom_id',
+              page: '1',
+            },
+          })
+          .then((response) => {
+            this.dataTable = response.data.data
+            this.total = response.data.total
+
+            if (this.dataTable === null) {
+              this.dataTable = []
+            }
+          })
+      },
       save() {
         localStorage.item = this.item
         localStorage.uom = this.uom

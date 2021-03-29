@@ -98,10 +98,9 @@
         :headers="table"
         :items="dataTable"
         :page.sync="page"
-        :items-per-page="itemsPerPage"
+        :items-per-page="20"
         :search="search"
         @page-count="pageCount = $event"
-        hide-default-footer
       >
         <template v-slot:item="props">
           <tr>
@@ -162,39 +161,6 @@
           </tr>
         </template>
       </v-data-table>
-      <v-row>
-        <v-col cols="2" style="margin-top: 30px; margin-left: 20px">
-          <v-pagination
-            prev-icon="mdi-chevron-left"
-            next-icon="mdi-chevron-right"
-            color="#4662d4"
-            v-model="page"
-            :length="pageCount"
-          ></v-pagination>
-        </v-col>
-        <v-col cols="2" style="margin-top: 20px; margin-left: 20px;">
-          <div class="text-center pt-2">
-            <v-select
-              :value="items"
-              :items="items"
-              style="border-radius: 10px; width: 150px;"
-              outlined
-              solo
-              hide-no-data
-              hide-selected
-              return-object
-              label="Items per page"
-              type="number"
-              min="-1"
-              max="15"
-              @input="itemsPerPage = parseInt($event, 10)"
-            ></v-select>
-          </div>
-        </v-col>
-        <v-col cols="2" v-model="total">
-          <p style="margin-top: 45px; color: gray">Total {{ total }} Data</p>
-        </v-col>
-      </v-row>
     </div>
   </div>
 </template>
@@ -208,9 +174,6 @@
     data() {
       return {
         page: 1,
-        pageCount: 5,
-        itemsPerPage: 20,
-        items: ['5/page', '10/page', '15/page', '20/page'],
         search: '',
         table: [
           {

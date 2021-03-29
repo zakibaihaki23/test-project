@@ -50,13 +50,13 @@
         ></v-autocomplete> -->
     <!-- </v-col> -->
     <!-- </v-row> -->
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <div>
       <v-data-table
         :headers="headers"
