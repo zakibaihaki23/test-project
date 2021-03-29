@@ -101,6 +101,7 @@
         :items-per-page="20"
         :search="search"
         @page-count="pageCount = $event"
+        :loading="isLoading"
       >
         <template v-slot:item="props">
           <tr>
@@ -175,6 +176,7 @@
       return {
         page: 1,
         search: '',
+        isLoading: true,
         table: [
           {
             text: 'Helper ID',
@@ -292,6 +294,7 @@
 
             this.dataTable = response.data.data
             this.total = response.data.total
+            this.isLoading = false
 
             if (this.dataTable === null) {
               this.dataTable = []

@@ -94,6 +94,7 @@
         :items-per-page="20"
         :search="search"
         @page-count="pageCount = $event"
+        :loading="isLoading"
       >
         <template v-slot:item="props">
           <tr>
@@ -110,19 +111,9 @@
                 </template>
                 <v-list>
                   <template class="menu">
-                    <v-list-item
-                      :to="{
-                        path: `/helper/update-helper/${props.item.id}`,
-                      }"
-                      link
-                      style="width: 150px; "
-                    >
+                    <v-list-item link style="width: 150px; ">
                       <div>
-                        <v-list-item-title
-                          :to="{ path: '/helper/update-helper' }"
-                          link
-                          >Delete</v-list-item-title
-                        >
+                        <v-list-item-title link>Delete</v-list-item-title>
                       </div>
                     </v-list-item>
                   </template>
@@ -148,6 +139,7 @@
         search: '',
         item: '',
         uom: '',
+        isLoading: true,
         headers: [
           // {
           //   text: 'No.',
@@ -190,6 +182,7 @@
           .then((response) => {
             this.dataTable = response.data.data
             this.total = response.data.total
+            this.isLoading = false
 
             if (this.dataTable === null) {
               this.dataTable = []

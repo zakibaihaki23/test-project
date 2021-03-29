@@ -9,9 +9,9 @@ Vue.use(VueRouter)
 const routes = [
   // {
   //   name: 'Dashboard',
-  //   component: MainLayout,
+  //   component: EmptyLayout,
   //   icon: 'mdi-view-dashboard',
-  //   path: '/dashboard',
+  //   path: '/',
   //   open: true,
   //   beforeEnter: (to, from, next) => {
   //     if (!store.getters['auth/authenticated']) {
@@ -21,13 +21,6 @@ const routes = [
   //     }
   //     next()
   //   },
-  //   children: [
-  //     {
-  //       name: 'Home',
-  //       component: () => import('../views/Dashboard/Dashboard'),
-  //       path: '',
-  //     },
-  //   ],
   // },
   {
     name: 'Helper',
@@ -139,7 +132,7 @@ const routes = [
       },
       {
         name: 'Logout',
-        component: () => import('../views/Auth/Login'),
+
         path: 'logout',
       },
     ],
@@ -225,7 +218,15 @@ const routes = [
   },
   // {
   //   path: '*',
-  //   component: NotFound,
+  //   // component: NotFound,
+  //   beforeEnter: (to, from, next) => {
+  //     if (!store.getters['auth/authenticated']) {
+  //       return next({
+  //         name: 'Login',
+  //       })
+  //     }
+  //     next()
+  //   },
   // },
 ]
 

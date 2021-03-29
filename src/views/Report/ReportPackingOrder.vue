@@ -92,9 +92,12 @@
     </v-row>
     <v-img
       src="@/assets/download.png"
-      style="width: 500px; height: 500px; left: 440px; bottom: 50px"
+      style="width: 450px; height: 450px; left: 440px; "
     >
     </v-img>
+    <h1 style="margin-left: 478px;">
+      Please download to view data
+    </h1>
   </div>
 </template>
 

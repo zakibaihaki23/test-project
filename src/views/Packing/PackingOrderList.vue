@@ -100,6 +100,7 @@
         :items-per-page="20"
         :search="search"
         @page-count="pageCount = $event"
+        :loading="isLoading"
       >
         <template v-slot:item="props">
           <tr>
@@ -135,13 +136,7 @@
                     <v-divider
                       style="margin-left: 10px;margin-right: 10px"
                     ></v-divider>
-                    <v-list-item
-                      :to="{
-                        path: `/helper/update-helper/${props.item.id}`,
-                      }"
-                      link
-                      style="width: 150px; "
-                    >
+                    <v-list-item link style="width: 150px; ">
                       <div>
                         <v-list-item-title>Update</v-list-item-title>
                       </div>
@@ -196,6 +191,7 @@
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
+        isLoading: true,
         area: '',
         search: '',
         table: [
@@ -314,6 +310,7 @@
 
             this.dataTable = response.data.data
             this.total = response.data.total
+            this.isLoading = false
 
             if (this.dataTable === null) {
               this.dataTable = []
