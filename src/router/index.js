@@ -94,10 +94,6 @@ const routes = [
         path: '/packing-order/create',
       },
       {
-        name: 'Input Packing',
-        component: () => import('../views/Packing/InputPacking'),
-        path: '/packing/input-packing/',
-
         name: 'Packing Order Detail',
         component: () => import('../views/Packing/Detail'),
         path: '/packing-order/:id',

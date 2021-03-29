@@ -131,7 +131,14 @@
       search: {
         handler: function(val) {
           let that = this
-          that.renderData(val)
+          that.renderData(val, this.warehouse)
+        },
+        deep: true,
+      },
+      warehouse: {
+        handler: function(val) {
+          let that = this
+          that.renderData(this.search, val)
         },
         deep: true,
       },
