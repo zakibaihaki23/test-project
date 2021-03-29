@@ -6,6 +6,7 @@ import store from './store'
 import http from './axios'
 import Toast from 'vue-toastification'
 import moment from 'moment'
+import './assets/main.css'
 
 Vue.config.silent = true
 Vue.prototype.moment = moment

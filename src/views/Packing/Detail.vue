@@ -11,10 +11,21 @@
     </v-row>
     <v-container>
       <v-row no-gutters style="margin-top: 15px; padding-bottom: 40px">
+        <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col md="6">
           <div>
-            <v-btn :to="{ path: '/packing/create-packing' }">Download</v-btn>
+            <v-btn>
+              <download-excel
+                class="btn btn-default"
+                :data="json_data"
+                :fields="json_fields"
+                name="Packing Order.xls"
+              >
+                Download
+              </download-excel>
+            </v-btn>
           </div>
+
           <!-- V-DIALOG BUAT TOMBOL UPLOAD MASUK KE DIALOG -->
           <v-dialog v-model="dialog" persistent max-width="430px">
             <template v-slot:activator="{ on, attrs }">
@@ -25,7 +36,7 @@
               </div>
             </template>
 
-            <v-card style="border-radius:25px;width: 430px; height: 500px">
+            <v-card style="border-radius:20px;width: 430px; height: 500px">
               <v-card-title>
                 <br />
                 <br />
@@ -55,11 +66,11 @@
                     <div style=" padding-left:15%;">
                       <div
                         style="
-                width: 280px;
-                height: 270px;
-                background-color:#E8E8E8;
-                border-radius:20px;
-                "
+                        width: 280px;
+                        height: 270px;
+                        background-color:#E8E8E8;
+                        border-radius:20px;
+                        "
                       >
                         <br />
                         <v-col>
@@ -68,11 +79,30 @@
                           >
                         </v-col>
 
+                        <!-- TOMBOL PILIH FILE UNTUK UPLOAD -->
                         <v-col cols="5">
-                          <v-btn style="margin-left:24px; top: 140px"
-                            >choose file</v-btn
-                          ></v-col
-                        >
+                          <v-btn
+                            style="margin-left:23px; margin-top:-7px;"
+                            color="primary"
+                            class="text-none"
+                            round
+                            depressed
+                            :loading="isSelecting"
+                            @click="onButtonClick"
+                          >
+                            <v-icon left>
+                              mdi-cloud-upload
+                            </v-icon>
+                            {{ buttonText }}
+                          </v-btn>
+                          <input
+                            ref="uploader"
+                            class="d-none"
+                            type="file"
+                            accept="image/*"
+                            @change="onFileChanged"
+                          />
+                        </v-col>
                         <v-col style="padding-top: 60px">
                           <span style="margin-left:121px;">Or</span></v-col
                         >
@@ -122,16 +152,16 @@
                   <br />
                 </v-container> -->
                 <v-btn
-                  style="margin-left:35px;
-             width: 320px;
-             height: 35px;
-             background: #4662d4;
-             color: white;
-             border-radius: 30px;
-             box-sizing: content-box;
-             text-transform: capitalize;
-             cursor: pointer;
-             padding: 5px;"
+                  style="margin-left:32px; margin-top:10px;
+                    width: 320px;
+                    height: 35px;
+                    background: #4662d4;
+                    color: white;
+                    border-radius: 30px;
+                    box-sizing: content-box;
+                    text-transform: capitalize;
+                    cursor: pointer;
+                    padding: 5px;"
                   color="white"
                   text
                   @click="dialog = false"
@@ -215,18 +245,27 @@
 </template>
 
 <script>
+  import Vue from 'vue'
+  import JsonExcel from 'vue-json-excel'
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
+
+  Vue.component('downloadExcel', JsonExcel)
+
   export default {
     components: { SelectWarehouse, SelectArea },
     data() {
       return {
+        defaultButtonText: 'Upload',
+        selectedFile: null,
+        isSelecting: false,
         dialog: false,
         item: '',
         uom: '',
         search: '',
         file: 0,
         packing_code: '',
+
         headers: [
           {
             text: 'Item',
@@ -255,11 +294,64 @@
           },
         ],
         data: [],
+
+        // DOWNLOAD EXEL
+        json_fields: {
+          'Complete name': 'name',
+          City: 'city',
+          Telephone: 'phone.mobile',
+          'Telephone 2': {
+            field: 'phone.landline',
+            callback: (value) => {
+              return `Landline Phone - ${value}`
+            },
+          },
+        },
+        json_data: [
+          {
+            name: 'Tony Peña',
+            city: 'New York',
+            country: 'United States',
+            birthdate: '1978-03-15',
+            phone: {
+              mobile: '1-541-754-3010',
+              landline: '(541) 754-3010',
+            },
+          },
+          {
+            name: 'Thessaloniki',
+            city: 'Athens',
+            country: 'Greece',
+            birthdate: '1987-11-23',
+            phone: {
+              mobile: '+1 855 275 5071',
+              landline: '(2741) 2621-244',
+            },
+          },
+        ],
+        json_meta: [
+          [
+            {
+              key: 'charset',
+              value: 'utf-8',
+            },
+          ],
+        ],
       }
     },
+
+    computed: {
+      buttonText() {
+        return this.selectedFile
+          ? this.selectedFile.name
+          : this.defaultButtonText
+      },
+    },
+
     created() {
       this.renderData()
     },
+
     methods: {
       renderData() {
         this.$http
@@ -270,10 +362,26 @@
             this.data = response.data.data.packing_items
           })
       },
-      save() {
-        localStorage.item = this.item
-        localStorage.uom = this.uom
-        window.location.reload()
+
+      onButtonClick() {
+        this.isSelecting = true
+        window.addEventListener(
+          'focus',
+          () => {
+            this.isSelecting = false
+          },
+          { once: true }
+        )
+
+        this.$refs.uploader.click()
+      },
+
+      onFileChanged(e) {
+        this.selectedFile = e.target.files[0]
+
+        console.log(this.selectedFile)
+
+        // do something
       },
     },
   }

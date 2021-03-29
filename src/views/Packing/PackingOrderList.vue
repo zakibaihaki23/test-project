@@ -162,12 +162,12 @@
                     <v-list-item-title>
                       <div
                         @click="archive(props.item.id)"
-                        v-if="props.item.is_active == 0"
+                        v-if="props.item.status == 1"
                       >
-                        {{ 'Active' }}
+                        {{ 'Finish' }}
                       </div>
                       <div @click="unarchive(props.item.id)" v-else>
-                        {{ 'Inactive' }}
+                        {{ 'Unfinished' }}
                       </div>
                     </v-list-item-title>
                   </v-list-item>

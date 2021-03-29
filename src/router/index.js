@@ -101,6 +101,10 @@ const routes = [
         path: '/packing-order/create',
       },
       {
+        name: 'Input Packing',
+        component: () => import('../views/Packing/InputPacking'),
+        path: '/packing/input-packing/',
+
         name: 'Packing Order Detail',
         component: () => import('../views/Packing/Detail'),
         path: '/packing-order/:id',
@@ -117,7 +121,7 @@ const routes = [
     component: EmptyLayout,
     icon: 'mdi-clipboard-account-outline',
     subtitle: 'Pages',
-    path: '/',
+    path: '/auth',
     open: false,
     beforeEnter: (to, from, next) => {
       if (store.getters['auth/authenticated']) {

@@ -4,12 +4,7 @@
     <v-container>
       <v-row no-gutters>
         <v-col md="6">
-          <v-dialog
-            v-model="dialog"
-            persistent
-            max-width="491px"
-            style="border-radius: 1000px"
-          >
+          <v-dialog v-model="dialog" persistent max-width="491px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn v-bind="attrs" v-on="on">Create Item</v-btn>
             </template>
@@ -261,8 +256,5 @@
   .v-application .blue--text.text--darken-1 {
     color: #1e88e5 !important;
     caret-color: #1e88e5 !important;
-  }
-  .v-dialog {
-    border-radius: 20px;
   }
 </style>

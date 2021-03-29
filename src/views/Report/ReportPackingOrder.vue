@@ -90,8 +90,11 @@
         </v-menu>
       </v-col>
     </v-row>
-    <br />
-    <div></div>
+    <v-img
+      src="@/assets/download.png"
+      style="width: 500px; height: 500px; left: 440px; bottom: 50px"
+    >
+    </v-img>
   </div>
 </template>
 
@@ -114,6 +117,7 @@
         area: '',
         search: '',
         downloadFile: [],
+        group_id: '',
       }
     },
 
@@ -211,7 +215,7 @@
             params: {
               export: '1',
               date: '2020-01-10',
-              conditions: 'warehouse_id.e:131072|group_id.e:131072',
+              conditions: warehouseId + '|group_id.e:131072',
             },
           })
           .then((response) => {})
