@@ -1,61 +1,57 @@
 <template>
-    <v-autocomplete
-                v-model="values"
-                :items="packer"
-                outlined
-                dense
-                height="50px"
-                chips
-                small-chips
-                multiple
-                item-text="name"
-                item-value="id"
-                @change="selected"
-                clearable
-                style="
+  <v-autocomplete
+    v-model="values"
+    :items="packer"
+    outlined
+    dense
+    height="50px"
+    chips
+    small-chips
+    multiple
+    item-text="name"
+    item-value="id"
+    @change="selected"
+    clearable
+    style="
                 margin-top:25px;
                 border-radius:10px;
                 "
-              > 
-
-              <template slot="item" slot-scope="data">
-                  {{data.item.code}} - {{data.item.name}}
-              </template>
-              <template v-slot:label> Packer <span style="color:red;">*</span></template>  
-              </v-autocomplete>
+  >
+    <template slot="item" slot-scope="data">
+      {{ data.item.code }} - {{ data.item.name }}
+    </template>
+    <template v-slot:label> Packer <span style="color:red;">*</span></template>
+  </v-autocomplete>
 </template>
 
 <script>
   export default {
-
     data() {
-       return {
+      return {
         packer: [],
-       }
+      }
     },
 
-     created() {
+    created() {
       this.renderData()
-    //   this.initialize(0)
+      //   this.initialize(0)
     },
-watch: {
-    clear: {
+    watch: {
+      clear: {
         handler: function(val) {
-            this.renderData('')
+          this.renderData('')
         },
-        deep: true
-    }
-},
+        deep: true,
+      },
+    },
     methods: {
-        // initialize(){
-        //     that.packer=[that.packer]
-        // },
-        renderData() {
-
+      // initialize(){
+      //     that.packer=[that.packer]
+      // },
+      renderData() {
         this.$http
-          .get('/v1/user')
+          .get('/user')
           .then((response) => {
-      
             this.packer = response.data.data
             console.log(this.packer)
 
@@ -68,8 +64,8 @@ watch: {
           })
       },
       selected(event) {
-          this.$emit('selected', event)
-      }
-    }
+        this.$emit('selected', event)
+      },
+    },
   }
 </script>

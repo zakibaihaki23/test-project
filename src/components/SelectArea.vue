@@ -48,7 +48,7 @@
     },
     methods: {
       renderData() {
-        this.$http.get('/v1/city').then((response) => {
+        this.$http.get('/city').then((response) => {
           this.area = response.data.data
 
           this.area = []

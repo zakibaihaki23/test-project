@@ -137,7 +137,7 @@
     methods: {
       //untuk mendapatkan list warehouse dari API
       renderData() {
-        this.$http.get('/v1/warehouse').then((response) => {
+        this.$http.get('/warehouse').then((response) => {
           this.warehouse = []
           let array = response.data.data
           for (let i = 0; i < array.length; i++) {
@@ -148,7 +148,7 @@
           }
         })
         //untuk mendapatkan list type Helper dari API
-        this.$http.get('/v1/helper/helpertype').then((response) => {
+        this.$http.get('/helper/helpertype').then((response) => {
           this.types = []
           let array = response.data.data
           for (let i = 0; i < array.length; i++) {
@@ -162,7 +162,7 @@
       //untuk menyimpan data registrasi ke dalam API
       save() {
         this.$http
-          .post('/v1/user', {
+          .post('/user', {
             warehouse_id: this.warehouseList,
             helper_type_id: this.type,
             name: this.defaultItem.name,

@@ -250,7 +250,7 @@
       renderData() {
         const token = localStorage.getItem('token')
         axios
-          .get('v1/helper', {
+          .get('/helper', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -303,7 +303,7 @@
         const token = localStorage.getItem('token')
 
         axios
-          .post('v1/helper', {
+          .post('/helper', {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json; charset=UTF-8',

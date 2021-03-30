@@ -99,7 +99,7 @@
                             ref="uploader"
                             class="d-none"
                             type="file"
-                            accept="image/*"
+                            accept=".xls, .xlsx"
                             @change="onFileChanged"
                           />
                         </v-col>
@@ -256,7 +256,7 @@
     components: { SelectWarehouse, SelectArea },
     data() {
       return {
-        defaultButtonText: 'Upload',
+        defaultButtonText: 'Choose File',
         selectedFile: null,
         isSelecting: false,
         dialog: false,
@@ -355,7 +355,7 @@
     methods: {
       renderData() {
         this.$http
-          .get('/v1/packing/' + this.$route.params.id)
+          .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
             this.packing_code = response.data.data.document_code
