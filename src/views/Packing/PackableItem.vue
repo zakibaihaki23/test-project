@@ -37,13 +37,13 @@
                   <v-row style="margin-top: 1px">
                     <v-col cols="12">
                       <p>Item <span style="color: red">*</span></p>
-                      <v-text-field
+                      <v-autocomplete
                         outlined
                         solo
                         style="border-radius: 10px"
                         v-model="item"
                         required
-                      ></v-text-field>
+                      ></v-autocomplete>
                     </v-col>
                     <v-col cols="12">
                       <p style="color: gray">UOM</p>

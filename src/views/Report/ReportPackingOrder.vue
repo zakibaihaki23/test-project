@@ -72,6 +72,7 @@
                 @click:clear=";(date = ''), renderData(search)"
                 :value="format_delivery_date"
                 solo
+                :disabled="dateDisabled"
               >
                 <template v-slot:label>
                   Delivery Date
@@ -113,6 +114,7 @@
         warehouse_id: null,
         warehouseDisabled: true,
         downloadDisabled: true,
+        dateDisabled: true,
         areaId: null,
         area: '',
         search: '',
@@ -192,21 +194,21 @@
           groupId = ''
         }
 
-        this.$http
-          .get('/report/group-log', {
-            params: {
-              export: '1',
-              date,
-              conditions: warehouseId + groupId,
-            },
-          })
-          .then((response) => {
-            this.downloadFile = response.data.file
+        // this.$http
+        //   .get('/report/group-log', {
+        //     params: {
+        //       export: '1',
+        //       date,
+        //       conditions: warehouseId + groupId,
+        //     },
+        //   })
+        //   .then((response) => {
+        //     this.downloadFile = response.data.file
 
-            if (this.downloadFile === null) {
-              this.downloadFile = []
-            }
-          })
+        //     if (this.downloadFile === null) {
+        //       this.downloadFile = []
+        //     }
+        //   })
       },
       areaSelected(area) {
         this.area = ''
@@ -224,18 +226,17 @@
         }
         this.renderData('')
       },
-      warehouseSelected(val) {
+      warehouseSelected(warehouse) {
         this.warehouse = ''
         this.warehouse_id = ''
-        if (val) {
-          this.warehouse = val.name
-          this.warehouse_id = val.value
+        if (warehouse) {
+          this.warehouse = warehouse.name
+          this.warehouse_id = warehouse.value
           this.downloadDisabled = false
         }
-        if (val == null) {
+        if (warehouse == null) {
           this.downloadDisabled = true
         }
-        this.renderData()
       },
     },
   }
