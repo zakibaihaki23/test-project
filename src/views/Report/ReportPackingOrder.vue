@@ -72,7 +72,6 @@
                 @click:clear=";(date = ''), renderData(search)"
                 :value="format_delivery_date"
                 solo
-                :disabled="dateDisabled"
               >
                 <template v-slot:label>
                   Delivery Date
@@ -136,7 +135,7 @@
       // },
       warehouse: {
         handler: function(val) {
-          this.renderData('')
+          this.renderData('', val)
         },
         deep: true,
       },
@@ -153,7 +152,7 @@
       initialize() {
         this.dataTable = [this.dataTable]
       },
-      renderData(search) {
+      renderData() {
         let areaId = ''
         if (this.area) {
           areaId = 'city_id.e:' + this.area
@@ -161,16 +160,16 @@
           areaId = ''
         }
 
-        let date = ''
-        if (this.date) {
-          if (this.warehouse_id) {
-            date = this.date
-          } else {
-            date = +this.date
-          }
-        } else {
-          date = ''
-        }
+        // let date = ''
+        // if (this.date) {
+        //   if (this.warehouse_id) {
+        //     date = this.date
+        //   } else {
+        //     date = +this.date
+        //   }
+        // } else {
+        //   date = ''
+        // }
 
         this.$http
           .get('/warehouse', {
@@ -180,19 +179,19 @@
           })
           .then((response) => {})
 
-        let warehouseId = ''
-        if (this.warehouse_id) {
-          warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        } else {
-          warehouseId = ''
-        }
+        // let warehouseId = ''
+        // if (this.warehouse_id) {
+        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
+        // } else {
+        //   warehouseId = ''
+        // }
 
-        let groupId = ''
-        if (this.warehouse_id) {
-          groupId = '|group_id.e:' + this.warehouse_id
-        } else {
-          groupId = ''
-        }
+        // let groupId = ''
+        // if (this.warehouse_id) {
+        //   groupId = '|group_id.e:' + this.warehouse_id
+        // } else {
+        //   groupId = ''
+        // }
 
         // this.$http
         //   .get('/report/group-log', {
@@ -211,20 +210,22 @@
         //   })
       },
       areaSelected(area) {
-        this.area = ''
-        this.areaId = ''
-        if (area !== null) {
-          this.area = area.value
-          this.warehouseDisabled = false
-        }
-        this.renderData()
-        if (area == null) {
-          this.warehouse = ''
-          this.warehouse_id = ''
-          this.warehouse = this.warehouseDisabled = true
-          this.downloadDisabled = true
-        }
-        this.renderData('')
+        console.log(this.area)
+        this.areaId = null
+        // this.area = ''
+        // this.areaId = ''
+        // if (area !== null) {
+        //   this.area = area.value
+        //   this.warehouseDisabled = false
+        // }
+        // this.renderData('')
+        // if (area == null) {
+        //   this.warehouse = ''
+        //   this.warehouse_id = ''
+        //   this.warehouse = this.warehouseDisabled = true
+        //   this.downloadDisabled = true
+        // }
+        // this.renderData('')
       },
       warehouseSelected(warehouse) {
         this.warehouse = ''

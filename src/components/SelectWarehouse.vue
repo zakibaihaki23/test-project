@@ -16,7 +16,6 @@
       @change="selected"
       clearable
       :disabled="disabled"
-      :auto-select-first="true"
     >
     </v-autocomplete>
   </div>
