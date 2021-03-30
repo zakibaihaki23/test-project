@@ -5,10 +5,7 @@
       <v-row no-gutters>
         <v-col md="6">
           <div>
-            <v-btn
-              v-model="download"
-              :disabled="downloadDisabled"
-              @click.prevent="downloadItem(item)"
+            <v-btn v-model="download" :disabled="downloadDisabled"
               >Download</v-btn
             >
           </div>
@@ -72,7 +69,7 @@
                 readonly
                 outlined
                 clearable
-                @click:clear=";(delivery_date = ''), renderData(search)"
+                @click:clear=";(date = ''), renderData(search)"
                 :value="format_delivery_date"
                 solo
               >
@@ -84,7 +81,7 @@
           </template>
           <v-date-picker
             no-title
-            v-model="delivery_date"
+            v-model="date"
             @input=";(delivery_date_model = false), renderData(search)"
           ></v-date-picker>
         </v-menu>
@@ -110,9 +107,9 @@
       return {
         page: 1,
         warehouseList: '',
-        warehouse: '',
+        warehouse: null,
         delivery_date_model: '',
-        delivery_date: '',
+        date: '',
         warehouse_id: null,
         warehouseDisabled: true,
         downloadDisabled: true,
@@ -137,16 +134,14 @@
       // },
       warehouse: {
         handler: function(val) {
-          let that = this
-          that.renderData(this.warehouse)
+          this.renderData('')
         },
         deep: true,
       },
     },
     computed: {
       format_delivery_date() {
-        if (this.delivery_date)
-          return this.$moment(this.delivery_date).format('DD/MM/YYYY')
+        if (this.date) return this.$moment(this.date).format('DD/MM/YYYY')
       },
     },
     methods: {
@@ -164,31 +159,54 @@
           areaId = ''
         }
 
-        let delivery_date = ''
-        if (this.delivery_date) {
+        let date = ''
+        if (this.date) {
           if (this.warehouse_id) {
-            delivery_date = '|delivery_date:' + this.delivery_date
+            date = this.date
           } else {
-            delivery_date = 'delivery_date:' + this.delivery_date
+            date = +this.date
           }
         } else {
-          delivery_date = ''
+          date = ''
         }
 
         this.$http
-          .get('/v1/warehouse', {
+          .get('/warehouse', {
             params: {
               conditions: areaId,
             },
           })
           .then((response) => {})
 
-        // let warehouseId = ''
-        // if (this.warehouse_id) {
-        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        // } else {
-        //   warehouseId = ''
-        // }
+        let warehouseId = ''
+        if (this.warehouse_id) {
+          warehouseId = 'warehouse_id.e:' + this.warehouse_id
+        } else {
+          warehouseId = ''
+        }
+
+        let groupId = ''
+        if (this.warehouse_id) {
+          groupId = '|group_id.e:' + this.warehouse_id
+        } else {
+          groupId = ''
+        }
+
+        this.$http
+          .get('/report/group-log', {
+            params: {
+              export: '1',
+              date,
+              conditions: warehouseId + groupId,
+            },
+          })
+          .then((response) => {
+            this.downloadFile = response.data.file
+
+            if (this.downloadFile === null) {
+              this.downloadFile = []
+            }
+          })
       },
       areaSelected(area) {
         this.area = ''
@@ -207,7 +225,6 @@
         this.renderData('')
       },
       warehouseSelected(val) {
-        console.log(val)
         this.warehouse = ''
         this.warehouse_id = ''
         if (val) {
@@ -219,17 +236,6 @@
           this.downloadDisabled = true
         }
         this.renderData()
-      },
-      downloadItem(label) {
-        this.$http
-          .get('/v1/report/group-log', {
-            params: {
-              export: '1',
-              date: '2020-01-10',
-              conditions: warehouseId + '|group_id.e:131072',
-            },
-          })
-          .then((response) => {})
       },
     },
   }

@@ -175,7 +175,7 @@
       },
       renderData() {
         this.$http
-          .get('/v1/inventory/group', {
+          .get('/inventory/group', {
             params: {
               embeds: 'item_uom_id',
               page: '1',

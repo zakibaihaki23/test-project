@@ -1,7 +1,8 @@
 import axios from 'axios'
 import Vue from 'vue'
 
-const devInstance = createInstance('http://10.10.0.38:8083')
+let API_URL = process.env.VUE_APP_API_URL
+const devInstance = createInstance(API_URL)
 
 function createInstance(baseURL) {
   return axios.create({

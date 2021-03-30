@@ -70,7 +70,7 @@
         }
 
         this.$http
-          .get('/v1/warehouse', {
+          .get('/warehouse', {
             params: {
               conditions: areaId,
             },
