@@ -34,8 +34,9 @@
 
               <v-card-text>
                 <v-container>
-                  <v-row style="margin-top: 35px">
+                  <v-row style="margin-top: 1px">
                     <v-col cols="12">
+                      <p>Item <span style="color: red">*</span></p>
                       <v-text-field
                         outlined
                         solo
@@ -45,6 +46,7 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12">
+                      <p style="color: gray">UOM</p>
                       <v-text-field
                         disabled
                         outlined

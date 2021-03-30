@@ -9,14 +9,14 @@ Vue.use(VueRouter)
 const routes = [
   // {
   //   name: 'Dashboard',
-  //   component: EmptyLayout,
+  //   component: MainLayout,
   //   icon: 'mdi-view-dashboard',
   //   path: '/',
-  //   open: true,
+  //   open: false,
   //   beforeEnter: (to, from, next) => {
-  //     if (!store.getters['auth/authenticated']) {
+  //     if (store.getters['auth/authenticated']) {
   //       return next({
-  //         name: 'Login',
+  //         name: 'Helper List',
   //       })
   //     }
   //     next()
@@ -184,7 +184,7 @@ const routes = [
     path: '/report',
     open: true,
     beforeEnter: (to, from, next) => {
-      if (!store.getters[('auth/authenticated', 'auth/user')]) {
+      if (!store.getters['auth/authenticated']) {
         return next({
           name: 'Login',
         })
@@ -212,18 +212,6 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: '*',
-  //   // component: NotFound,
-  //   beforeEnter: (to, from, next) => {
-  //     if (!store.getters['auth/authenticated']) {
-  //       return next({
-  //         name: 'Login',
-  //       })
-  //     }
-  //     next()
-  //   },
-  // },
 ]
 
 const router = new VueRouter({

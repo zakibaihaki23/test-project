@@ -128,17 +128,17 @@
       this.renderData()
     },
     watch: {
-      search: {
-        handler: function(val) {
-          let that = this
-          that.renderData(val, this.warehouse)
-        },
-        deep: true,
-      },
+      // search: {
+      //   handler: function(val) {
+      //     let that = this
+      //     that.renderData(val, this.warehouse)
+      //   },
+      //   deep: true,
+      // },
       warehouse: {
         handler: function(val) {
           let that = this
-          that.renderData(this.search, val)
+          that.renderData(this.warehouse)
         },
         deep: true,
       },
@@ -183,12 +183,12 @@
           })
           .then((response) => {})
 
-        let warehouseId = ''
-        if (this.warehouse_id) {
-          warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        } else {
-          warehouseId = ''
-        }
+        // let warehouseId = ''
+        // if (this.warehouse_id) {
+        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
+        // } else {
+        //   warehouseId = ''
+        // }
       },
       areaSelected(area) {
         this.area = ''
@@ -206,15 +206,16 @@
         }
         this.renderData('')
       },
-      warehouseSelected(warehouse) {
+      warehouseSelected(val) {
+        console.log(val)
         this.warehouse = ''
         this.warehouse_id = ''
-        if (warehouse) {
-          this.warehouse = warehouse
-          this.warehouse_id = warehouse.value
+        if (val) {
+          this.warehouse = val.name
+          this.warehouse_id = val.value
           this.downloadDisabled = false
         }
-        if (warehouse == null) {
+        if (val == null) {
           this.downloadDisabled = true
         }
         this.renderData()
