@@ -83,22 +83,10 @@
           .then(() => {
             window.location.reload()
             this.$router.push('/helper')
+            this.$toast.success('Login Success')
           })
           .catch((error) => {
-            this.$toast.error(error.response.data.message, {
-              position: 'top-right',
-              timeout: 5000,
-              closeOnClick: true,
-              pauseOnFocusLoss: false,
-              pauseOnHover: false,
-              draggable: true,
-              draggablePercent: 0.6,
-              showCloseButtonOnHover: false,
-              hideProgressBar: true,
-              closeButton: 'button',
-              icon: true,
-              rtl: false,
-            })
+            this.$toast.error('Field must be filled')
           })
       },
     },
