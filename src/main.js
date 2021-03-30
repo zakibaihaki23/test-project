@@ -5,14 +5,17 @@ import router from './router'
 import store from './store'
 import http from './axios'
 import Toast from 'vue-toastification'
+import moment from 'moment'
+import './assets/main.css'
 
 Vue.config.silent = true
+Vue.prototype.moment = moment
 Vue.use(http)
 import 'vue-toastification/dist/index.css'
 
 Vue.use(Toast, {
   position: 'top-right',
-  timeout: 9000,
+  timeout: 3000,
   closeOnClick: true,
   pauseOnFocusLoss: false,
   pauseOnHover: false,

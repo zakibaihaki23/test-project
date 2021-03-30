@@ -1,11 +1,10 @@
 <template>
   <div>
-    <v-autocomplete
+    <v-select
       v-model="warehouse"
       label="Warehouse"
-      style="border-radius: 15px; width: 250px"
-      outlined
       solo
+      outlined
       :items="items"
       item-text="name"
       item-value="value"
@@ -14,11 +13,9 @@
       return-object
       :search-input.sync="search"
       @change="selected"
-      clearable
       :disabled="disabled"
-      :auto-select-first="true"
     >
-    </v-autocomplete>
+    </v-select>
   </div>
 </template>
 
@@ -48,7 +45,7 @@
       // },
       clear: {
         handler: function(val) {
-          this.renderData('')
+          this.renderData()
         },
         deep: true,
       },

@@ -1,7 +1,9 @@
 <template>
   <div>
-    <v-select
+    <v-autocomplete
       v-model="areaSelected"
+      style="border-radius: 15px; width: 250px"
+      outlined
       label="Area"
       solo
       :items="area"
@@ -12,19 +14,21 @@
       return-object
       :search-input.sync="search"
       @change="selected"
+      clearable
     >
-    </v-select>
+    </v-autocomplete>
   </div>
 </template>
 
+//
 <script>
   export default {
     name: 'SelectArea',
     data() {
       return {
-        area: null,
-        areaSelected: null,
         search: null,
+        area: '',
+        areaSelected: null,
       }
     },
     props: ['clear'],
@@ -32,7 +36,7 @@
       this.renderData()
     },
     mounted() {
-      this.renderData()
+      this.renderData('', this.areaId)
     },
     watch: {
       clear: {
@@ -46,6 +50,7 @@
       renderData() {
         this.$http.get('/v1/city').then((response) => {
           this.area = response.data.data
+
           this.area = []
           let array = response.data.data
           for (let i = 0; i < array.length; i++) {
