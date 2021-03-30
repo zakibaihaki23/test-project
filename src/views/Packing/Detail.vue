@@ -355,7 +355,7 @@
     methods: {
       renderData() {
         this.$http
-          .get('/v1/packing/' + this.$route.params.id)
+          .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
             this.packing_code = response.data.data.document_code

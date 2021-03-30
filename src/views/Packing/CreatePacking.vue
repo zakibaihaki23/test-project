@@ -1,8 +1,6 @@
 <template>
   <div class="regist">
     <h1>CREATE PACKING</h1>
-    
-
 
     <!-- BAGIAN KIRI -->
     <v-row no-gutters>
@@ -51,19 +49,17 @@
           </v-dialog>
 
           <p>Area <span style="color: red">*</span></p>
-          <SelectFormArea
-            v-model="area" 
-            @selected="areaSelected">
+          <SelectFormArea v-model="area" @selected="areaSelected">
           </SelectFormArea>
-
         </div>
       </v-col>
 
       <!-- BAGIAN KANAN -->
       <v-col md="6">
-        <div
-        class="form-right">
-          <p style="margin-top:177px;">Warehouse <span style="color: red">*</span></p>
+        <div class="form-right">
+          <p style="margin-top:177px;">
+            Warehouse <span style="color: red">*</span>
+          </p>
           <SelectFormWarehouseArea
             v-model="warehouseList"
             @selected="warehouseSelected"
@@ -71,25 +67,23 @@
             :disabled="warehouseDisabled"
           >
           </SelectFormWarehouseArea>
-         
+
           <!-- <p>Total Order <span style="color: red">*</span></p>
           <v-text-field label="Total Order *" v-model="total_order" solo>
           </v-text-field> -->
         </div>
       </v-col>
 
-
       <!-- BAGIAN BAWAH -->
       <v-col md="12">
         <p>Note <span style="color: red"></span></p>
-          <v-textarea outlined label="Note" v-model="note" solo> </v-textarea>
+        <v-textarea outlined label="Note" v-model="note" solo> </v-textarea>
       </v-col>
-
     </v-row>
 
-    <br>
-    <br>
-    <br>
+    <br />
+    <br />
+    <br />
 
     <!-- BAGIAN TABEL -->
     <div>
@@ -101,31 +95,25 @@
         :items-per-page="itemsPerPage"
         :search="search"
         @page-count="pageCount = $event"
-     
       >
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.group_name }}</td>
-            <td><pre>{{ props.item.item_uom.item_uom_name }}</pre></td>
+            <td>
+              <pre>{{ props.item.item_uom.item_uom_name }}</pre>
+            </td>
             <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
             <td>{{ props.item.total_order }}</td>
             <td>
               <FormInputPacker v-model="packer" @selected="inputPacker">
-
               </FormInputPacker>
             </td>
           </tr>
         </template>
       </v-data-table>
 
-
-
       <!-- BAGIAN NUMBER TABEL -->
-      
     </div>
-
-
-
 
     <!-- BAGIAN FOOTER -->
     <br /><br />
@@ -154,11 +142,10 @@
   import SelectFormArea from '../../components/SelectFormArea'
   import SelectFormWarehouseArea from '../../components/SelectFormWarehouseArea'
   import FormInputPacker from '../../components/TabelCreatePacking/FormInputPacker'
-  
+
   export default {
-    
     components: { SelectFormArea, SelectFormWarehouseArea, FormInputPacker },
-    
+
     data() {
       return {
         warehouse: '',
@@ -179,11 +166,9 @@
           .substr(0, 10),
         modal: false,
 
-
         // SKRIP TABEL
         page: 1,
-        
-       
+
         table: [
           {
             text: 'Item',
@@ -216,14 +201,11 @@
         //   },
         // },
         total: [],
-
       }
     },
 
-
     created() {
       this.renderData()
-      
     },
 
     computed: {
@@ -238,9 +220,6 @@
       },
     },
 
-
-
-
     methods: {
       formatDate(date) {
         if (!date) return null
@@ -248,7 +227,7 @@
         const [year, month, day] = date.split('-')
         return `${day}/${month}/${year}`
       },
-      
+
       parseDate(date) {
         if (!date) return null
 
@@ -265,13 +244,13 @@
         }
 
         this.$http
-          .get('/v1/inventory/group', {
+          .get('/inventory/group', {
             params: {
               embeds: 'item_uom_id',
             },
           })
           .then((response) => {
-            let that = this;
+            let that = this
             that.dataTable = response.data.data
             that.total = response.data.total
 
@@ -289,12 +268,11 @@
         // } else {
         //   warehouseId = ''
         // }
-
       },
 
       save() {
         this.$http
-          .post('/v1/packing', {
+          .post('/packing', {
             warehouse_id: this.warehouse_id,
             note: this.note,
             total_order: parseInt(this.total_order),
@@ -315,7 +293,7 @@
         }
         this.renderData()
       },
-      
+
       warehouseSelected(val) {
         this.warehouse_id = ''
         if (val) {
@@ -324,15 +302,13 @@
       },
       inputPacker(val) {
         this.packer = ''
-        if(val) {
+        if (val) {
           this.packer = val.id
         }
-      }
+      },
     },
   }
 </script>
-
-
 
 <style scoped>
   .regist {
