@@ -107,14 +107,13 @@
           <tr>
             <td>{{ props.item.code }}</td>
             <td>{{ props.item.name }}</td>
-            <td>{{ props.item.phone_number }}</td>
+            <td>{{ props.item.phone_no }}</td>
             <td>{{ props.item.address }}</td>
             <td>{{ props.item.helper_type.type_name }}</td>
 
             <td>{{ props.item.warehouse.warehouse_name }}</td>
-
             <td>
-              <div v-if="props.item.is_active == 0">{{ 'Inactive' }}</div>
+              <div v-if="props.item.user.is_active == 0">{{ 'Inactive' }}</div>
               <div v-else>{{ 'Active' }}</div>
             </td>
             <td>
@@ -147,7 +146,7 @@
                     <v-list-item-title link>
                       <div
                         @click="unarchive(props.item.id)"
-                        v-if="props.item.is_active == 0"
+                        v-if="props.item.user.is_active == 0"
                       >
                         {{ 'Active' }}
                       </div>
@@ -229,6 +228,9 @@
           helper_type: {
             type_name: '',
           },
+          user: {
+            is_active: '',
+          },
         },
         total: [],
         id: '',
@@ -266,7 +268,7 @@
       renderData() {
         let isActive = ''
         if (this.is_active || this.is_active == 0) {
-          isActive = 'is_active:' + this.is_active
+          isActive = 'user.is_active:' + this.is_active
         } else {
           isActive = ''
         }
@@ -283,9 +285,9 @@
         }
 
         this.$http
-          .get('/user', {
+          .get('/helper', {
             params: {
-              embeds: 'helper_type_id,warehouse_id',
+              embeds: 'user_id,helper_type_id,warehouse_id',
               conditions: isActive + warehouseId,
             },
           })
@@ -305,7 +307,7 @@
       //fungsi untuk unarchive
       archive(id) {
         this.$http
-          .put('/user/' + id + '/archive', {
+          .put('/helper/' + id + '/archive', {
             // Headers: {
             //   'Content-Type': 'application/json',
             // },
@@ -322,7 +324,7 @@
       //fungsi untuk archive
       unarchive(id) {
         this.$http
-          .put('/user/' + id + '/unarchive', {
+          .put('/helper/' + id + '/unarchive', {
             // Headers: {
             //   'Content-Type': 'application/json',
             // },

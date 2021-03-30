@@ -323,17 +323,17 @@
       areaSelected(area) {
         this.area = ''
         this.areaId = ''
-        if (area !== null) {
+        if (area) {
           this.area = area.value
           this.warehouseDisabled = false
         }
         this.renderData()
-        if (area == null) {
-          this.warehouse = ''
+        if (area === null) {
           this.warehouse_id = ''
           this.warehouse = this.warehouseDisabled = true
         }
-        this.renderData('')
+        this.renderData()
+        console.log(this.warehouse_id)
       },
       warehouseSelected(warehouse) {
         this.warehouse = ''
