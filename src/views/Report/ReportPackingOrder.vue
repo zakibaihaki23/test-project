@@ -125,6 +125,7 @@
     created() {
       this.renderData()
     },
+
     watch: {
       // search: {
       //   handler: function(val) {
@@ -133,6 +134,7 @@
       //   },
       //   deep: true,
       // },
+
       warehouse: {
         handler: function(val) {
           this.renderData('', val)
@@ -210,8 +212,16 @@
         //   })
       },
       areaSelected(area) {
-        console.log(this.area)
+        this.area = null
         this.areaId = null
+        if (area) {
+          this.area = area.value
+          this.warehouseDisabled = false
+        } else {
+          this.warehouseDisabled = true
+          this.warehouse_id = ''
+        }
+
         // this.area = ''
         // this.areaId = ''
         // if (area !== null) {
@@ -227,17 +237,25 @@
         // }
         // this.renderData('')
       },
-      warehouseSelected(warehouse) {
-        this.warehouse = ''
-        this.warehouse_id = ''
-        if (warehouse) {
-          this.warehouse = warehouse.name
-          this.warehouse_id = warehouse.value
-          this.downloadDisabled = false
+      warehouseSelected(val) {
+        this.warehouse_id = null
+        if (val) {
+          this.warehouse_id = val.value
         }
-        if (warehouse == null) {
-          this.downloadDisabled = true
-        }
+        this.renderData()
+        // this.warehouse = null
+        // this.warehouse_id = null
+        // this.renderData('')
+        // if (val) {
+        //   this.warehouse = val.name
+        //   this.warehouse_id = val.value
+        //   this.downloadDisabled = false
+        // } else {
+        //   this.downloadDisabled = true
+        // }
+        // if (warehouse == null) {
+        //   this.downloadDisabled = true
+        // }
       },
     },
   }

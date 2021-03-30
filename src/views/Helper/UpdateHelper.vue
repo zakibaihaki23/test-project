@@ -157,19 +157,19 @@
       //untuk mendapatkan data dari API ke dalam format text-field
       renderData() {
         this.$http
-          .get('/user/' + this.$route.params.id, {
+          .get('/helper/' + this.$route.params.id, {
             params: {
               embeds: 'helper_type_id,warehouse_id',
             },
           })
           .then((response) => {
             this.editedItem.code = response.data.data.code
-            this.editedItem.email = response.data.data.email
-            this.editedItem.phone_no = response.data.data.phone_number
+            this.editedItem.email = response.data.data.user.email
+            this.editedItem.phone_no = response.data.data.phone_no
             this.editedItem.name = response.data.data.name
             this.editedItem.address = response.data.data.address
-            this.editedItem.password = response.data.data.password
-            this.editedItem.confirm_password = response.data.data.password
+            this.editedItem.password = response.data.data.user.password
+            this.editedItem.confirm_password = response.data.data.user.password
             this.update = true
             this.typeSelected(response.data.data.helper_type)
             this.warehouseSelected(response.data.data.warehouse)
@@ -189,7 +189,7 @@
       //menyimpan data update ke dalam API
       save() {
         this.$http
-          .put('/user/' + this.$route.params.id, {
+          .put('/helper/' + this.$route.params.id, {
             name: this.editedItem.name,
             email: this.editedItem.email,
             helper_type_id: this.types_id,

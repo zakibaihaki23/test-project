@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-autocomplete
-      v-model="warehouse"
+      v-model="warehouses"
       label="Warehouse"
       style="border-radius: 15px; width: 250px"
       outlined
@@ -9,6 +9,7 @@
       :items="items"
       item-text="name"
       item-value="value"
+      name="warehouse"
       hide-no-data
       hide-selected
       return-object
@@ -27,26 +28,29 @@
     data() {
       return {
         search: '',
-        warehouse: null,
+        warehouses: null,
         items: [],
-        warehouseFilter: null,
       }
     },
     props: ['clear', 'warehouse', 'disabled', 'areaId'],
-
-    mounted() {
+    created() {
       this.renderData('', this.areaId)
     },
+    mounted() {
+      this.renderData('', this.areaId)
+      console.log(this.clear)
+    },
     watch: {
-      // warehouse: {
-      //   handler: function(val) {
-      //     if (val && val.length == 0) {
-      //       this.renderData()
-      //     }
-      //   },
-      // },
+      warehouse: {
+        handler: function(val) {
+          if (val == null) {
+            this.warehouses = null
+          }
+        },
+      },
       clear: {
         handler: function(val) {
+          this.warehouse = null
           this.renderData('')
         },
         deep: true,
