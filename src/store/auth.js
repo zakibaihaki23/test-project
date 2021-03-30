@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 export default {
   namespaced: true,
   state: {
@@ -24,7 +25,7 @@ export default {
   actions: {
     async signIn({ dispatch }, credentials) {
       let response = await axios.post(
-        'http://10.10.0.38:8083/v1/auth',
+        process.env.VUE_APP_API_URL + '/auth',
         credentials
       )
 
