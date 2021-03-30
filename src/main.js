@@ -31,10 +31,6 @@ Vue.use(Toast, {
 require('./store/subscriber')
 Vue.use(require('vue-moment'))
 
-// axios.defaults.baseURL = 'http://10.10.0.38:8083'
-// axios.defaults.headers.common['Authorization'] =
-//   'Bearer' + localStorage.getItem('token')
-
 Vue.config.productionTip = false
 store.dispatch('auth/attempt', localStorage.getItem('token')).then(() => {
   new Vue({

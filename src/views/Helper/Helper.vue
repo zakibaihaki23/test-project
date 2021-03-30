@@ -283,7 +283,7 @@
         }
 
         this.$http
-          .get('v1/user', {
+          .get('/user', {
             params: {
               embeds: 'helper_type_id,warehouse_id',
               conditions: isActive + warehouseId,
@@ -305,7 +305,7 @@
       //fungsi untuk unarchive
       archive(id) {
         this.$http
-          .put('/v1/user/' + id + '/archive', {
+          .put('/user/' + id + '/archive', {
             // Headers: {
             //   'Content-Type': 'application/json',
             // },
@@ -322,7 +322,7 @@
       //fungsi untuk archive
       unarchive(id) {
         this.$http
-          .put('/v1/user/' + id + '/unarchive', {
+          .put('/user/' + id + '/unarchive', {
             // Headers: {
             //   'Content-Type': 'application/json',
             // },

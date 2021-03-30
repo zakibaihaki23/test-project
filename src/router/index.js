@@ -110,7 +110,7 @@ const routes = [
     component: EmptyLayout,
     icon: 'mdi-clipboard-account-outline',
     subtitle: 'Pages',
-    path: '/auth',
+    path: '',
     open: false,
     beforeEnter: (to, from, next) => {
       if (store.getters['auth/authenticated']) {

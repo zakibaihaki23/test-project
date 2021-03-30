@@ -27,11 +27,11 @@
       return {
         status: [
           {
-            text: 'Archive',
+            text: 'Inactive',
             value: 0,
           },
           {
-            text: 'Unarchive',
+            text: 'Active',
             value: 1,
           },
         ],

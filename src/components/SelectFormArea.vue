@@ -59,7 +59,7 @@
     methods: {
       renderData(search) {
         this.$http
-          .get('/v1/city', {
+          .get('/city', {
             // params: {
             //   conditions: 'city_name.icontains:' + search,
             // },

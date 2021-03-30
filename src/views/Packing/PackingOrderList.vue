@@ -284,7 +284,7 @@
         }
 
         this.$http
-          .get('/v1/warehouse', {
+          .get('/warehouse', {
             params: {
               conditions: areaId,
             },
@@ -299,7 +299,7 @@
         }
 
         this.$http
-          .get('/v1/packing', {
+          .get('/packing', {
             params: {
               orderby: '-id,warehouse_id',
               conditions: warehouseId + delivery_date,
