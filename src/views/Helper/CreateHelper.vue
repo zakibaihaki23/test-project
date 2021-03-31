@@ -11,6 +11,7 @@
             outlined
             class="form"
             v-model="helper.name"
+            :error-messages="error.name"
           >
           </v-text-field>
 
@@ -24,6 +25,7 @@
             item-value="id"
             v-model="type_id"
             :items="types"
+            :error-messages="error.type_id"
           >
           </v-select>
         </div>
@@ -37,6 +39,7 @@
             outlined
             class="form"
             single-line
+            :error-messages="error.phone_number"
           >
           </v-text-field>
           <p>Warehouse <span style="color: red">*</span></p>
@@ -51,6 +54,7 @@
             class="form"
             v-model="warehouse_id"
             append-icon=""
+            :error-messages="error.warehouse_id"
           >
           </v-autocomplete>
         </div>
@@ -78,6 +82,7 @@
           single-line
           class="form"
           v-model="helper.username"
+          :error-messages="error.email"
         >
         </v-text-field>
       </v-col>
@@ -93,6 +98,7 @@
           :type="value ? 'password' : 'text'"
           :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="() => (value = !value)"
+          :error-messages="error.password"
         >
         </v-text-field>
       </v-col>
@@ -107,6 +113,7 @@
           :type="value ? 'password' : 'text'"
           :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="() => (value = !value)"
+          :error-messages="error.confirm_password"
         >
         </v-text-field>
       </v-col>
@@ -133,7 +140,6 @@
           @click="save"
           v-if="
             helper.name &&
-              helper.address &&
               helper.phone_number &&
               helper.password &&
               helper.confirm_password &&
@@ -171,6 +177,7 @@
         warehouse_id: '',
         type_id: '',
         types: '',
+        error: {},
       }
     },
     created() {
@@ -214,7 +221,9 @@
             this.$toast.success('Data has been saved successfully')
           })
           .catch((error) => {
-            this.$toast.error('Field must be filled')
+            this.error = error.response.data.errors
+            this.$toast.error(error.response.data.message)
+            console.log(error.response.data.errors)
           })
       },
     },

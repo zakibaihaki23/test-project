@@ -29,17 +29,20 @@
               class="form"
               flat
               solo
+              :error-messages="error.email"
               style="margin-top: 50px; width: 300px; margin-left: 35px"
             >
             </v-text-field>
             <v-text-field
               prepend-inner-icon="mdi-lock"
               v-model="form.password"
+              :error-messages="error.password"
               label="Password"
               :type="value ? 'password' : 'text'"
               :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="() => (value = !value)"
               flat
+              @keyup.enter="submit"
               solo
               class="form"
               style=" margin-top: 50px; width: 300px; margin-left: 35px"
@@ -52,6 +55,7 @@
               elevation="1"
               depressed
               type="submit"
+              @click="submit"
             >
               <!----><!----><span>Login</span>
             </v-btn>
@@ -74,6 +78,7 @@
           password: '',
           is_mobile: '0',
         },
+        error: {},
         value: String,
         valid: true,
 
@@ -97,7 +102,9 @@
             this.$router.push('/helper')
           })
           .catch((error) => {
-            this.$toast.error(error.response.data.errors.id)
+            this.error = error.response.data.errors
+
+            this.$toast.error('Something wrong with your input')
           })
       },
     },

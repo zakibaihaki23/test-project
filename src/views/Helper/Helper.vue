@@ -187,40 +187,40 @@
         table: [
           {
             text: 'Helper ID',
-
+            value: 'code',
             align: 'left',
             class: ' black--text title',
           },
           {
             text: 'Name',
-
+            value: 'name',
             align: 'left',
             class: '  black--text title',
           },
           {
             text: 'Phone Number',
-
+            value: 'phone_number',
             class: 'black--text title',
           },
           {
             text: 'Address',
-
+            value: 'address',
             class: 'black--text title',
           },
 
           {
             text: 'Type',
-
+            value: 'type_name',
             class: 'black--text title',
           },
           {
             text: 'Warehouse',
-
+            value: 'warehouse.warehouse_name',
             class: 'black--text title',
           },
           {
             text: 'Status',
-
+            value: 'user.is_active',
             class: 'black--text title',
           },
           {
