@@ -16,7 +16,11 @@
           <v-text-field label="Name" v-model="editedItem.name" solo>
           </v-text-field>
           <p>Phone Number*</p>
-          <v-text-field label="Phone Number" v-model="editedItem.phone_no" solo>
+          <v-text-field
+            label="Phone Number"
+            v-model="editedItem.phone_number"
+            solo
+          >
           </v-text-field>
         </div>
       </v-col>
@@ -139,7 +143,7 @@
         editedItem: {
           code: '',
           email: '',
-          phone_no: '',
+          phone_number: '',
           warehouse_name: '',
           name: '',
           type: '',
@@ -157,19 +161,19 @@
       //untuk mendapatkan data dari API ke dalam format text-field
       renderData() {
         this.$http
-          .get('/user/' + this.$route.params.id, {
+          .get('/helper/' + this.$route.params.id, {
             params: {
               embeds: 'helper_type_id,warehouse_id',
             },
           })
           .then((response) => {
             this.editedItem.code = response.data.data.code
-            this.editedItem.email = response.data.data.email
-            this.editedItem.phone_no = response.data.data.phone_number
+            this.editedItem.email = response.data.data.user.email
+            this.editedItem.phone_number = response.data.data.phone_number
             this.editedItem.name = response.data.data.name
             this.editedItem.address = response.data.data.address
-            this.editedItem.password = response.data.data.password
-            this.editedItem.confirm_password = response.data.data.password
+            this.editedItem.password = response.data.data.user.password
+            this.editedItem.confirm_password = response.data.data.user.password
             this.update = true
             this.typeSelected(response.data.data.helper_type)
             this.warehouseSelected(response.data.data.warehouse)
@@ -189,11 +193,11 @@
       //menyimpan data update ke dalam API
       save() {
         this.$http
-          .put('/user/' + this.$route.params.id, {
+          .put('/helper/' + this.$route.params.id, {
             name: this.editedItem.name,
             email: this.editedItem.email,
             helper_type_id: this.types_id,
-            phone_number: this.editedItem.phone_no,
+            phone_number: this.editedItem.phone_number,
             warehouse_id: this.warehouse_list.id,
             password: this.editedItem.password,
             confirm_password: this.editedItem.confirm_password,

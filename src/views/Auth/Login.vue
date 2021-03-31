@@ -61,6 +61,7 @@
         form: {
           email: '',
           password: '',
+          is_mobile: '0',
         },
         value: String,
         valid: true,
@@ -85,7 +86,7 @@
             this.$router.push('/helper')
           })
           .catch((error) => {
-            this.$toast.error('Field must be filled')
+            this.$toast.error(error.response.data.errors.id)
           })
       },
     },

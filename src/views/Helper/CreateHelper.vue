@@ -5,16 +5,16 @@
       <v-col md="6">
         <div class="form-right">
           <p>Name <span style="color: red">*</span></p>
-          <v-text-field label="Name *" solo v-model="defaultItem.name">
+          <v-text-field label="Name *" solo v-model="helper.name">
           </v-text-field>
 
           <p>Type <span style="color: red">*</span></p>
           <v-select
             label="Type *"
             solo
-            item-text="name"
-            item-value="value"
-            v-model="type"
+            item-text="type_name"
+            item-value="id"
+            v-model="type_id"
             :items="types"
           >
           </v-select>
@@ -24,27 +24,27 @@
         <div class="form-right">
           <p>Phone Number <span style="color: red">*</span></p>
           <v-text-field
-            v-model="defaultItem.phone_number"
+            v-model="helper.phone_number"
             label="Phone Number *"
             solo
           >
           </v-text-field>
           <p>Warehouse <span style="color: red">*</span></p>
-          <v-select
+          <v-autocomplete
+            clearable
             :items="warehouse"
             item-text="name"
             item-value="value"
             label="Warehouse *"
             solo
-            v-model="warehouseList"
+            v-model="warehouse_id"
           >
-          </v-select>
+          </v-autocomplete>
         </div>
       </v-col>
       <v-col md="12" style="padding-right: 90px">
         <p>Address</p>
-        <v-textarea v-model="defaultItem.address" label="Address" solo>
-        </v-textarea>
+        <v-textarea v-model="helper.address" label="Address" solo> </v-textarea>
       </v-col>
     </v-row>
 
@@ -53,13 +53,13 @@
       <v-col md="6">
         <div class="form-right">
           <p>Username <span style="color: red">*</span></p>
-          <v-text-field label="Username *" solo v-model="defaultItem.email">
+          <v-text-field label="Username *" solo v-model="helper.username">
           </v-text-field>
           <p>Password <span style="color: red">*</span></p>
           <v-text-field
             label="Password *"
             solo
-            v-model="defaultItem.password"
+            v-model="helper.password"
             :type="value ? 'password' : 'text'"
             :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="() => (value = !value)"
@@ -75,7 +75,7 @@
           <v-text-field
             label="Confirm Password *"
             solo
-            v-model="defaultItem.confirm_password"
+            v-model="helper.confirm_password"
             :type="value ? 'password' : 'text'"
             :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="() => (value = !value)"
@@ -91,9 +91,9 @@
     <br /><br />
     <br />
     <v-divider></v-divider>
-    <div class="btn" v-for="(item, i) in items" :key="i">
+    <div class="btn">
       <v-btn
-        :to="item.path"
+        :to="{ path: '/helper' }"
         color="#E6E9ED"
         style="margin: 10px; color: #768F9C"
         class="cancel"
@@ -108,26 +108,19 @@
   export default {
     data() {
       return {
-        defaultItem: {
+        helper: {
           name: '',
           address: '',
           phone_number: '',
           password: '',
           confirm_password: '',
-          email: '',
+          username: '',
         },
         value: String,
         warehouse: '',
-        warehouseList: '',
-        type: '',
+        warehouse_id: '',
+        type_id: '',
         types: '',
-
-        items: [
-          {
-            name: 'Help',
-            path: '/helper',
-          },
-        ],
       }
     },
     created() {
@@ -149,28 +142,21 @@
         })
         //untuk mendapatkan list type Helper dari API
         this.$http.get('/helper/helpertype').then((response) => {
-          this.types = []
-          let array = response.data.data
-          for (let i = 0; i < array.length; i++) {
-            this.types.push({
-              name: array[i].type_name,
-              value: array[i].id,
-            })
-          }
+          this.types = response.data.data
         })
       },
       //untuk menyimpan data registrasi ke dalam API
       save() {
         this.$http
-          .post('/user', {
-            warehouse_id: this.warehouseList,
-            helper_type_id: this.type,
-            name: this.defaultItem.name,
-            email: this.defaultItem.email,
-            phone_number: this.defaultItem.phone_number,
-            address: this.defaultItem.address,
-            password: this.defaultItem.password,
-            confirm_password: this.defaultItem.confirm_password,
+          .post('/helper', {
+            warehouse_id: this.warehouse_id,
+            type_id: this.type_id,
+            name: this.helper.name,
+            username: this.helper.username,
+            phone_number: this.helper.phone_number,
+            address: this.helper.address,
+            password: this.helper.password,
+            confirm_password: this.helper.confirm_password,
           })
 
           .then((response) => {

@@ -40,6 +40,7 @@
         <SelectWarehouse
           :areaId="area"
           v-model="warehouse"
+          :warehouse="warehouse"
           @selected="warehouseSelected"
           :disabled="warehouseDisabled"
         >
@@ -185,13 +186,14 @@
       return {
         page: 1,
         warehouseList: '',
-        warehouse: '',
+        warehouse: null,
         delivery_date_model: '',
         delivery_date: '',
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
         isLoading: true,
+
         area: '',
         search: '',
         table: [
@@ -321,28 +323,45 @@
           })
       },
       areaSelected(area) {
-        this.area = ''
-        this.areaId = ''
+        this.area = null
+        this.areaId = null
         if (area) {
           this.area = area.value
           this.warehouseDisabled = false
+        } else {
+          this.warehouseDisabled = true
+          this.warehouse = null
+          this.warehouse_id = null
         }
         this.renderData()
-        if (area === null) {
-          this.warehouse_id = ''
-          this.warehouse = this.warehouseDisabled = true
-        }
-        this.renderData()
-        console.log(this.warehouse_id)
+        // this.area = null
+        // this.areaId = null
+        // this.warehouse_id = null
+        // this.warehouse = null
+        // if (area) {
+        //   this.area = area.value
+        //   this.warehouseDisabled = false
+        // } else {
+        //   this.warehouseDisabled = true
+        //   this.warehouse = null
+        //   this.warehouse_id = null
+        //   console.log('tes 2')
+        // }
+        // this.renderData()
+        // if (area === null) {
+        //   this.warehouse = ''
+        //   this.warehouse_id = ''
+        //   this.warehouse = this.warehouseDisabled = true
+        // }
       },
-      warehouseSelected(warehouse) {
-        this.warehouse = ''
-        this.warehouse_id = ''
-        if (warehouse) {
-          this.warehouse = warehouse
-          this.warehouse_id = warehouse.value
+      warehouseSelected(val) {
+        this.warehouse = null
+        this.warehouse_id = null
+        if (val) {
+          this.warehouse = val
+          this.warehouse_id = val.value
         }
-        this.renderData()
+        this.renderData('')
       },
     },
   }
