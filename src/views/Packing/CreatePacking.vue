@@ -98,12 +98,16 @@
       >
         <template v-slot:item="props">
           <tr>
-            <td>{{ props.item.group_name }}</td>
             <td>
-              <pre>{{ props.item.item_uom.item_uom_name }}</pre>
+              <pre>{{ props.item.item.category_type.category_name }}</pre>
+            </td>
+            <td>
+              <pre>{{ props.item.item.item_uom.item_uom_name }}</pre>
             </td>
             <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
-            <td>{{ props.item.total_order }}</td>
+            <td>
+              <pre>{{ props.item.quantity }}</pre>
+            </td>
             <td>
               <FormInputPacker v-model="packer" @selected="inputPacker">
               </FormInputPacker>
@@ -151,7 +155,7 @@
         warehouse: '',
         warehouseList: '',
         note: '',
-        warehouse_id: '',
+        warehouse_id: null,
         area: '',
         areaId: '',
         packer: '',
@@ -204,9 +208,9 @@
       }
     },
 
-    created() {
-      this.renderData()
-    },
+    // created() {
+    //   this.renderData()
+    // },
 
     computed: {
       computedDateFormatted() {
@@ -244,9 +248,10 @@
         }
 
         this.$http
-          .get('/inventory/group', {
+          .get('/packing/item-recap', {
             params: {
-              embeds: 'item_uom_id',
+              // embeds: 'item_uom_id', 'item_quantity',
+              conditions: 'purchaseorder.deliverydate__between:2021-03-30.2021-03-31|purchaseorder.outlet.city.id.e:65536|item.packable:1',
             },
           })
           .then((response) => {
@@ -295,11 +300,15 @@
       },
 
       warehouseSelected(val) {
-        this.warehouse_id = ''
+        this.warehouseList = null
+        this.warehouse_id = null
         if (val) {
+          this.warehouseList = val
           this.warehouse_id = val.value
-        }
+        } 
+        this.renderData()
       },
+
       inputPacker(val) {
         this.packer = ''
         if (val) {

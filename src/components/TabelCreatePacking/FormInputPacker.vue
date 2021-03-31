@@ -13,9 +13,9 @@
     @change="selected"
     clearable
     style="
-                margin-top:25px;
-                border-radius:10px;
-                "
+          margin-top:25px;
+          border-radius:10px;
+          "
   >
     <template slot="item" slot-scope="data">
       {{ data.item.code }} - {{ data.item.name }}
