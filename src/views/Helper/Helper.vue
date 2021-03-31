@@ -107,14 +107,22 @@
           <tr>
             <td>{{ props.item.code }}</td>
             <td>{{ props.item.name }}</td>
-            <td>{{ props.item.phone_no }}</td>
+            <td>{{ props.item.phone_number }}</td>
             <td>{{ props.item.address }}</td>
+            <!-- <td v-if="props.item.user">
+              {{ props.item.user.is_active }}
+            </td>
+            <td v-else>
+              -
+            </td> -->
             <td>{{ props.item.helper_type.type_name }}</td>
-
             <td>{{ props.item.warehouse.warehouse_name }}</td>
-            <td>
+            <td v-if="props.item.user">
               <div v-if="props.item.user.is_active == 0">{{ 'Inactive' }}</div>
               <div v-else>{{ 'Active' }}</div>
+            </td>
+            <td v-else>
+              -
             </td>
             <td>
               <v-menu offset-y>
@@ -142,7 +150,7 @@
                   <v-divider
                     style="margin-left: 10px;margin-right: 10px"
                   ></v-divider>
-                  <v-list-item link>
+                  <v-list-item link v-if="props.item.user">
                     <v-list-item-title link>
                       <div
                         @click="unarchive(props.item.id)"
@@ -179,48 +187,47 @@
         table: [
           {
             text: 'Helper ID',
-            value: 'code',
+
             align: 'left',
             class: ' black--text title',
           },
           {
             text: 'Name',
-            value: 'name',
+
             align: 'left',
             class: '  black--text title',
           },
           {
             text: 'Phone Number',
-            value: 'phone_number',
+
             class: 'black--text title',
           },
           {
             text: 'Address',
-            value: 'address',
+
             class: 'black--text title',
           },
 
           {
             text: 'Type',
-            value: 'type_name',
+
             class: 'black--text title',
           },
           {
             text: 'Warehouse',
-            value: 'warehouse_name',
+
             class: 'black--text title',
           },
           {
             text: 'Status',
-            value: 'is_active',
+
             class: 'black--text title',
-            key: ['status'],
           },
           {
-            value: 'actions',
             sortable: false,
           },
         ],
+
         dataTable: {
           warehouse: {
             warehouse_name: '',
@@ -229,16 +236,15 @@
             type_name: '',
           },
           user: {
-            is_active: '',
+            name: '',
           },
         },
-        total: [],
         id: '',
         warehouse: null,
         warehouse_id: '',
         type: '',
         status: null,
-        is_active: null,
+        filterActive: null,
         warehouseList: [],
       }
     },
@@ -261,21 +267,20 @@
     methods: {
       initialize() {
         this.dataTable = [this.dataTable]
-        this.total = [this.total]
       },
 
       //get data user dari API
       renderData() {
         let isActive = ''
-        if (this.is_active || this.is_active == 0) {
-          isActive = 'user.is_active:' + this.is_active
+        if (this.filterActive || this.filterActive == 0) {
+          isActive = 'user.is_active:' + this.filterActive
         } else {
           isActive = ''
         }
 
         let warehouseId = ''
         if (this.warehouse_id) {
-          if (this.is_active != null) {
+          if (this.filterActive != null) {
             warehouseId = '|warehouse_id.e:' + this.warehouse_id
           } else {
             warehouseId = 'warehouse_id.e:' + this.warehouse_id
@@ -289,14 +294,12 @@
             params: {
               embeds: 'user_id,helper_type_id,warehouse_id',
               conditions: isActive + warehouseId,
+              orderby: '-id',
             },
           })
           .then((response) => {
-            // let that = this;
-
-            this.dataTable = response.data.data
-            this.total = response.data.total
             this.isLoading = false
+            this.dataTable = response.data.data
 
             if (this.dataTable === null) {
               this.dataTable = []
@@ -349,10 +352,10 @@
       },
       statusSelected(status) {
         this.status = ''
-        this.is_active = null
+        this.filterActive = null
         if (status) {
           this.status = status
-          this.is_active = status.value
+          this.filterActive = status.value
         }
         this.renderData()
       },
