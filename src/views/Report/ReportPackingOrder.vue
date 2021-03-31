@@ -5,9 +5,7 @@
       <v-row no-gutters>
         <v-col md="6">
           <div>
-            <v-btn v-model="download" :disabled="downloadDisabled"
-              >Download</v-btn
-            >
+            <v-btn v-model="download" v-show="downloadDisabled">Download</v-btn>
           </div>
         </v-col>
         <v-col md="6" offset="6">
@@ -37,6 +35,7 @@
         <SelectWarehouse
           :areaId="area"
           v-model="warehouse"
+          :warehouse="warehouse"
           @selected="warehouseSelected"
           :disabled="warehouseDisabled"
         >
@@ -87,14 +86,33 @@
         </v-menu>
       </v-col>
     </v-row>
-    <v-img
-      src="@/assets/download.png"
+    <v-flex
+      shrink
+      pb-3
+      class="pa-10 pb-8 text-center"
+      style="margin-top: 200px;"
+    >
+      <div class="text-center pb-4">
+        <v-layout justify-center align-center>
+          <v-img class="gbr" src="@/assets/download.png"> </v-img>
+        </v-layout>
+        <h1 style="margin-top: 200px;">
+          Please download to view data
+        </h1>
+      </div>
+    </v-flex>
+
+    <!-- <div
+      class="text-center pb-4"
       style="width: 450px; height: 450px; left: 440px; "
     >
-    </v-img>
+      <v-layout>
+        <v-img src="@/assets/download.png"> </v-img>
+      </v-layout>
+    </div>
     <h1 style="margin-left: 478px;">
       Please download to view data
-    </h1>
+    </h1> -->
   </div>
 </template>
 
@@ -112,7 +130,7 @@
         date: '',
         warehouse_id: null,
         warehouseDisabled: true,
-        downloadDisabled: true,
+        downloadDisabled: false,
         dateDisabled: true,
         areaId: null,
         area: '',
@@ -219,7 +237,9 @@
           this.warehouseDisabled = false
         } else {
           this.warehouseDisabled = true
-          this.warehouse_id = ''
+          this.warehouse = null
+          this.warehouse_id = null
+          this.downloadDisabled = false
         }
 
         // this.area = ''
@@ -238,11 +258,17 @@
         // this.renderData('')
       },
       warehouseSelected(val) {
+        this.warehouse = null
         this.warehouse_id = null
         if (val) {
+          this.warehouse = val
           this.warehouse_id = val.value
+          this.downloadDisabled = true
+        } else {
+          this.downloadDisabled = false
         }
-        this.renderData()
+        this.renderData('')
+
         // this.warehouse = null
         // this.warehouse_id = null
         // this.renderData('')
@@ -311,5 +337,8 @@
   }
   .v-sheet.v-list {
     background: #e8eff2;
+  }
+  .gbr {
+    position: absolute;
   }
 </style>

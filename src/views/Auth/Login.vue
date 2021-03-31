@@ -1,52 +1,63 @@
 <template>
   <div id="login" class="bigbk">
+    <v-flex
+      shrink
+      pb-3
+      class="pa-10 pb-8 text-center"
+      style="margin-top: 200px: "
+    >
+      <div class="text-center pb-4" style="margin-top: 200px">
+        <v-layout justify-center align-center>
+          <v-img class="gbr" src="@/assets/Logo-Login.png"></v-img>
+        </v-layout>
+      </div>
+    </v-flex>
     <div>
-      <v-img class="gbr" src="@/assets/Logo-Login.png"></v-img>
-    </div>
-    <div>
-      <v-container class="login-container">
-        <v-form @submit.prevent="submit" ref="form" v-model="valid">
-          <!-- <v-card-title>
-          <v-img
-            src="https://www.static-src.com/wcsstore/Indraprastha/images/catalog/mlogo/EDF-60021.png"
-          ></v-img
-        ></v-card-title> -->
-          <v-text-field
-            prepend-inner-icon="mdi-account"
-            v-model="form.email"
-            label="E-Mail"
-            required
-            class="form"
-            flat
-            solo
-            style="margin-bottom: 30px; margin-top: 50px; width: 300px; margin-left: 50px"
-          >
-          </v-text-field>
-          <v-text-field
-            prepend-inner-icon="mdi-lock"
-            v-model="form.password"
-            label="Password"
-            :type="value ? 'password' : 'text'"
-            :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (value = !value)"
-            flat
-            solo
-            class="form"
-            style=" margin-top: 50px; width: 300px; margin-left: 50px"
-          >
-            <v-spacer></v-spacer>
-          </v-text-field>
-          <!-- <v-checkbox label="Remember Me"></v-checkbox> -->
-          <v-btn
-            style="height: 50px; width: 300px; margin-left: 50px"
-            elevation="1"
-            depressed
-            type="submit"
-          >
-            <!----><!----><span>Login</span>
-          </v-btn>
-        </v-form>
-      </v-container>
+      <v-card
+        class="mx-auto rounded-xl login-container Heiti"
+        max-width="390"
+        flat
+        style="bottom: 250px;"
+      >
+        <v-container class="login-container">
+          <v-form @submit.prevent="submit" ref="form" v-model="valid">
+            <v-text-field
+              prepend-inner-icon="mdi-account"
+              v-model="form.email"
+              label="E-Mail"
+              required
+              class="form"
+              flat
+              solo
+              style="margin-top: 50px; width: 300px; margin-left: 35px"
+            >
+            </v-text-field>
+            <v-text-field
+              prepend-inner-icon="mdi-lock"
+              v-model="form.password"
+              label="Password"
+              :type="value ? 'password' : 'text'"
+              :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="() => (value = !value)"
+              flat
+              solo
+              class="form"
+              style=" margin-top: 50px; width: 300px; margin-left: 35px"
+            >
+              <v-spacer></v-spacer>
+            </v-text-field>
+            <!-- <v-checkbox label="Remember Me"></v-checkbox> -->
+            <v-btn
+              style="height: 50px; width: 300px; margin-left: 35px"
+              elevation="1"
+              depressed
+              type="submit"
+            >
+              <!----><!----><span>Login</span>
+            </v-btn>
+          </v-form>
+        </v-container>
+      </v-card>
     </div>
   </div>
 </template>
@@ -102,12 +113,10 @@
     background-size: cover;
   }
   .login-container {
-    position: absolute;
-    width: 420px;
+    mix-blend-mode: normal;
+    margin-top: 327px;
     height: 350px;
-    left: 525px;
-    margin: 220px;
-    top: 150px;
+    border-style: 0;
     background: linear-gradient(
       179.68deg,
       #99cdb7 -115.48%,
@@ -116,12 +125,9 @@
     border-radius: 20px;
   }
   .form {
-    width: 400px;
     height: 50px;
     border-radius: 15px;
-    padding: 20px;
-    margin: 10px;
-    left: 50px;
+
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
@@ -139,7 +145,5 @@
   }
   .gbr {
     position: absolute;
-    left: 670px;
-    margin: 220px;
   }
 </style>

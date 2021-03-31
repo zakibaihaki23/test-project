@@ -59,7 +59,7 @@
       <v-divider style="margin-right: 40px"></v-divider>
     </v-col>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="3" sm="2">
         <SelectStatus v-model="status" @selected="statusSelected">
         </SelectStatus>
         <!-- <v-autocomplete
@@ -74,7 +74,7 @@
         >
         </v-autocomplete> -->
       </v-col>
-      <v-col cols="3">
+      <v-col cols="3" sm="2">
         <SelectWarehouse v-model="warehouse" @selected="warehouseSelected">
         </SelectWarehouse>
         <!-- <v-autocomplete
@@ -98,7 +98,7 @@
         :headers="table"
         :items="dataTable"
         :page.sync="page"
-        :items-per-page="20"
+        :items-per-page="10"
         :search="search"
         @page-count="pageCount = $event"
         :loading="isLoading"
@@ -396,10 +396,6 @@
   thead {
     border-radius: 60px;
   }
-  /* .mytable .v-table tbody tr:not(:last-child) {
-    border-bottom: none;
-    background: brown;
-  } */
   .v-data-table-header thead {
     background: red;
   }

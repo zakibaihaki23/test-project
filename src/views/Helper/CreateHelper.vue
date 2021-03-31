@@ -5,13 +5,21 @@
       <v-col md="6">
         <div class="form-right">
           <p>Name <span style="color: red">*</span></p>
-          <v-text-field label="Name *" solo v-model="helper.name">
+          <v-text-field
+            single-line
+            label="Name *"
+            outlined
+            class="form"
+            v-model="helper.name"
+          >
           </v-text-field>
 
           <p>Type <span style="color: red">*</span></p>
           <v-select
             label="Type *"
-            solo
+            single-line
+            outlined
+            class="form"
             item-text="type_name"
             item-value="id"
             v-model="type_id"
@@ -26,7 +34,9 @@
           <v-text-field
             v-model="helper.phone_number"
             label="Phone Number *"
-            solo
+            outlined
+            class="form"
+            single-line
           >
           </v-text-field>
           <p>Warehouse <span style="color: red">*</span></p>
@@ -36,52 +46,69 @@
             item-text="name"
             item-value="value"
             label="Warehouse *"
-            solo
+            outlined
+            single-line
+            class="form"
             v-model="warehouse_id"
+            append-icon=""
           >
           </v-autocomplete>
         </div>
       </v-col>
       <v-col md="12" style="padding-right: 90px">
         <p>Address</p>
-        <v-textarea v-model="helper.address" label="Address" solo> </v-textarea>
+        <v-textarea
+          v-model="helper.address"
+          outlined
+          single-line
+          class="form"
+          label="Address"
+        >
+        </v-textarea>
       </v-col>
     </v-row>
 
     <h1 style="margin-top: 20px">CREDENTIAL</h1>
     <v-row no-gutters>
-      <v-col md="6">
-        <div class="form-right">
-          <p>Username <span style="color: red">*</span></p>
-          <v-text-field label="Username *" solo v-model="helper.username">
-          </v-text-field>
-          <p>Password <span style="color: red">*</span></p>
-          <v-text-field
-            label="Password *"
-            solo
-            v-model="helper.password"
-            :type="value ? 'password' : 'text'"
-            :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (value = !value)"
-          >
-          </v-text-field>
-        </div>
+      <v-col md="6" class="form-right" style="margin-top: 20px">
+        <p>Username <span style="color: red">*</span></p>
+        <v-text-field
+          label="Username *"
+          outlined
+          single-line
+          class="form"
+          v-model="helper.username"
+        >
+        </v-text-field>
       </v-col>
-      <v-col md="6">
-        <div class="form-right">
-          <p style="padding-top: 118px">
-            Confirm Password <span style="color: red">*</span>
-          </p>
-          <v-text-field
-            label="Confirm Password *"
-            solo
-            v-model="helper.confirm_password"
-            :type="value ? 'password' : 'text'"
-            :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (value = !value)"
-          >
-          </v-text-field>
-        </div>
+      <v-col md="6" style="margin-top: 5px"> </v-col>
+      <v-col md="6" class="form-right" style="margin-top: 5px">
+        <p>Password <span style="color: red;">*</span></p>
+        <v-text-field
+          label="Password *"
+          outlined
+          single-line
+          class="form"
+          v-model="helper.password"
+          :type="value ? 'password' : 'text'"
+          :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (value = !value)"
+        >
+        </v-text-field>
+      </v-col>
+      <v-col md="6" class="form-right" style="margin-top: 5px">
+        <p>Confirm Password <span style="color: red">*</span></p>
+        <v-text-field
+          label="Confirm Password *"
+          outlined
+          single-line
+          class="form"
+          v-model="helper.confirm_password"
+          :type="value ? 'password' : 'text'"
+          :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (value = !value)"
+        >
+        </v-text-field>
       </v-col>
     </v-row>
     <br />
@@ -92,14 +119,36 @@
     <br />
     <v-divider></v-divider>
     <div class="btn">
-      <v-btn
-        :to="{ path: '/helper' }"
-        color="#E6E9ED"
-        style="margin: 10px; color: #768F9C"
-        class="cancel"
-        >Cancel</v-btn
-      >
-      <v-btn style="margin: 10px;" class="save" @click="save">Save</v-btn>
+      <v-col class="text-right">
+        <v-btn
+          :to="{ path: '/helper' }"
+          color="#E6E9ED"
+          style="margin: 10px; color: #768F9C"
+          class="cancel"
+          >Cancel</v-btn
+        >
+        <v-btn
+          style="margin: 10px;"
+          class="save"
+          @click="save"
+          v-if="
+            helper.name &&
+              helper.address &&
+              helper.phone_number &&
+              helper.password &&
+              helper.confirm_password &&
+              helper.username
+          "
+          >Save</v-btn
+        >
+        <v-btn
+          v-else
+          :disabled="saveDisabled"
+          style="margin: 10px;"
+          class="save"
+          >Save</v-btn
+        >
+      </v-col>
     </div>
   </div>
 </template>
@@ -108,6 +157,7 @@
   export default {
     data() {
       return {
+        saveDisabled: true,
         helper: {
           name: '',
           address: '',
@@ -195,6 +245,10 @@
   }
   .btn {
     margin-top: 30px;
-    padding-left: 1100px;
+  }
+  .form {
+    border-radius: 10px;
+    border-style: none;
+    text-decoration: none;
   }
 </style>
