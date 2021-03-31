@@ -1,11 +1,19 @@
 <template>
   <div class="regist">
     <h1>UPDATE HELPER</h1>
+    <v-row></v-row>
     <v-row no-gutters>
       <v-col md="6" style="margin-right: 90px">
         <div class="form-right-1">
           <p>Helper ID <span style="color: red">*</span></p>
-          <v-text-field disabled v-model="editedItem.code" solo> </v-text-field>
+          <v-text-field
+            disabled
+            v-model="helper.code"
+            outlined
+            single-line
+            class="form"
+          >
+          </v-text-field>
         </div>
       </v-col>
     </v-row>
@@ -13,13 +21,21 @@
       <v-col md="6">
         <div class="form-right">
           <p>Name <span style="color: red">*</span></p>
-          <v-text-field label="Name" v-model="editedItem.name" solo>
+          <v-text-field
+            label="Name"
+            v-model="helper.name"
+            outlined
+            single-line
+            class="form"
+          >
           </v-text-field>
           <p>Phone Number*</p>
           <v-text-field
             label="Phone Number"
-            v-model="editedItem.phone_number"
-            solo
+            v-model="helper.phone_number"
+            outlined
+            single-line
+            class="form"
           >
           </v-text-field>
         </div>
@@ -33,25 +49,36 @@
             item-text="type_name"
             item-value="id"
             @selected="typeSelected"
-            solo
+            outlined
+            single-line
+            class="form"
           >
           </v-select>
           <p>Warehouse <span style="color: red">*</span></p>
-          <v-select
+          <v-autocomplete
             :items="warehouse"
             v-model="warehouse_list"
             item-text="warehouse_name"
             item-value="id"
             @selected="warehouseSelected"
-            solo
+            outlined
+            single-line
+            class="form"
+            append-icon=""
           >
-          </v-select>
+          </v-autocomplete>
         </div>
       </v-col>
       <v-col md="12" style="padding-right: 90px">
         <div>
           <p>Address</p>
-          <v-textarea label="Address" v-model="editedItem.address" solo>
+          <v-textarea
+            label="Address"
+            v-model="helper.address"
+            outlined
+            single-line
+            class="form"
+          >
           </v-textarea>
         </div>
       </v-col>
@@ -59,37 +86,45 @@
 
     <h1 style="margin-top: 20px">CREDENTIAL</h1>
     <v-row no-gutters>
-      <v-col md="6">
-        <div class="form-right">
-          <p>Username <span style="color: red">*</span></p>
-          <v-text-field v-model="editedItem.email" solo> </v-text-field>
-          <p>Password <span style="color: red">*</span></p>
-          <v-text-field
-            label="Password *"
-            solo
-            v-model="editedItem.password"
-            :type="value ? 'password' : 'text'"
-            :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (value = !value)"
-          >
-          </v-text-field>
-        </div>
+      <v-col md="6" class="form-right" style="margin-top: 20px">
+        <p>Username <span style="color: red">*</span></p>
+        <v-text-field
+          label="Username *"
+          outlined
+          single-line
+          class="form"
+          v-model="helper.username"
+        >
+        </v-text-field>
       </v-col>
-      <v-col md="6">
-        <div class="form-right">
-          <p style="padding-top: 118px">
-            Confirm Password <span style="color: red">*</span>
-          </p>
-          <v-text-field
-            label="Confirm Password *"
-            solo
-            v-model="editedItem.confirm_password"
-            :type="value ? 'password' : 'text'"
-            :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (value = !value)"
-          >
-          </v-text-field>
-        </div>
+      <v-col md="6" style="margin-top: 5px"> </v-col>
+      <v-col md="6" class="form-right" style="margin-top: 5px">
+        <p>Password <span style="color: red;">*</span></p>
+        <v-text-field
+          label="Password *"
+          outlined
+          single-line
+          class="form"
+          v-model="helper.password"
+          :type="value ? 'password' : 'text'"
+          :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (value = !value)"
+        >
+        </v-text-field>
+      </v-col>
+      <v-col md="6" class="form-right" style="margin-top: 5px">
+        <p>Confirm Password <span style="color: red">*</span></p>
+        <v-text-field
+          label="Confirm Password *"
+          outlined
+          single-line
+          class="form"
+          v-model="helper.confirm_password"
+          :type="value ? 'password' : 'text'"
+          :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (value = !value)"
+        >
+        </v-text-field>
       </v-col>
     </v-row>
     <br />
@@ -99,15 +134,17 @@
     <br /><br />
     <br />
     <v-divider></v-divider>
-    <div class="btn" v-for="(item, i) in items" :key="i">
-      <v-btn
-        :to="item.path"
-        color="#E6E9ED"
-        style="margin: 10px; color: #768F9C"
-        class="cancel"
-        >Cancel</v-btn
-      >
-      <v-btn style="margin: 10px;" class="save" @click="save">Save</v-btn>
+    <div class="btn">
+      <v-col class="text-right">
+        <v-btn
+          :to="{ path: '/helper' }"
+          color="#E6E9ED"
+          style="margin: 10px; color: #768F9C"
+          class="cancel"
+          >Cancel</v-btn
+        >
+        <v-btn style="margin: 10px;" class="save" @click="save">Save</v-btn>
+      </v-col>
     </div>
   </div>
 </template>
@@ -118,12 +155,6 @@
       return {
         edit: '',
         value: String,
-        items: [
-          {
-            name: 'Help',
-            path: '/helper',
-          },
-        ],
         editedIndex: -1,
         warehouse: '',
         warehouse_list: '',
@@ -140,9 +171,9 @@
             id: '131072',
           },
         ],
-        editedItem: {
+        helper: {
           code: '',
-          email: '',
+          username: '',
           phone_number: '',
           warehouse_name: '',
           name: '',
@@ -167,13 +198,13 @@
             },
           })
           .then((response) => {
-            this.editedItem.code = response.data.data.code
-            this.editedItem.email = response.data.data.user.email
-            this.editedItem.phone_number = response.data.data.phone_number
-            this.editedItem.name = response.data.data.name
-            this.editedItem.address = response.data.data.address
-            this.editedItem.password = response.data.data.user.password
-            this.editedItem.confirm_password = response.data.data.user.password
+            this.helper.code = response.data.data.code
+            this.helper.username = response.data.data.user.email
+            this.helper.phone_number = response.data.data.phone_number
+            this.helper.name = response.data.data.name
+            this.helper.address = response.data.data.address
+            this.helper.password = response.data.data.user.password
+            this.helper.confirm_password = response.data.data.user.password
             this.update = true
             this.typeSelected(response.data.data.helper_type)
             this.warehouseSelected(response.data.data.warehouse)
@@ -194,13 +225,13 @@
       save() {
         this.$http
           .put('/helper/' + this.$route.params.id, {
-            name: this.editedItem.name,
-            email: this.editedItem.email,
+            name: this.helper.name,
+            email: this.helper.username,
             helper_type_id: this.types_id,
-            phone_number: this.editedItem.phone_number,
+            phone_number: this.helper.phone_number,
             warehouse_id: this.warehouse_list.id,
-            password: this.editedItem.password,
-            confirm_password: this.editedItem.confirm_password,
+            password: this.helper.password,
+            confirm_password: this.helper.confirm_password,
           })
 
           .then((response) => {
@@ -253,10 +284,14 @@
     box-sizing: content-box;
     border-radius: 25px;
     width: 111px;
-    height: 45px;
+    height: 55px;
   }
   .btn {
     margin-top: 30px;
-    padding-left: 1100px;
+  }
+  .form {
+    border-radius: 10px;
+    border-style: none;
+    text-decoration: none;
   }
 </style>
