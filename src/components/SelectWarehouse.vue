@@ -17,6 +17,7 @@
       @change="selected"
       clearable
       :disabled="disabled"
+      append-icon=""
     >
     </v-autocomplete>
   </div>

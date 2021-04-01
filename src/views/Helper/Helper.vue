@@ -59,7 +59,7 @@
       <v-divider style="margin-right: 40px"></v-divider>
     </v-col>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="3" sm="2">
         <SelectStatus v-model="status" @selected="statusSelected">
         </SelectStatus>
         <!-- <v-autocomplete
@@ -74,7 +74,7 @@
         >
         </v-autocomplete> -->
       </v-col>
-      <v-col cols="3">
+      <v-col cols="3" sm="2">
         <SelectWarehouse v-model="warehouse" @selected="warehouseSelected">
         </SelectWarehouse>
         <!-- <v-autocomplete
@@ -98,7 +98,7 @@
         :headers="table"
         :items="dataTable"
         :page.sync="page"
-        :items-per-page="20"
+        :items-per-page="10"
         :search="search"
         @page-count="pageCount = $event"
         :loading="isLoading"
@@ -187,40 +187,40 @@
         table: [
           {
             text: 'Helper ID',
-
+            value: 'code',
             align: 'left',
             class: ' black--text title',
           },
           {
             text: 'Name',
-
+            value: 'name',
             align: 'left',
             class: '  black--text title',
           },
           {
             text: 'Phone Number',
-
+            value: 'phone_number',
             class: 'black--text title',
           },
           {
             text: 'Address',
-
+            value: 'address',
             class: 'black--text title',
           },
 
           {
             text: 'Type',
-
+            value: 'type_name',
             class: 'black--text title',
           },
           {
             text: 'Warehouse',
-
+            value: 'warehouse.warehouse_name',
             class: 'black--text title',
           },
           {
             text: 'Status',
-
+            value: 'user.is_active',
             class: 'black--text title',
           },
           {
@@ -396,10 +396,6 @@
   thead {
     border-radius: 60px;
   }
-  /* .mytable .v-table tbody tr:not(:last-child) {
-    border-bottom: none;
-    background: brown;
-  } */
   .v-data-table-header thead {
     background: red;
   }
