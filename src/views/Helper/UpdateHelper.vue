@@ -87,9 +87,9 @@
     <h1 style="margin-top: 20px">CREDENTIAL</h1>
     <v-row no-gutters>
       <v-col md="6" class="form-right" style="margin-top: 20px">
-        <p>Username <span style="color: red">*</span></p>
+        <p>Email <span style="color: red">*</span></p>
         <v-text-field
-          label="Username *"
+          label="Email *"
           outlined
           single-line
           class="form"

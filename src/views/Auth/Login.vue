@@ -103,7 +103,6 @@
           })
           .catch((error) => {
             this.error = error.response.data.errors
-
             this.$toast.error('Something wrong with your input')
           })
       },

@@ -132,7 +132,9 @@
               >
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title style="color: white">Report</v-list-item-title>
+              <v-list-item-title style="color: white;"
+                >Report</v-list-item-title
+              >
             </v-list-item-content>
           </template>
 
@@ -167,7 +169,7 @@
       ],
       items: [
         {
-          name: 'Report Packing',
+          name: 'Report Packing Order',
           path: '/report/packing',
         },
       ],

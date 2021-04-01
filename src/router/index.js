@@ -99,9 +99,9 @@ const routes = [
         path: '/packing-order/:id',
       },
       {
-        name: 'Packing Item',
-        component: () => import('../views/Packing/PackingItem'),
-        path: '/packing/packing-item/',
+        name: 'Update Packing Order',
+        component: () => import('../views/Packing/UpdatePacking'),
+        path: '/packing-order/update/:id',
       },
     ],
   },
@@ -193,7 +193,7 @@ const routes = [
     },
     children: [
       {
-        name: 'Report Packing',
+        name: 'Report Packing Order',
         component: () => import('../views/Report/ReportPackingOrder'),
         path: '/report/packing',
         meta: { hideNavigation: true },

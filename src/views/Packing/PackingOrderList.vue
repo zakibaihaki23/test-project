@@ -9,9 +9,6 @@
               >Create Packing</v-btn
             >
           </div>
-          <div style="padding-left: 240px">
-            <v-btn :to="{ path: '/packing/packing-item' }">Packing Item</v-btn>
-          </div>
         </v-col>
         <v-col md="6" offset="6">
           <div class="search">
@@ -137,7 +134,11 @@
                     <v-divider
                       style="margin-left: 10px;margin-right: 10px"
                     ></v-divider>
-                    <v-list-item link style="width: 150px; ">
+                    <v-list-item
+                      :to="{ path: `/packing-order/update/${props.item.id}` }"
+                      link
+                      style="width: 150px; "
+                    >
                       <div>
                         <v-list-item-title>Update</v-list-item-title>
                       </div>
