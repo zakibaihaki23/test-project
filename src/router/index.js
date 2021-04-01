@@ -99,9 +99,9 @@ const routes = [
         path: '/packing-order/:id',
       },
       {
-        name: 'Packing Item',
-        component: () => import('../views/Packing/PackingItem'),
-        path: '/packing/packing-item/',
+        name: 'Update Packing Order',
+        component: () => import('../views/Packing/UpdatePacking'),
+        path: '/packing-order/update/:id',
       },
     ],
   },
