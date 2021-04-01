@@ -99,7 +99,7 @@
         <template v-slot:item="props">
           <tr>
             <td>
-              <pre>{{ props.item.item.category_type.category_name }}</pre>
+              <pre>{{ props.item.item.item_name }}</pre>
             </td>
             <td>
               <pre>{{ props.item.item.item_uom.item_uom_name }}</pre>
