@@ -75,14 +75,14 @@
     <h1 style="margin-top: 20px">CREDENTIAL</h1>
     <v-row no-gutters>
       <v-col md="6" class="form-right" style="margin-top: 20px">
-        <p>Username <span style="color: red">*</span></p>
+        <p>Email <span style="color: red">*</span></p>
         <v-text-field
-          label="Username *"
+          label="Email *"
           outlined
           single-line
           class="form"
           v-model="helper.username"
-          :error-messages="error.email"
+          :error-messages="error.username"
         >
         </v-text-field>
       </v-col>
@@ -134,24 +134,8 @@
           class="cancel"
           >Cancel</v-btn
         >
-        <v-btn
-          style="margin: 10px;"
-          class="save"
-          @click="save"
-          v-if="
-            helper.name &&
-              helper.phone_number &&
-              helper.password &&
-              helper.confirm_password &&
-              helper.username
-          "
-          >Save</v-btn
-        >
-        <v-btn
-          v-else
-          :disabled="saveDisabled"
-          style="margin: 10px;"
-          class="save"
+        <v-btn style="margin: 10px;" class="save" @click="save">Save</v-btn>
+        <v-btn :disabled="saveDisabled" style="margin: 10px;" class="save"
           >Save</v-btn
         >
       </v-col>
@@ -222,8 +206,7 @@
           })
           .catch((error) => {
             this.error = error.response.data.errors
-            this.$toast.error(error.response.data.message)
-            console.log(error.response.data.errors)
+            this.$toast.error('all required field must be filled')
           })
       },
     },

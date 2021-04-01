@@ -54,11 +54,10 @@
         </v-col>
       </v-row>
     </v-container>
-    <p style="font-size: 20px; margin-top: 25px">Filter</p>
-    <v-col md="12">
-      <v-divider style="margin-right: 40px"></v-divider>
-    </v-col>
-    <v-row>
+    <p style="font-size: 20px; margin-top: 40px">Filter</p>
+    <v-divider style="margin-right: 40px;"></v-divider>
+    <v-col md="12"> </v-col>
+    <v-row style="margin-top: 1px">
       <v-col cols="3" sm="2">
         <SelectStatus v-model="status" @selected="statusSelected">
         </SelectStatus>
@@ -210,7 +209,7 @@
 
           {
             text: 'Type',
-            value: 'type_name',
+            value: 'helper_type.type_name',
             class: 'black--text title',
           },
           {

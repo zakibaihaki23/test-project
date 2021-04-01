@@ -43,6 +43,7 @@
                         style="border-radius: 10px"
                         v-model="item"
                         required
+                        append-icon=""
                       ></v-autocomplete>
                     </v-col>
                     <v-col cols="12">
@@ -93,7 +94,7 @@
         :headers="headers"
         :items="dataTable"
         :page.sync="page"
-        :items-per-page="20"
+        :items-per-page="10"
         :search="search"
         @page-count="pageCount = $event"
         :loading="isLoading"
