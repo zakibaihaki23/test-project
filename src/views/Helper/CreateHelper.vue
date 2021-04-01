@@ -74,7 +74,7 @@
 
     <h1 style="margin-top: 20px">CREDENTIAL</h1>
     <v-row no-gutters>
-      <v-col md="6" class="form-right" style="margin-top: 20px">
+      <v-col md="6" class="form-right">
         <p>Email <span style="color: red">*</span></p>
         <v-text-field
           label="Email *"
@@ -82,12 +82,12 @@
           single-line
           class="form"
           v-model="helper.username"
-          :error-messages="error.username"
+          :error-messages="error.email"
         >
         </v-text-field>
       </v-col>
-      <v-col md="6" style="margin-top: 5px"> </v-col>
-      <v-col md="6" class="form-right" style="margin-top: 5px">
+      <v-col md="6" class="form-right"> </v-col>
+      <v-col md="6" class="form-credential">
         <p>Password <span style="color: red;">*</span></p>
         <v-text-field
           label="Password *"
@@ -102,7 +102,7 @@
         >
         </v-text-field>
       </v-col>
-      <v-col md="6" class="form-right" style="margin-top: 5px">
+      <v-col md="6" class="form-credential">
         <p>Confirm Password <span style="color: red">*</span></p>
         <v-text-field
           label="Confirm Password *"
@@ -110,9 +110,9 @@
           single-line
           class="form"
           v-model="helper.confirm_password"
-          :type="value ? 'password' : 'text'"
-          :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="() => (value = !value)"
+          :type="val_confirm ? 'password' : 'text'"
+          :append-icon="val_confirm ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (val_confirm = !val_confirm)"
           :error-messages="error.confirm_password"
         >
         </v-text-field>
@@ -134,8 +134,24 @@
           class="cancel"
           >Cancel</v-btn
         >
-        <v-btn style="margin: 10px;" class="save" @click="save">Save</v-btn>
-        <v-btn :disabled="saveDisabled" style="margin: 10px;" class="save"
+        <v-btn
+          style="margin: 10px;"
+          class="save"
+          @click="save"
+          v-if="
+            helper.name &&
+              helper.phone_number &&
+              helper.password &&
+              helper.confirm_password &&
+              helper.username
+          "
+          >Save</v-btn
+        >
+        <v-btn
+          v-else
+          :disabled="saveDisabled"
+          style="margin: 10px;"
+          class="save"
           >Save</v-btn
         >
       </v-col>
@@ -157,6 +173,7 @@
           username: '',
         },
         value: String,
+        val_confirm: String,
         warehouse: '',
         warehouse_id: '',
         type_id: '',
@@ -171,16 +188,22 @@
     methods: {
       //untuk mendapatkan list warehouse dari API
       renderData() {
-        this.$http.get('/warehouse').then((response) => {
-          this.warehouse = []
-          let array = response.data.data
-          for (let i = 0; i < array.length; i++) {
-            this.warehouse.push({
-              name: array[i].warehouse_name,
-              value: array[i].id,
-            })
-          }
-        })
+        this.$http
+          .get('/warehouse', {
+            params: {
+              conditions: 'is_archived:0',
+            },
+          })
+          .then((response) => {
+            this.warehouse = []
+            let array = response.data.data
+            for (let i = 0; i < array.length; i++) {
+              this.warehouse.push({
+                name: array[i].warehouse_name,
+                value: array[i].id,
+              })
+            }
+          })
         //untuk mendapatkan list type Helper dari API
         this.$http.get('/helper/helpertype').then((response) => {
           this.types = response.data.data
@@ -222,6 +245,11 @@
     margin-top: 50px;
     padding-right: 90px;
   }
+  .form-credential {
+    margin-top: 20px;
+    padding-right: 90px;
+  }
+
   .name {
     border-radius: 15px;
   }

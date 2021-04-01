@@ -6,7 +6,7 @@
         <v-col md="6">
           <v-dialog v-model="dialog" persistent max-width="491px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on">Create Item</v-btn>
+              <v-btn v-bind="attrs" v-on="on">Add Packable Item</v-btn>
             </template>
             <v-card style="border-radius: 20px;width: 491px; height: 500px;">
               <v-card-title>

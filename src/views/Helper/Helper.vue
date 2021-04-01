@@ -9,17 +9,16 @@
           </div>
         </v-col>
         <v-col md="6" offset="6">
-          <div class="search">
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              rounded
-              label="Search...."
-              solo
-              hide-details
-            >
-            </v-text-field>
-          </div>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            rounded
+            label="Search...."
+            solo
+            hide-details
+            class="search"
+          >
+          </v-text-field>
         </v-col>
         <v-col>
           <!-- <v-menu offset-y>
@@ -183,18 +182,18 @@
         page: 1,
         search: '',
         isLoading: true,
+
         table: [
           {
             text: 'Helper ID',
             value: 'code',
             align: 'left',
-            class: ' black--text title',
           },
           {
             text: 'Name',
             value: 'name',
             align: 'left',
-            class: '  black--text title',
+            class: 'black--text title',
           },
           {
             text: 'Phone Number',
@@ -366,7 +365,9 @@
   .mytable table tr {
     border: none;
   }
-
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+    font-size: 14px;
+  }
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

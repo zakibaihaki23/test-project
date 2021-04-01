@@ -137,6 +137,7 @@
         search: '',
         downloadFile: [],
         group_id: '',
+        archived: null,
       }
     },
 
