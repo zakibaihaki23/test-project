@@ -193,7 +193,7 @@ const routes = [
     },
     children: [
       {
-        name: 'Report Packing',
+        name: 'Report Packing Order',
         component: () => import('../views/Report/ReportPackingOrder'),
         path: '/report/packing',
         meta: { hideNavigation: true },

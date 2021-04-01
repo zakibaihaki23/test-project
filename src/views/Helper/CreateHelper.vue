@@ -11,6 +11,7 @@
             outlined
             class="form"
             v-model="helper.name"
+            :error-messages="error.name"
           >
           </v-text-field>
 
@@ -24,6 +25,7 @@
             item-value="id"
             v-model="type_id"
             :items="types"
+            :error-messages="error.type_id"
           >
           </v-select>
         </div>
@@ -37,6 +39,7 @@
             outlined
             class="form"
             single-line
+            :error-messages="error.phone_number"
           >
           </v-text-field>
           <p>Warehouse <span style="color: red">*</span></p>
@@ -51,6 +54,7 @@
             class="form"
             v-model="warehouse_id"
             append-icon=""
+            :error-messages="error.warehouse_id"
           >
           </v-autocomplete>
         </div>
@@ -71,13 +75,14 @@
     <h1 style="margin-top: 20px">CREDENTIAL</h1>
     <v-row no-gutters>
       <v-col md="6" class="form-right" style="margin-top: 20px">
-        <p>Username <span style="color: red">*</span></p>
+        <p>Email <span style="color: red">*</span></p>
         <v-text-field
-          label="Username *"
+          label="Email *"
           outlined
           single-line
           class="form"
           v-model="helper.username"
+          :error-messages="error.username"
         >
         </v-text-field>
       </v-col>
@@ -93,6 +98,7 @@
           :type="value ? 'password' : 'text'"
           :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="() => (value = !value)"
+          :error-messages="error.password"
         >
         </v-text-field>
       </v-col>
@@ -107,6 +113,7 @@
           :type="value ? 'password' : 'text'"
           :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="() => (value = !value)"
+          :error-messages="error.confirm_password"
         >
         </v-text-field>
       </v-col>
@@ -127,25 +134,8 @@
           class="cancel"
           >Cancel</v-btn
         >
-        <v-btn
-          style="margin: 10px;"
-          class="save"
-          @click="save"
-          v-if="
-            helper.name &&
-              helper.address &&
-              helper.phone_number &&
-              helper.password &&
-              helper.confirm_password &&
-              helper.username
-          "
-          >Save</v-btn
-        >
-        <v-btn
-          v-else
-          :disabled="saveDisabled"
-          style="margin: 10px;"
-          class="save"
+        <v-btn style="margin: 10px;" class="save" @click="save">Save</v-btn>
+        <v-btn :disabled="saveDisabled" style="margin: 10px;" class="save"
           >Save</v-btn
         >
       </v-col>
@@ -171,6 +161,7 @@
         warehouse_id: '',
         type_id: '',
         types: '',
+        error: {},
       }
     },
     created() {
@@ -214,7 +205,8 @@
             this.$toast.success('Data has been saved successfully')
           })
           .catch((error) => {
-            this.$toast.error('Field must be filled')
+            this.error = error.response.data.errors
+            this.$toast.error('all required field must be filled')
           })
       },
     },

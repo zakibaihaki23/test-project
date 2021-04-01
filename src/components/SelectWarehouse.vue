@@ -10,13 +10,13 @@
       item-text="name"
       item-value="value"
       name="warehouse"
-      hide-no-data
       hide-selected
       return-object
       :search-input.sync="search"
       @change="selected"
       clearable
       :disabled="disabled"
+      append-icon=""
     >
     </v-autocomplete>
   </div>
