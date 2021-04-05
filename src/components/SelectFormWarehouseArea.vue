@@ -14,6 +14,7 @@
       :search-input.sync="search"
       @change="selected"
       :disabled="disabled"
+      style="border-radius: 12px"
     >
     </v-select>
   </div>

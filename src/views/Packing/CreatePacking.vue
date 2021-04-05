@@ -19,6 +19,7 @@
               <v-text-field
                 outlined
                 v-model="dateFormatted"
+                style="border-radius: 12px;"
                 label="Delivery Date *"
                 prepend-inner-icon="mdi-calendar"
                 v-on="on"
@@ -49,7 +50,9 @@
           </v-dialog>
 
           <p>Area <span style="color: red">*</span></p>
-          <SelectFormArea v-model="area" @selected="areaSelected">
+          <SelectFormArea 
+           v-model="area" 
+           @selected="areaSelected">
           </SelectFormArea>
         </div>
       </v-col>
@@ -77,7 +80,11 @@
       <!-- BAGIAN BAWAH -->
       <v-col md="12">
         <p>Note <span style="color: red"></span></p>
-        <v-textarea outlined label="Note" v-model="note" solo> </v-textarea>
+        <v-textarea 
+        outlined label="Note" 
+        style="border-radius: 12px"
+        v-model="note" 
+        solo> </v-textarea>
       </v-col>
     </v-row>
 
@@ -179,24 +186,28 @@
             align: 'left',
             with: '10%',
             class: ' black--text title',
+            sortable: false,
           },
           {
             text: 'UOM',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
           {
             text: 'Total Order',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
           {
             text: 'Packer',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
         ],
         // dataTable: {

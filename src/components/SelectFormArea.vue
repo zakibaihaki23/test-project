@@ -13,6 +13,7 @@
       return-object
       :search-input.sync="search"
       @change="selected"
+      style="border-radius: 12px"
     >
     </v-select>
   </div>
