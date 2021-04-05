@@ -1,12 +1,15 @@
 <template>
   <div class="helper">
     <h2>PACKABLE ITEM LIST</h2>
-    <v-container>
-      <v-row no-gutters>
-        <v-col md="6">
+    <!-- SHOW ONLY ON XS DEVICE -->
+    <!-- <v-container>
+      <v-row>
+        <v-col cols="12" sm="6" lg="6" md="6">
           <v-dialog v-model="dialog" persistent max-width="491px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on">Add Packable Item</v-btn>
+              <div class="d-sm-none">
+                <v-btn v-bind="attrs" v-on="on">Add Packable Item</v-btn>
+              </div>
             </template>
             <v-card style="border-radius: 20px;width: 491px; height: 500px;">
               <v-card-title>
@@ -36,26 +39,139 @@
                 <v-container>
                   <v-row style="margin-top: 1px">
                     <v-col cols="12">
-                      <p>Item <span style="color: red">*</span></p>
+                      <p style="color: black">
+                        Item <span style="color: red">*</span>
+                      </p>
                       <v-autocomplete
                         outlined
-                        solo
+                        single-line
                         style="border-radius: 10px"
-                        v-model="item"
+                        item-text="item_name"
+                        item-value="id"
+                        v-model="item_list"
+                        :items="item_input"
                         required
                         append-icon=""
                       ></v-autocomplete>
                     </v-col>
                     <v-col cols="12">
-                      <p style="color: gray">UOM</p>
+                      <p style="color: gray">UOM *</p>
+                      <v-autocomplete
+                        outlined
+                        single-line
+                        item-text="uom"
+                        item-value="uom_id"
+                        :items="item"
+                        style="border-radius: 10px"
+                        v-model="uom"
+                        required
+                        @selected="uomSelected"
+                        append-icon=""
+                      ></v-autocomplete>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn style="margin-left: 25%; bottom: 30px" @click="save">
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-col>
+        <v-col>
+          <div>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              rounded
+              label="Search...."
+              solo
+              class="d-sm-none"
+              style="margin-top: 150px;"
+              hide-details
+            >
+            </v-text-field>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container> -->
+    <!-- FOR ALL DEVICE -->
+    <v-container>
+      <v-row>
+        <v-col cols="3" sm="6" md="6" lg="7">
+          <v-dialog v-model="dialog" persistent max-width="491px">
+            <template v-slot:activator="{ on, attrs }">
+              <div class="d-flex d-none d-sm-block">
+                <v-btn v-bind="attrs" v-on="on">Add Packable Item</v-btn>
+              </div>
+            </template>
+            <v-card style="border-radius: 20px;width: 491px; height: 500px;">
+              <v-card-title>
+                <br />
+                <br />
+                <span
+                  style="padding-top:15px; margin-left: 23%; "
+                  class="headline"
+                  >ADD PACKABLE ITEM</span
+                >
+                <v-spacer></v-spacer>
+                <v-btn
+                  style="margin-left:10px; margin-top: 5px;"
+                  color="red"
+                  dark
+                  fab
+                  small
+                  @click="dialog = false"
+                >
+                  <v-icon>
+                    mdi-close
+                  </v-icon>
+                </v-btn>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row style="margin-top: 1px">
+                    <v-col cols="12">
+                      <p style="color: black">
+                        Item <span style="color: red">*</span>
+                      </p>
+                      <AddPackableItem
+                        v-model="item_list"
+                        @selected="itemSelected"
+                      >
+                      </AddPackableItem>
+                      <!-- <v-autocomplete
+                        outlined
+                        single-line
+                        style="border-radius: 10px"
+                        item-text="item_name"
+                        item-value="id"
+                        v-model="item_list"
+                        :items="item_input"
+                        required
+                        @selected="itemSelected"
+                        append-icon=""
+                        clearable
+                        return-object
+                      >
+                        <template slot="selection" slot-scope="data">
+                          {{ data.item.item_name }}
+                        </template>
+                      </v-autocomplete> -->
+                    </v-col>
+                    <v-col cols="12">
+                      <p style="color: gray">UOM *</p>
                       <v-text-field
                         disabled
                         outlined
-                        solo
+                        single-line
                         style="border-radius: 10px"
-                        label="KG"
                         v-model="uom"
                         required
+                        append-icon=""
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -69,14 +185,15 @@
             </v-card>
           </v-dialog>
         </v-col>
-        <v-col md="6" offset="6">
-          <div class="search">
+        <v-col>
+          <div>
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
               rounded
               label="Search...."
               solo
+              class="search d-flex d-none d-sm-block"
               hide-details
             >
             </v-text-field>
@@ -101,7 +218,7 @@
       >
         <template v-slot:item="props">
           <tr>
-            <td>{{ props.item.group_name }}</td>
+            <td>{{ props.item.item_name }}</td>
             <td>{{ props.item.item_uom.item_uom_name }}</td>
             <td>
               <v-menu offset-y>
@@ -133,14 +250,17 @@
 <script>
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
+  import AddPackableItem from '../../components/AddPackableItem'
   export default {
-    components: { SelectWarehouse, SelectArea },
+    components: { SelectWarehouse, SelectArea, AddPackableItem },
     data() {
       return {
         page: 1,
         dialog: false,
         search: '',
         item: '',
+        item_input: '',
+        item_list: '',
         uom: '',
         isLoading: true,
         headers: [
@@ -151,11 +271,13 @@
           // },
           {
             text: 'Item',
-            value: 'group_name',
+            value: 'item_name',
+            class: 'black--text',
           },
           {
             text: 'UOM',
             value: 'item_uom.item_uom_name',
+            class: 'black--text',
           },
           {
             value: 'actions',
@@ -163,7 +285,6 @@
           },
         ],
         dataTable: [],
-        total: [],
       }
     },
     created() {
@@ -175,16 +296,49 @@
         this.total = [this.total]
       },
       renderData() {
+        // GET PACKABLE WHEN 0
         this.$http
-          .get('/inventory/group', {
+          .get('/inventory/item', {
             params: {
               embeds: 'item_uom_id',
               page: '1',
+              conditions: 'packable:0',
+            },
+          })
+          .then((response) => {
+            this.item_input = []
+
+            let array = response.data.data
+            for (let i = 0; i < array.length; i++) {
+              this.item_input.push({
+                item_name: array[i].item_name,
+                uom: array[i].item_uom.item_uom_name,
+                uom_id: array[i].item_uom.id,
+                value: array[i].id,
+              })
+              // this.itemSelected(response.data.data)
+            }
+          })
+        // GET PACKABLE WHEN 1
+        this.$http
+          .get('/inventory/item', {
+            params: {
+              embeds: 'item_uom_id',
+              page: '1',
+              conditions: 'packable:1',
             },
           })
           .then((response) => {
             this.dataTable = response.data.data
-            this.total = response.data.total
+            this.item = []
+
+            let array = response.data.data
+            for (let i = 0; i < array.length; i++) {
+              this.item.push({
+                item_name: array[i].item_name,
+                id: array[i].id,
+              })
+            }
             this.isLoading = false
 
             if (this.dataTable === null) {
@@ -193,9 +347,19 @@
           })
       },
       save() {
-        localStorage.item = this.item
-        localStorage.uom = this.uom
-        window.location.reload()
+        this.uom_id
+        this.item_list
+        console.log(this.item_list)
+      },
+      itemSelected(d) {
+        this.uom_id = ''
+        this.uom = ''
+        this.item_list = ''
+        if (d) {
+          this.uom_id = d.uom_id
+          this.item_list = d.value
+          this.uom = d.uom
+        }
       },
     },
   }
@@ -207,6 +371,9 @@
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     padding-left: 80px;
     padding-right: 50px;
+  }
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+    font-size: 13px;
   }
   .v-btn:not(.v-btn--round).v-size--default {
     position: absolute;
@@ -252,5 +419,17 @@
   .v-application .blue--text.text--darken-1 {
     color: #1e88e5 !important;
     caret-color: #1e88e5 !important;
+  }
+  .v-menu__content {
+    border-radius: 8px;
+    border: 1px solid #c4c4c4;
+    outline-style: inherit;
+    outline-color: white;
+    box-shadow: none;
+
+    outline-color: #e8eff2;
+  }
+  .v-sheet.v-list {
+    background: #e8eff2;
   }
 </style>
