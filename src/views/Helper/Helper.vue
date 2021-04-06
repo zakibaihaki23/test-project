@@ -380,12 +380,12 @@
 
   .v-btn:not(.v-btn--round).v-size--default {
     position: absolute;
-    width: 200px;
+    width: 145px;
     height: 50px;
     background: #4662d4;
     color: white;
     border-radius: 30px;
-    box-sizing: content-box;
+
     margin-top: 50px;
     text-transform: capitalize;
     cursor: pointer;
