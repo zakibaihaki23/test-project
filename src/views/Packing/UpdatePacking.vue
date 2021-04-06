@@ -1,24 +1,29 @@
 <template>
   <div class="regist">
-    <h1>CREATE PACKING</h1>
+    <h1>UPDATE PACKING</h1>
 
     <!-- BAGIAN KIRI -->
     <v-row no-gutters>
       <v-col md="6">
         <div class="form-right">
+
+          <!-- BAGIAN DELIVERY DATE -->
           <p>Delivery Date <span style="color: red">*</span></p>
           <v-dialog
             ref="dialog"
+            disabled
             v-model="modal"
             :return-value.sync="date"
             :close-on-content-click="false"
             persistent
             width="290px"
+            class="form"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 outlined
                 v-model="dateFormatted"
+                style="border-radius: 12px;"
                 label="Delivery Date *"
                 prepend-inner-icon="mdi-calendar"
                 v-on="on"
@@ -48,25 +53,53 @@
             </v-date-picker>
           </v-dialog>
 
+          <!-- BAGIAN AREA -->
           <p>Area <span style="color: red">*</span></p>
-          <SelectFormArea v-model="area" @selected="areaSelected">
-          </SelectFormArea>
+          <v-select
+            v-model="areaSelected"
+            disabled
+            label="Area"
+            solo
+            outlined
+            :items="area"
+            item-text="city_name"
+            item-value="id"
+            hide-no-data
+            hide-selected
+            return-object
+            :search-input.sync="search"
+            @change="selected"
+            style="border-radius: 12px"
+          >
+          </v-select>
         </div>
       </v-col>
 
       <!-- BAGIAN KANAN -->
       <v-col md="6">
         <div class="form-right">
+
+          <!-- BAGIAN WAREHOUSE -->
           <p style="margin-top:177px;">
             Warehouse <span style="color: red">*</span>
           </p>
-          <SelectFormWarehouseArea
-            v-model="warehouseList"
-            @selected="warehouseSelected"
-            :areaId="area"
-            :disabled="warehouseDisabled"
+          <v-select
+            v-model="warehouse"
+            disabled
+            label="Warehouse"
+            solo
+            outlined
+            :items="items"
+            item-text="name"
+            item-value="value"
+            hide-no-data
+            hide-selected
+            return-object
+            :search-input.sync="search"
+            @change="selected"
+            style="border-radius: 12px"
           >
-          </SelectFormWarehouseArea>
+          </v-select>
 
           <!-- <p>Total Order <span style="color: red">*</span></p>
           <v-text-field label="Total Order *" v-model="total_order" solo>
@@ -77,7 +110,13 @@
       <!-- BAGIAN BAWAH -->
       <v-col md="12">
         <p>Note <span style="color: red"></span></p>
-        <v-textarea outlined label="Note" v-model="note" solo> </v-textarea>
+        <v-textarea 
+        outlined label="Note" 
+        style="border-radius: 12px"
+        v-model="note" 
+        solo
+        class="form"
+        > </v-textarea>
       </v-col>
     </v-row>
 
@@ -98,14 +137,18 @@
       >
         <template v-slot:item="props">
           <tr>
-            <td>{{ props.item.group_name }}</td>
             <td>
-              <pre>{{ props.item.item_uom.item_uom_name }}</pre>
+              <pre>{{ props.item.item.item_name }}</pre>
+            </td>
+            <td>
+              <pre>{{ props.item.item.item_uom.item_uom_name }}</pre>
             </td>
             <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
-            <td>{{ props.item.total_order }}</td>
             <td>
-              <FormInputPacker v-model="packer" @selected="inputPacker">
+              <pre>{{ props.item.quantity }}</pre>
+            </td>
+            <td>
+              <FormInputPacker>
               </FormInputPacker>
             </td>
           </tr>
@@ -151,7 +194,7 @@
         warehouse: '',
         warehouseList: '',
         note: '',
-        warehouse_id: '',
+        warehouse_id: null,
         area: '',
         areaId: '',
         packer: '',
@@ -175,36 +218,33 @@
             align: 'left',
             with: '10%',
             class: ' black--text title',
+            sortable: false,
           },
           {
             text: 'UOM',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
           {
             text: 'Total Order',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
           {
             text: 'Packer',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
         ],
-        // dataTable: {
-        //   warehouse: {
-        //     warehouse_name: '',
-        //   },
-        // },
+        
+        total: [],
       }
-    },
-
-    created() {
-      this.renderData()
     },
 
     computed: {
@@ -243,16 +283,18 @@
         }
 
         this.$http
-          .get('/packing/' + this.$route.params.id, {
+          .get('/packing/item-recap', {
             params: {
-              embeds: 'item_uom_id',
+              // embeds: 'item_uom_id', 'item_quantity',
+              conditions: 'purchaseorder.deliverydate__between:2021-03-30.2021-03-31|purchaseorder.outlet.city.id.e:65536|item.packable:1',
             },
           })
+
           .then((response) => {
             let that = this
             that.dataTable = response.data.data
-
-            console.log(this.dataTable)
+            that.total = response.data.total
+            this.packing.warehouse = response
 
             if (that.dataTable === null) {
               that.dataTable = []
@@ -261,13 +303,6 @@
           .catch((error) => {
             console.log(error)
           })
-
-        // let warehouseId = ''
-        // if (this.warehouse_id) {
-        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        // } else {
-        //   warehouseId = ''
-        // }
       },
 
       save() {
@@ -295,11 +330,15 @@
       },
 
       warehouseSelected(val) {
-        this.warehouse_id = ''
+        this.warehouseList = null
+        this.warehouse_id = null
         if (val) {
+          this.warehouseList = val
           this.warehouse_id = val.value
-        }
+        } 
+        this.renderData()
       },
+
       inputPacker(val) {
         this.packer = ''
         if (val) {

@@ -19,6 +19,7 @@
               <v-text-field
                 outlined
                 v-model="dateFormatted"
+                style="border-radius: 12px;"
                 label="Delivery Date *"
                 prepend-inner-icon="mdi-calendar"
                 v-on="on"
@@ -49,7 +50,9 @@
           </v-dialog>
 
           <p>Area <span style="color: red">*</span></p>
-          <SelectFormArea v-model="area" @selected="areaSelected">
+          <SelectFormArea 
+           v-model="area" 
+           @selected="areaSelected">
           </SelectFormArea>
         </div>
       </v-col>
@@ -68,16 +71,18 @@
           >
           </SelectFormWarehouseArea>
 
-          <!-- <p>Total Order <span style="color: red">*</span></p>
-          <v-text-field label="Total Order *" v-model="total_order" solo>
-          </v-text-field> -->
+        
         </div>
       </v-col>
 
       <!-- BAGIAN BAWAH -->
       <v-col md="12">
         <p>Note <span style="color: red"></span></p>
-        <v-textarea outlined label="Note" v-model="note" solo> </v-textarea>
+        <v-textarea 
+        outlined label="Note" 
+        style="border-radius: 12px"
+        v-model="note" 
+        solo> </v-textarea>
       </v-col>
     </v-row>
 
@@ -98,12 +103,16 @@
       >
         <template v-slot:item="props">
           <tr>
-            <td>{{ props.item.group_name }}</td>
             <td>
-              <pre>{{ props.item.item_uom.item_uom_name }}</pre>
+              <pre>{{ props.item.item_name }}</pre>
+            </td>
+            <td>
+              <pre>{{ props.item.uom_name }}</pre>
             </td>
             <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
-            <td>{{ props.item.total_order }}</td>
+            <td>
+              <pre>{{ props.item.total_order }}</pre>
+            </td>
             <td>
               <FormInputPacker v-model="packer" @selected="inputPacker">
               </FormInputPacker>
@@ -151,13 +160,14 @@
         warehouse: '',
         warehouseList: '',
         note: '',
-        warehouse_id: '',
+        warehouse_id: null,
         area: '',
         areaId: '',
         packer: '',
         warehouseDisabled: true,
         total_order: '',
         delivery_date: '',
+        
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
           .substr(0, 10),
@@ -175,38 +185,34 @@
             align: 'left',
             with: '10%',
             class: ' black--text title',
+            sortable: false,
           },
           {
             text: 'UOM',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
           {
             text: 'Total Order',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
           {
             text: 'Packer',
             align: 'left',
             with: '10%',
             class: '  black--text title',
+            sortable: false,
           },
         ],
-        // dataTable: {
-        //   warehouse: {
-        //     warehouse_name: '',
-        //   },
-        // },
-        total: [],
       }
     },
 
-    created() {
-      this.renderData()
-    },
+    
 
     computed: {
       computedDateFormatted() {
@@ -243,44 +249,42 @@
           areaId = ''
         }
 
+        // RENDER DATA TAMPILAN CREATE PACKABLE
         this.$http
-          .get('/inventory/group', {
+          .get('/packing/item-recap', {
             params: {
-              embeds: 'item_uom_id',
+              // embeds: 'item_uom_id', 'item_quantity',
+              conditions: 'purchaseorder.deliverydate__between:2021-04-02.2021-04-05|purchaseorder.outlet.city.id.e:65536|item.packable:1',
             },
           })
           .then((response) => {
-            let that = this
-            that.dataTable = response.data.data
-            that.total = response.data.total
+            
+            this.dataTable = response.data.data
 
-            if (that.dataTable === null) {
-              that.dataTable = []
+
+            if (this.dataTable === null) {
+              this.dataTable = []
             }
           })
           .catch((error) => {
             console.log(error)
           })
-
-        // let warehouseId = ''
-        // if (this.warehouse_id) {
-        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        // } else {
-        //   warehouseId = ''
-        // }
       },
 
+      //untuk menyimpan data Penambahan ke dalam API
       save() {
         this.$http
           .post('/packing', {
+            area_id: this.area,
             warehouse_id: this.warehouse_id,
             note: this.note,
             total_order: parseInt(this.total_order),
             delivery_date: this.date,
+            items: this.dataTable,
           })
 
           .then((response) => {
-            this.$router.push('/packing')
+            this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
           })
       },
@@ -295,11 +299,15 @@
       },
 
       warehouseSelected(val) {
-        this.warehouse_id = ''
+        this.warehouseList = null
+        this.warehouse_id = null
         if (val) {
+          this.warehouseList = val
           this.warehouse_id = val.value
-        }
+        } 
+        this.renderData()
       },
+
       inputPacker(val) {
         this.packer = ''
         if (val) {
