@@ -7,103 +7,70 @@
       <v-col md="6">
         <div class="form-right">
 
-          <!-- BAGIAN DELIVERY DATE -->
-          <p>Delivery Date <span style="color: red">*</span></p>
-          <v-dialog
-            ref="dialog"
-            disabled
-            v-model="modal"
-            :return-value.sync="date"
-            :close-on-content-click="false"
-            persistent
-            width="290px"
-            class="form"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                outlined
-                v-model="dateFormatted"
-                style="border-radius: 12px;"
-                label="Delivery Date *"
-                prepend-inner-icon="mdi-calendar"
-                v-on="on"
-                v-bind="attrs"
-                readonly
-                solo
-              >
-              </v-text-field>
-            </template>
-            <v-date-picker v-model="date" scrollable>
-              <v-btn
-                text
-                color="primary"
-                style="margin-left: 130px"
-                @click="modal = false"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                style="margin-left: 10px"
-                color="primary"
-                @click="$refs.dialog.save(date)"
-              >
-                OK
-              </v-btn>
-            </v-date-picker>
-          </v-dialog>
 
-          <!-- BAGIAN AREA -->
-          <p>Area <span style="color: red">*</span></p>
-          <v-select
-            v-model="areaSelected"
-            disabled
-            label="Area"
-            solo
-            outlined
-            :items="area"
-            item-text="city_name"
-            item-value="id"
-            hide-no-data
-            hide-selected
-            return-object
-            :search-input.sync="search"
-            @change="selected"
-            style="border-radius: 12px"
-          >
-          </v-select>
+          <!-- PACKING ORDER CODE -->
+          <p style="color: gray">Packing Order Code *</p>
+            <v-text-field
+              v-model="packing.code"
+              disabled
+              outlined
+              single-line
+              class="form"
+              label="Packing Order Code"
+              style="border-radius: 12px;"
+              >
+            </v-text-field>
+
+
+          <!-- AREA -->
+          <p style="color: gray">Area *</p>
+            <v-text-field
+              v-model="packing.area"
+              disabled
+              outlined
+              single-line
+              class="form"
+              label="Area"
+              style="border-radius: 12px;"
+            >
+            </v-text-field>
         </div>
       </v-col>
+
 
       <!-- BAGIAN KANAN -->
       <v-col md="6">
         <div class="form-right">
 
-          <!-- BAGIAN WAREHOUSE -->
-          <p style="margin-top:177px;">
-            Warehouse <span style="color: red">*</span>
-          </p>
-          <v-select
-            v-model="warehouse"
-            disabled
-            label="Warehouse"
-            solo
-            outlined
-            :items="items"
-            item-text="name"
-            item-value="value"
-            hide-no-data
-            hide-selected
-            return-object
-            :search-input.sync="search"
-            @change="selected"
-            style="border-radius: 12px"
-          >
-          </v-select>
 
-          <!-- <p>Total Order <span style="color: red">*</span></p>
-          <v-text-field label="Total Order *" v-model="total_order" solo>
-          </v-text-field> -->
+          <!-- DELIVERY DATE -->
+          <p style="color: gray">Delivery Date *</p>
+           <v-text-field
+              v-model="packing.date"
+              disabled
+              outlined
+              single-line
+              class="form"
+              label="Delivery Date"
+              style="border-radius: 12px;"
+              prepend-inner-icon="mdi-calendar"
+            >
+            </v-text-field>
+          
+
+          <!-- BAGIAN Warehouse -->
+          <p style="color: gray">Warehouse *</p>
+            <v-text-field
+              v-model="packing.warehouse"
+              disabled
+              outlined
+              single-line
+              class="form"
+              label="Warehouse"
+              style="border-radius: 12px;"
+            >
+            </v-text-field>
+            <!-- {{this.packing.warehouse_id}} -->
         </div>
       </v-col>
 
@@ -113,10 +80,8 @@
         <v-textarea 
         outlined label="Note" 
         style="border-radius: 12px"
-        v-model="note" 
-        solo
-        class="form"
-        > </v-textarea>
+        v-model="packing.note" 
+        solo> </v-textarea>
       </v-col>
     </v-row>
 
@@ -124,39 +89,7 @@
     <br />
     <br />
 
-    <!-- BAGIAN TABEL -->
-    <div>
-      <v-data-table
-        loading-text="Please Wait...."
-        :headers="table"
-        :items="dataTable"
-        :page.sync="page"
-        :items-per-page="itemsPerPage"
-        :search="search"
-        @page-count="pageCount = $event"
-      >
-        <template v-slot:item="props">
-          <tr>
-            <td>
-              <pre>{{ props.item.item.item_name }}</pre>
-            </td>
-            <td>
-              <pre>{{ props.item.item.item_uom.item_uom_name }}</pre>
-            </td>
-            <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
-            <td>
-              <pre>{{ props.item.quantity }}</pre>
-            </td>
-            <td>
-              <FormInputPacker>
-              </FormInputPacker>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-
-      <!-- BAGIAN NUMBER TABEL -->
-    </div>
+    
 
     <!-- BAGIAN FOOTER -->
     <br /><br />
@@ -182,172 +115,65 @@
 </template>
 
 <script>
-  import SelectFormArea from '../../components/SelectFormArea'
-  import SelectFormWarehouseArea from '../../components/SelectFormWarehouseArea'
-  import FormInputPacker from '../../components/TabelCreatePacking/FormInputPacker'
 
   export default {
-    components: { SelectFormArea, SelectFormWarehouseArea, FormInputPacker },
+    // components: { SelectFormArea, SelectFormWarehouseArea, FormInputPacker },
 
     data() {
       return {
-        warehouse: '',
-        warehouseList: '',
-        note: '',
-        warehouse_id: null,
-        area: '',
-        areaId: '',
-        packer: '',
-        warehouseDisabled: true,
-        total_order: '',
-        delivery_date: '',
-        date: new Date(Date.now() + 3600 * 1000 * 24)
-          .toISOString()
-          .substr(0, 10),
-        dateFormatted: new Date(Date.now() + 3600 * 1000 * 24)
-          .toISOString()
-          .substr(0, 10),
-        modal: false,
-
-        // SKRIP TABEL
-        page: 1,
-
-        table: [
-          {
-            text: 'Item',
-            align: 'left',
-            with: '10%',
-            class: ' black--text title',
-            sortable: false,
-          },
-          {
-            text: 'UOM',
-            align: 'left',
-            with: '10%',
-            class: '  black--text title',
-            sortable: false,
-          },
-          {
-            text: 'Total Order',
-            align: 'left',
-            with: '10%',
-            class: '  black--text title',
-            sortable: false,
-          },
-          {
-            text: 'Packer',
-            align: 'left',
-            with: '10%',
-            class: '  black--text title',
-            sortable: false,
-          },
-        ],
         
-        total: [],
+        packing: {
+          area: '',
+          warehouse_id: '',
+          note: '',
+          total_order: '',
+          date: '',
+          dataTable: '',
+          code:'',
+        },
+
       }
     },
 
-    computed: {
-      computedDateFormatted() {
-        return this.formatDate(this.date)
-      },
+    created() {
+      this.renderData()
     },
 
-    watch: {
-      date(val) {
-        this.dateFormatted = this.formatDate(this.date)
-      },
-    },
+    
 
+    
     methods: {
-      formatDate(date) {
-        if (!date) return null
-
-        const [year, month, day] = date.split('-')
-        return `${day}/${month}/${year}`
-      },
-
-      parseDate(date) {
-        if (!date) return null
-
-        const [month, day, year] = date.split('/')
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-      },
-
+      //untuk mendapatkan data dari API ke dalam format text-field
       renderData() {
-        let areaId = ''
-        if (this.area) {
-          areaId = 'city_id.e:' + this.area
-        } else {
-          areaId = ''
-        }
-
         this.$http
-          .get('/packing/item-recap', {
-            params: {
-              // embeds: 'item_uom_id', 'item_quantity',
-              conditions: 'purchaseorder.deliverydate__between:2021-03-30.2021-03-31|purchaseorder.outlet.city.id.e:65536|item.packable:1',
-            },
-          })
+          .get('/packing/' + this.$route.params.id,)
 
           .then((response) => {
-            let that = this
-            that.dataTable = response.data.data
-            that.total = response.data.total
-            this.packing.warehouse = response
-
-            if (that.dataTable === null) {
-              that.dataTable = []
-            }
-          })
-          .catch((error) => {
-            console.log(error)
+            this.packing.note = response.data.data.note
+            this.packing.code = response.data.data.document_code
+            this.packing.area = response.data.data.area.city_name
+            this.packing.date = this.$moment(response.data.data.delivery_date).format('DD/MM/YYYY ')
+            this.packing.warehouse_id = response.data.data.warehouse.id
+            this.packing.warehouse = response.data.data.warehouse.warehouse_name
           })
       },
-
+      //menyimpan data update ke dalam API
       save() {
         this.$http
           .post('/packing', {
-            warehouse_id: this.warehouse_id,
-            note: this.note,
-            total_order: parseInt(this.total_order),
-            delivery_date: this.date,
+            note: this.packing.note,
           })
 
           .then((response) => {
-            this.$router.push('/packing')
+            this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
           })
       },
-
-      areaSelected(val) {
-        this.area = ''
-        if (val) {
-          this.area = val.id
-          this.warehouseDisabled = false
-        }
-        this.renderData()
-      },
-
-      warehouseSelected(val) {
-        this.warehouseList = null
-        this.warehouse_id = null
-        if (val) {
-          this.warehouseList = val
-          this.warehouse_id = val.value
-        } 
-        this.renderData()
-      },
-
-      inputPacker(val) {
-        this.packer = ''
-        if (val) {
-          this.packer = val.id
-        }
-      },
     },
+
   }
 </script>
+
 
 <style scoped>
   .regist {
@@ -358,19 +184,6 @@
     margin-top: 50px;
     padding-right: 90px;
   }
-  .name {
-    border-radius: 15px;
-  }
-  /* .cancel {
-    margin-top: 50px;
-    background: #4662d4;
-    color: white;
-    box-sizing: content-box;
-    border-radius: 25px;
-    width: 111px;
-    height: 45px;
-  } */
-
   .btn {
     margin-top: 30px;
     padding-left: 1100px;

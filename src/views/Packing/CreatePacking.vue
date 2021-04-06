@@ -281,6 +281,7 @@
             total_order: parseInt(this.total_order),
             delivery_date: this.date,
             items: this.dataTable,
+          
           })
 
           .then((response) => {
