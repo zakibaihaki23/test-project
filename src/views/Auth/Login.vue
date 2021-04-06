@@ -1,12 +1,22 @@
 <template>
-  <div id="login" class="bigbk">
+  <div id="login" class=".d-flex bigbk">
     <v-flex
       shrink
       pb-3
       class="pa-10 pb-8 text-center"
       style="margin-top: 200px: "
     >
-      <div class="text-center pb-4" style="margin-top: 200px">
+      <div class="d-sm-flex d-md-none" style="margin-top: 100px">
+        <v-layout justify-center align-center>
+          <v-img class="gbr" src="@/assets/Logo-Login.png"></v-img>
+        </v-layout>
+      </div>
+      <div class="d-none d-md-flex d-lg-none" style="margin-top: 100px">
+        <v-layout justify-center align-center>
+          <v-img class="gbr" src="@/assets/Logo-Login.png"></v-img>
+        </v-layout>
+      </div>
+      <div class="d-none d-lg-flex" style="margin-top: 100px">
         <v-layout justify-center align-center>
           <v-img class="gbr" src="@/assets/Logo-Login.png"></v-img>
         </v-layout>
@@ -19,8 +29,13 @@
         flat
         style="bottom: 250px;"
       >
-        <v-container class="login-container">
-          <v-form @submit.prevent="submit" ref="form" v-model="valid">
+        <v-container class="login-container" fluid>
+          <v-form
+            @submit.prevent="submit"
+            ref="form"
+            v-model="valid"
+            lazy-validation
+          >
             <v-text-field
               prepend-inner-icon="mdi-account"
               v-model="form.email"
@@ -56,6 +71,7 @@
               depressed
               type="submit"
               @click="submit"
+              :loading="loading"
             >
               <!----><!----><span>Login</span>
             </v-btn>
@@ -81,6 +97,7 @@
         error: {},
         value: String,
         valid: true,
+        loading: false,
 
         // emailRules: [(v) => !!v || 'E-mail is required'],
         // passwordRules: [
@@ -96,6 +113,7 @@
       }),
 
       submit() {
+        this.loading = true
         this.signIn(this.form)
           .then(() => {
             window.location.reload()
@@ -104,6 +122,7 @@
           .catch((error) => {
             this.error = error.response.data.errors
             this.$toast.error('Something wrong with your input')
+            this.loading = false
           })
       },
     },

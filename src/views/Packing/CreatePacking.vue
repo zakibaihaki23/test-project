@@ -71,9 +71,7 @@
           >
           </SelectFormWarehouseArea>
 
-          <!-- <p>Total Order <span style="color: red">*</span></p>
-          <v-text-field label="Total Order *" v-model="total_order" solo>
-          </v-text-field> -->
+        
         </div>
       </v-col>
 
@@ -106,14 +104,14 @@
         <template v-slot:item="props">
           <tr>
             <td>
-              <pre>{{ props.item.item.item_name }}</pre>
+              <pre>{{ props.item.item_name }}</pre>
             </td>
             <td>
-              <pre>{{ props.item.item.item_uom.item_uom_name }}</pre>
+              <pre>{{ props.item.uom_name }}</pre>
             </td>
             <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
             <td>
-              <pre>{{ props.item.quantity }}</pre>
+              <pre>{{ props.item.total_order }}</pre>
             </td>
             <td>
               <FormInputPacker v-model="packer" @selected="inputPacker">
@@ -169,6 +167,7 @@
         warehouseDisabled: true,
         total_order: '',
         delivery_date: '',
+        
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
           .substr(0, 10),
@@ -210,18 +209,10 @@
             sortable: false,
           },
         ],
-        // dataTable: {
-        //   warehouse: {
-        //     warehouse_name: '',
-        //   },
-        // },
-        total: [],
       }
     },
 
-    // created() {
-    //   this.renderData()
-    // },
+    
 
     computed: {
       computedDateFormatted() {
@@ -258,45 +249,42 @@
           areaId = ''
         }
 
+        // RENDER DATA TAMPILAN CREATE PACKABLE
         this.$http
           .get('/packing/item-recap', {
             params: {
               // embeds: 'item_uom_id', 'item_quantity',
-              conditions: 'purchaseorder.deliverydate__between:2021-03-30.2021-03-31|purchaseorder.outlet.city.id.e:65536|item.packable:1',
+              conditions: 'purchaseorder.deliverydate__between:2021-04-02.2021-04-05|purchaseorder.outlet.city.id.e:65536|item.packable:1',
             },
           })
           .then((response) => {
-            let that = this
-            that.dataTable = response.data.data
-            that.total = response.data.total
+            
+            this.dataTable = response.data.data
 
-            if (that.dataTable === null) {
-              that.dataTable = []
+
+            if (this.dataTable === null) {
+              this.dataTable = []
             }
           })
           .catch((error) => {
             console.log(error)
           })
-
-        // let warehouseId = ''
-        // if (this.warehouse_id) {
-        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        // } else {
-        //   warehouseId = ''
-        // }
       },
 
+      //untuk menyimpan data Penambahan ke dalam API
       save() {
         this.$http
           .post('/packing', {
+            area_id: this.area,
             warehouse_id: this.warehouse_id,
             note: this.note,
             total_order: parseInt(this.total_order),
             delivery_date: this.date,
+            items: this.dataTable,
           })
 
           .then((response) => {
-            this.$router.push('/packing')
+            this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
           })
       },

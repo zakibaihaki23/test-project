@@ -50,7 +50,8 @@
       // },
       renderData() {
         this.$http
-          .get('/user')
+          .get('/helper')
+
           .then((response) => {
             this.packer = response.data.data
             console.log(this.packer)

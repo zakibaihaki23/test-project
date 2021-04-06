@@ -1,93 +1,92 @@
 <template>
   <div class="helper">
     <h2>HELPER LIST</h2>
-    <v-container>
-      <v-row no-gutters>
-        <v-col md="6">
-          <div>
+    <!-- SHOW ONLY ON XS DEVICE -->
+    <!-- <v-container>
+      <v-row>
+        <v-col cols="12" sm="6" lg="6" md="6">
+          <div class="d-sm-none">
             <v-btn :to="{ path: '/helper/create-helper' }">Create Helper</v-btn>
           </div>
         </v-col>
-        <v-col md="6" offset="6">
-          <div class="search">
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              rounded
-              label="Search...."
-              solo
-              hide-details
-            >
-            </v-text-field>
+        <v-col cols="12" sm="6" lg="6" md="6">
+          <div>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  hide-details
+                  class=" d-sm-none"
+                  style="margin-top: 150px;"
+                >
+                </v-text-field>
+              </template>
+              <span>search by helper code, name, or phone number</span>
+            </v-tooltip>
           </div>
-        </v-col>
-        <v-col>
-          <!-- <v-menu offset-y>
-            <template
-              v-slot:activator="{ on, attrs }"
-              style="text-align: center"
-            >
-              <v-btn
-                style="background: #4662D4; color: white; border-radius: 50%; cursor: pointer; top: 55px; margin-right: 50px; right: 35px"
-                fab
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>
-                  mdi-format-align-justify
-                </v-icon>
-              </v-btn>
-            </template>
-            <template class="menu">
-              <v-checkbox
-                dense
-                light
-                multiple
-                v-model="selected"
-                label="John"
-                value="John"
-                style="width: 100px"
-              ></v-checkbox>
-            </template>
-          </v-menu> -->
         </v-col>
       </v-row>
     </v-container>
-    <p style="font-size: 20px; margin-top: 40px">Filter</p>
-    <v-divider style="margin-right: 40px;"></v-divider>
+    <p class="d-sm-none" style="font-size: 25px; margin-top: 40px">
+      Filter
+    </p>
+    <v-divider class="d-sm-none" style="margin-right: 40px;"></v-divider> -->
+    <!-- FOR ALL DEVICE -->
+    <v-container>
+      <v-row>
+        <v-col cols="3" sm="6" md="6" lg="7">
+          <div class="d-flex d-none d-sm-block">
+            <v-btn :to="{ path: '/helper/create-helper' }">Create Helper</v-btn>
+          </div>
+        </v-col>
+        <v-col>
+          <div>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  hide-details
+                  class="search d-flex d-none d-sm-block"
+                >
+                </v-text-field>
+              </template>
+              <span>search by helper code, name, or phone number</span>
+            </v-tooltip>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <p
+      class="d-flex d-none d-sm-block"
+      style="font-size: 25px; margin-top: 40px"
+    >
+      Filter
+    </p>
+    <v-divider
+      class="d-flex d-none d-sm-block"
+      style="margin-right: 40px;"
+    ></v-divider>
     <v-col md="12"> </v-col>
     <v-row style="margin-top: 1px">
-      <v-col cols="3" sm="2">
+      <v-col xl="2" md="2" sm="6" cols="12" lg="2">
         <SelectStatus v-model="status" @selected="statusSelected">
         </SelectStatus>
-        <!-- <v-autocomplete
-          style="border-radius: 15px"
-          outlined
-          label="Status"
-          solo
-          clearable
-          :items="status"
-          item-value="value"
-          item-text="text"
-        >
-        </v-autocomplete> -->
       </v-col>
-      <v-col cols="3" sm="2">
+      <v-col xl="10" md="10" sm="6" cols="12" lg="10">
         <SelectWarehouse v-model="warehouse" @selected="warehouseSelected">
         </SelectWarehouse>
-        <!-- <v-autocomplete
-          style="border-radius: 15px"
-          outlined
-          label="Warehouse"
-          solo
-          :items="warehouse"
-          item-text="name"
-          item-value="id"
-          clearable
-          hide-no-data
-          hide-selected
-        ></v-autocomplete> -->
       </v-col>
     </v-row>
     <br />
@@ -117,7 +116,9 @@
             <td>{{ props.item.helper_type.type_name }}</td>
             <td>{{ props.item.warehouse.warehouse_name }}</td>
             <td v-if="props.item.user">
-              <div v-if="props.item.user.is_active == 0">{{ 'Inactive' }}</div>
+              <div v-if="props.item.user.is_active == 0">
+                {{ 'Inactive' }}
+              </div>
               <div v-else>{{ 'Active' }}</div>
             </td>
             <td v-else>
@@ -183,47 +184,48 @@
         page: 1,
         search: '',
         isLoading: true,
+
         table: [
           {
             text: 'Helper ID',
             value: 'code',
-            align: 'left',
-            class: ' black--text title',
+            class: 'black--text',
           },
           {
             text: 'Name',
             value: 'name',
-            align: 'left',
-            class: '  black--text title',
+            class: 'black--text',
           },
           {
             text: 'Phone Number',
             value: 'phone_number',
-            class: 'black--text title',
+            class: 'black--text',
           },
           {
             text: 'Address',
             value: 'address',
-            class: 'black--text title',
+            class: 'black--text',
           },
 
           {
             text: 'Type',
             value: 'helper_type.type_name',
-            class: 'black--text title',
+            class: 'black--text',
           },
           {
             text: 'Warehouse',
             value: 'warehouse.warehouse_name',
-            class: 'black--text title',
+            class: 'black--text',
           },
           {
             text: 'Status',
             value: 'user.is_active',
-            class: 'black--text title',
+            class: 'black--text',
           },
           {
-            sortable: false,
+            text: 'actions',
+            value: 'actions',
+            class: 'black--text',
           },
         ],
 
@@ -366,7 +368,9 @@
   .mytable table tr {
     border: none;
   }
-
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+    font-size: 13px;
+  }
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -392,12 +396,7 @@
     padding-right: 50px;
     margin-top: 50px;
   }
-  thead {
-    border-radius: 60px;
-  }
-  .v-data-table-header thead {
-    background: red;
-  }
+
   .v-menu__content {
     border-radius: 8px;
     border: 1px solid #c4c4c4;

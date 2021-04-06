@@ -169,7 +169,7 @@
       ],
       items: [
         {
-          name: 'Report Packing Order',
+          name: 'Packing Order',
           path: '/report/packing',
         },
       ],
