@@ -2,7 +2,7 @@
   <div>
     <v-autocomplete
       v-model="statusSelected"
-      style="border-radius: 10px; width: 250px"
+      style="border-radius: 10px; width: 250px;font-size: 13px"
       outlined
       label="Status"
       single-line

@@ -6,7 +6,7 @@
       <v-row>
         <v-col cols="12" sm="6" lg="6" md="6">
           <div class="form-right-1">
-            <p>Name <span style="color: red">*</span></p>
+            <p>Name <span style="color: red;">*</span></p>
             <v-text-field
               single-line
               label="Name *"
@@ -97,6 +97,7 @@
               single-line
               class="form"
               v-model="helper.username"
+              :rules="emailRules"
               :error-messages="error.email"
             >
             </v-text-field>
@@ -140,10 +141,7 @@
       </v-row>
       <br />
       <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br />
+
       <v-divider></v-divider>
       <div class="btn">
         <v-row>
@@ -167,7 +165,8 @@
                   helper.phone_number &&
                   helper.password &&
                   helper.confirm_password &&
-                  helper.username
+                  helper.username &&
+                  emailRules
               "
               >Save</v-btn
             >
@@ -191,6 +190,8 @@
       return {
         saveDisabled: true,
         loading: false,
+        buttonValid: false,
+        emailRules: [(v) => /.+@.+/.test(v) || 'Invalid Email address'],
         rules: [(v) => v.length <= 20 || 'Max 20 characters'],
         helper: {
           name: '',
@@ -212,6 +213,19 @@
     created() {
       this.renderData()
     },
+    // computed:{
+    //   emailRulesValidation(){
+    //     let emailRules = [(v) => /.+@.+/.test(v) || 'Invalid Email address']
+    //     if(this.buttonValid == false){
+    //       this.helper.name = ''
+    //               this.helper.phone_number = ''
+    //               this.helper.password = ''
+    //               this.helper.confirm_password = ''
+    //               this.helper.username = ''
+    //               emailRules
+    //     }
+    //   }
+    // },
 
     methods: {
       //untuk mendapatkan list warehouse dari API
@@ -273,10 +287,12 @@
   }
   .form-right {
     padding-right: 90px;
+    font-size: 20px;
   }
   .form-right-1 {
     margin-top: 50px;
     padding-right: 90px;
+    font-size: 20px;
   }
   .form-credential {
     margin-top: 20px;

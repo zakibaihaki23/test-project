@@ -1,6 +1,6 @@
 <template>
   <div class="helper">
-    <h2>REPORT PACKING</h2>
+    <h1>REPORT PACKING</h1>
     <v-container>
       <v-row no-gutters>
         <v-col md="6">
@@ -305,7 +305,8 @@
     background: #4662d4;
     color: white;
     border-radius: 30px;
-    box-sizing: content-box;
+    font-size: 16px;
+    font-weight: bold;
     margin-top: 50px;
     text-transform: capitalize;
     cursor: pointer;

@@ -82,8 +82,9 @@
           <div class="form-right">
             <p>Address</p>
             <v-textarea
-              counter
+              :counter="20"
               :rules="rules"
+              :max-length="20"
               label="Address"
               v-model="helper.address"
               outlined
@@ -151,10 +152,7 @@
 
     <br />
     <br /><br />
-    <br /><br />
-    <br /><br />
-    <br /><br />
-    <br />
+
     <v-divider></v-divider>
     <div class="btn">
       <v-row>
@@ -308,10 +306,12 @@
   }
   .form-right {
     padding-right: 90px;
+    font-size: 20px;
   }
   .form-right-1 {
     margin-top: 50px;
     padding-right: 90px;
+    font-size: 20px;
   }
   .name {
     border-radius: 15px;

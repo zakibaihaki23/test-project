@@ -1,16 +1,17 @@
 <template>
   <div class="helper">
-    <h2>PACKING ORDER DETAIL</h2>
+    <h1>PACKING ORDER DETAIL</h1>
     <v-row>
-      <v-col md="12" style="margin-top: 29px">
-        <v-list-item-title v-model="packing_code"
+      <v-col md="12" style="margin-top: 1px" v-model="packing_code">
+        <h2>Packing Order Code : {{ this.packing_code }}</h2>
+        <!-- <v-list-item-title 
           >Packing Order Code :
           <span class="ml-4">{{ this.packing_code }}</span></v-list-item-title
-        >
+        > -->
       </v-col>
     </v-row>
     <v-container>
-      <v-row no-gutters style="margin-top: 15px; padding-bottom: 40px">
+      <v-row no-gutters style="margin-top: 15px; ">
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
@@ -29,7 +30,7 @@
           <!-- V-DIALOG BUAT TOMBOL UPLOAD MASUK KE DIALOG -->
           <v-dialog v-model="dialog" persistent max-width="430px">
             <template v-slot:activator="{ on, attrs }">
-              <div style="padding-left: 160px">
+              <div style="padding-left: 250px">
                 <v-btn v-bind="attrs" v-on="on">
                   Upload
                 </v-btn>
@@ -163,27 +164,40 @@
             <td>{{ props.item.total_order }}</td>
             <td>{{ props.item.total_pack }}</td>
             <td>{{ props.item.total_kg }}</td>
-            <pre>{{ props.item.helper }}</pre>
-            <!-- <td>{{ props.item.helper }} - {{ props.item.helper }}</td> -->
+            <!-- <pre>{{ helper }}</pre> -->
+            <td>
+              <div v-if="props.item.helper.length > 0">
+                <div
+                  v-for="(item, idx) in props.item.helper"
+                  :key="idx"
+                  style="padding: 2px"
+                >
+                  {{ item.code }} -
+                  {{ item.name }}
+                </div>
+              </div>
+              <div v-else>
+                -
+              </div>
+            </td>
           </tr>
         </template>
       </v-data-table>
     </div>
-
     <br />
-    <br /><br />
-    <br /><br />
-    <br /><br />
-    <br /><br />
+    <br />
     <br />
     <v-divider></v-divider>
+    <br />
+    <br />
+    <br />
     <div class="btn">
       <v-row>
         <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
           <v-btn
             :to="{ path: '/packing-order' }"
             color="#E6E9ED"
-            style="color: #768F9C; width: 111px; height: 45px; border-radius: 15px; font-size: 14px; margin-left: 87px"
+            style="bottom: 5px;color: #768F9C; width: 111px; height: 45px; border-radius: 15px; font-size: 14px; margin-left: 87px"
             link
             >Back</v-btn
           >
@@ -220,29 +234,40 @@
             text: 'Item',
             value: 'item_name',
             sortable: false,
+            class: 'black--text title',
           },
           {
             text: 'Total Order',
             value: 'total_order',
             sortable: false,
+            class: 'black--text title',
           },
           {
             text: 'Total Packing (Pack)',
             value: 'total_packing',
             sortable: false,
+            class: 'black--text title',
           },
           {
             text: 'Total Packing (KG)',
             value: 'weight',
             sortable: false,
+            class: 'black--text title',
           },
           {
             text: 'Packer',
-            value: 'helper',
+            value: 'helper.code',
             sortable: false,
+            class: 'black--text title',
           },
         ],
         data: [],
+        helper: [
+          {
+            name: '',
+            code: '',
+          },
+        ],
 
         // DOWNLOAD EXEL
         json_fields: {
@@ -343,6 +368,9 @@
     padding-left: 80px;
     padding-right: 50px;
   }
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+    font-size: 17px;
+  }
 
   thead {
     border-radius: 60px;
@@ -360,10 +388,11 @@
   }
   .v-btn:not(.v-btn--round).v-size--default {
     position: absolute;
-    width: 122px;
-    font-size: 13px;
+    width: 200px;
+    font-size: 16px;
     height: 50px;
     background: #4662d4;
+    font-weight: bold;
     color: white;
     border-radius: 25px;
     margin-top: 50px;

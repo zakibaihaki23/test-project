@@ -1,12 +1,12 @@
 <template>
   <div class="helper">
-    <h2>PACKING ORDER LIST</h2>
+    <h1>PACKING ORDER LIST</h1>
     <v-container>
       <v-row>
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
             <v-btn
-              style="margin-top: 50px; background: #4662d4; color: white;  border-radius: 25px; width: 191px; height: 50px; padding: 4px; font-size: 13px; text-transform: capitalize;"
+              style="margin-top: 50px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
               :to="{ path: '/packing-order/create' }"
               >Create Packing Order</v-btn
             >
@@ -202,11 +202,12 @@
         warehouse: null,
         delivery_date_model: '',
         delivery_date: [
+          new Date(Date.now() - 3600 * 1000 * 720).toISOString().substr(0, 10),
           new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
         ],
-        delivery_date2: [
-          new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
-        ],
+        // delivery_date2: [
+        //   new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
+        // ],
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
@@ -463,7 +464,9 @@
     padding-left: 80px;
     padding-right: 50px;
   }
-
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+    font-size: 17px;
+  }
   .search {
     padding-left: 100px;
     padding-right: 50px;
