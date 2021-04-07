@@ -25,7 +25,7 @@
                 v-on="on"
                 v-bind="attrs"
                 readonly
-                solo
+                single-line
               >
               </v-text-field>
             </template>
@@ -82,7 +82,9 @@
         outlined label="Note" 
         style="border-radius: 12px"
         v-model="note" 
-        solo> </v-textarea>
+        single-line
+        > 
+        </v-textarea>
       </v-col>
     </v-row>
 
@@ -120,8 +122,6 @@
           </tr>
         </template>
       </v-data-table>
-
-      <!-- BAGIAN NUMBER TABEL -->
     </div>
 
     <!-- BAGIAN FOOTER -->

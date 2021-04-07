@@ -216,9 +216,9 @@
               }}</span>
             </td>
             <td>{{ props.item.total_order }}</td>
-            <td>{{ props.item.total_packing }}</td>
-            <td>{{ props.item.weight }}</td>
-            <td>{{ props.item.helper.code }} - {{ props.item.helper.name }}</td>
+            <td>{{ props.item.total_pack }}</td>
+            <td>{{ props.item.total_kg }}</td>
+            <!-- <td>{{ props.item.helper.code }} - {{ props.item.helper.name }}</td> -->
           </tr>
         </template>
       </v-data-table>

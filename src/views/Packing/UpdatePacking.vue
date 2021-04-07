@@ -74,14 +74,16 @@
         </div>
       </v-col>
 
-      <!-- BAGIAN BAWAH -->
+      <!-- BAGIAN PANJANG -->
       <v-col md="12">
         <p>Note <span style="color: red"></span></p>
         <v-textarea 
         outlined label="Note" 
         style="border-radius: 12px"
         v-model="packing.note" 
-        solo> </v-textarea>
+        single-line
+        > 
+        </v-textarea>
       </v-col>
     </v-row>
 
@@ -90,6 +92,38 @@
     <br />
 
     
+    <!-- BAGIAN TABEL -->
+    <div>
+      <v-data-table
+        loading-text="Please Wait...."
+        :headers="table"
+        :items="dataTable"
+        :page.sync="page"
+        :items-per-page="itemsPerPage"
+        :search="search"
+        @page-count="pageCount = $event"
+      >
+        <template v-slot:item="props">
+          <tr>
+            <td>
+              <pre>{{ props.item.item_name }}</pre>
+            </td>
+            <td>
+              <pre>{{ props.item.uom_name }}</pre>
+            </td>
+            <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
+            <td>
+              <pre>{{ props.item.total_order }}</pre>
+            </td>
+            <td>
+              <FormInputPacker v-model="packer" @selected="inputPacker">
+              </FormInputPacker>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </div>
+
 
     <!-- BAGIAN FOOTER -->
     <br /><br />
@@ -121,7 +155,6 @@
 
     data() {
       return {
-        
         packing: {
           area: '',
           warehouse_id: '',
@@ -131,7 +164,37 @@
           dataTable: '',
           code:'',
         },
-
+        
+        table: [
+        {
+          text: 'Item',
+          align: 'left',
+          with: '10%',
+          class: ' black--text title',
+          sortable: false,
+        },
+        {
+          text: 'UOM',
+          align: 'left',
+          with: '10%',
+          class: '  black--text title',
+          sortable: false,
+        },
+        {
+          text: 'Total Order',
+          align: 'left',
+          with: '10%',
+          class: '  black--text title',
+          sortable: false,
+        },
+        {
+          text: 'Packer',
+          align: 'left',
+          with: '10%',
+          class: '  black--text title',
+          sortable: false,
+        },
+        ],
       }
     },
 
