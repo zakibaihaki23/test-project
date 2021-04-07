@@ -9,13 +9,15 @@ import Toast from 'vue-toastification'
 import './assets/main.css'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
+import './vee-validate'
+import VueTelInputVuetify from 'vue-tel-input-vuetify/lib'
 
-// import 'vue2-datepicker/locale/id-ID'
+Vue.use(VueTelInputVuetify, {
+  vuetify,
+})
 Vue.use(DatePicker)
-
 Vue.config.silent = true
 // Vue.prototype.moment = moment
-
 Vue.use(http)
 
 import 'vue-toastification/dist/index.css'
