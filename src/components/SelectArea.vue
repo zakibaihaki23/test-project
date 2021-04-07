@@ -2,10 +2,11 @@
   <div>
     <v-autocomplete
       v-model="areaSelected"
-      style="border-radius: 15px; width: 250px"
+      style="border-radius: 10px; width: 250px;font-size: 13px"
       outlined
       label="Area"
-      solo
+      single-line
+      dense
       :items="area"
       item-text="name"
       item-value="value"

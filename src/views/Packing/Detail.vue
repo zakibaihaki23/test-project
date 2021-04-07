@@ -1,7 +1,7 @@
 <template>
   <div class="helper">
     <h2>PACKING ORDER DETAIL</h2>
-    <v-row no-gutters>
+    <v-row>
       <v-col md="12" style="margin-top: 29px">
         <v-list-item-title v-model="packing_code"
           >Packing Order Code :
@@ -12,8 +12,8 @@
     <v-container>
       <v-row no-gutters style="margin-top: 15px; padding-bottom: 40px">
         <!-- FUNGSI DOWNLOAD EXEL -->
-        <v-col md="6">
-          <div>
+        <v-col cols="3" sm="6" md="6" lg="7">
+          <div class="d-flex d-none d-sm-block">
             <v-btn>
               <download-excel
                 class="btn btn-default"
@@ -29,7 +29,7 @@
           <!-- V-DIALOG BUAT TOMBOL UPLOAD MASUK KE DIALOG -->
           <v-dialog v-model="dialog" persistent max-width="430px">
             <template v-slot:activator="{ on, attrs }">
-              <div style="padding-left: 240px">
+              <div style="padding-left: 160px">
                 <v-btn v-bind="attrs" v-on="on">
                   Upload
                 </v-btn>
@@ -117,70 +117,14 @@
                   <br />
                 </v-container>
 
-                <!-- CONTAINER KE-2 -->
-                <!-- <v-container v-if="this.file > 0">
-                  <v-row>
-                    <div style=" padding-left:15%;">
-                      <div
-                        style="
-                width: 280px;
-                height: 270px;
-                background-color:red;
-                border-radius:20px;
-                "
-                      >
-                        <br />
-                        <v-col>
-                          <v-icon
-                            style="margin-left:107px;
-              font-size:45px"
-                          >
-                            mdi-file</v-icon
-                          >
-                        </v-col>
-
-                        <v-col cols="5"> <v-btn>choose file</v-btn></v-col>
-                        <v-col> <span>Or</span></v-col>
-                        <v-col>
-                          <span style="margin-left:85px;"
-                            >Drop File Here</span
-                          ></v-col
-                        >
-                      </div>
-                    </div>
-                  </v-row>
-                  <br />
-                </v-container> -->
-                <v-btn
-                  style="margin-left:32px; margin-top:10px;
-                    width: 320px;
-                    height: 35px;
-                    background: #4662d4;
-                    color: white;
-                    border-radius: 30px;
-                    box-sizing: content-box;
-                    text-transform: capitalize;
-                    cursor: pointer;
-                    padding: 5px;"
-                  color="white"
-                  text
-                  @click="dialog = false"
-                >
-                  <div style="text-align:center;">
-                    Upload
-                  </div>
-                </v-btn>
                 <br />
                 <br />
               </v-card-text>
             </v-card>
           </v-dialog>
         </v-col>
-
-        <v-spacer></v-spacer>
-
-        <v-col md="6" offset="6">
-          <div class="search">
+        <v-col>
+          <div>
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
@@ -188,6 +132,7 @@
               label="Search...."
               solo
               hide-details
+              class="search d-flex d-none d-sm-block"
             >
             </v-text-field>
           </div>
@@ -218,7 +163,8 @@
             <td>{{ props.item.total_order }}</td>
             <td>{{ props.item.total_pack }}</td>
             <td>{{ props.item.total_kg }}</td>
-            <!-- <td>{{ props.item.helper.code }} - {{ props.item.helper.name }}</td> -->
+            <pre>{{ props.item.helper }}</pre>
+            <!-- <td>{{ props.item.helper }} - {{ props.item.helper }}</td> -->
           </tr>
         </template>
       </v-data-table>
@@ -232,14 +178,17 @@
     <br />
     <v-divider></v-divider>
     <div class="btn">
-      <v-btn
-        :to="{ path: '/packing-order' }"
-        color="#E6E9ED"
-        style="margin-left: 80%; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
-        class="cancel"
-        link
-        >Back</v-btn
-      >
+      <v-row>
+        <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
+          <v-btn
+            :to="{ path: '/packing-order' }"
+            color="#E6E9ED"
+            style="color: #768F9C; width: 111px; height: 45px; border-radius: 15px; font-size: 14px; margin-left: 87px"
+            link
+            >Back</v-btn
+          >
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -289,7 +238,7 @@
           },
           {
             text: 'Packer',
-            value: 'packer',
+            value: 'helper',
             sortable: false,
           },
         ],
@@ -411,12 +360,12 @@
   }
   .v-btn:not(.v-btn--round).v-size--default {
     position: absolute;
-    width: 200px;
+    width: 122px;
+    font-size: 13px;
     height: 50px;
     background: #4662d4;
     color: white;
-    border-radius: 30px;
-    box-sizing: content-box;
+    border-radius: 25px;
     margin-top: 50px;
     text-transform: capitalize;
     cursor: pointer;

@@ -72,8 +72,9 @@
           <div class="form-right">
             <p>Address</p>
             <v-textarea
-              counter
+              :counter="20"
               :rules="rules"
+              :max-length="20"
               v-model="helper.address"
               outlined
               single-line

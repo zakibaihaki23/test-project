@@ -40,23 +40,7 @@
     ></v-divider>
     <v-col md="12"> </v-col>
     <v-row style="margin-top: 1px">
-      <v-col cols="12" md="3" xl="2" lg="2" sm="10">
-        <template>
-          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
-        </template>
-      </v-col>
-
-      <v-col cols="12" md="4" lg="3" xl="2" sm="10">
-        <SelectWarehouse
-          :areaId="area"
-          v-model="warehouse"
-          :warehouse="warehouse"
-          @selected="warehouseSelected"
-          :disabled="warehouseDisabled"
-        >
-        </SelectWarehouse>
-      </v-col>
-      <v-col cols="12" md="5" lg="5" xl="4" sm="10">
+      <v-col cols="10" md="4" lg="3" xl="2" sm="6">
         <v-menu
           ref="menu"
           v-model="delivery_date_model"
@@ -68,12 +52,13 @@
           <template v-slot:activator="{ on }">
             <div v-on="on">
               <v-text-field
-                style="border-radius: 15px"
+                style="border-radius: 10px; font-size: 13px"
                 prepend-inner-icon="mdi-calendar"
                 readonly
                 outlined
                 single-line
                 clearable
+                dense
                 @click:clear=";(delivery_date = []), renderData(search)"
                 :value="format_delivery_date"
               >
@@ -94,6 +79,22 @@
             </v-btn>
           </v-date-picker>
         </v-menu>
+      </v-col>
+      <v-col cols="12" md="3" xl="2" lg="2" sm="10">
+        <template>
+          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
+        </template>
+      </v-col>
+
+      <v-col cols="12" md="4" lg="3" xl="2" sm="10">
+        <SelectWarehouse
+          :areaId="area"
+          v-model="warehouse"
+          :warehouse="warehouse"
+          @selected="warehouseSelected"
+          :disabled="warehouseDisabled"
+        >
+        </SelectWarehouse>
       </v-col>
     </v-row>
     <br />
@@ -200,7 +201,12 @@
         warehouseList: '',
         warehouse: null,
         delivery_date_model: '',
-        delivery_date: '',
+        delivery_date: [
+          new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
+        ],
+        delivery_date2: [
+          new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
+        ],
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
@@ -246,7 +252,6 @@
             warehouse_name: '',
           },
         },
-        total: [],
       }
     },
 
@@ -264,11 +269,24 @@
       },
     },
     computed: {
-      // format_delivery_date() {
-      //   if (this.delivery_date)
-      //     return this.$moment(this.delivery_date).format('DD/MM/YYYY')
-      // },
       format_delivery_date() {
+        // if (this.delivery_date) {
+        //   if (this.delivery_date[0] > this.delivery_date[1]) {
+        //     var date = this.delivery_date[1]
+        //     var date2 = this.delivery_date[0]
+        //     this.delivery_date[0] = date
+        //     this.delivery_date[1] = date2
+        //   } else {
+        //     var date = this.delivery_date[0]
+        //     var date2 = this.delivery_date[1]
+        //   }
+        //   let ret =
+        //     this.$moment(date).format('DD/MM/YYYY') +
+        //     ' - ' +
+        //     this.$moment(date2).format('DD/MM/YYYY')
+        //   return ret
+        // }
+
         if (this.delivery_date.length > 0) {
           let ret = ''
           if (this.delivery_date.length == 1) {
@@ -291,9 +309,6 @@
           }
           return ret
         }
-      },
-      dateRangeText() {
-        return this.dates.join(' ~ ')
       },
     },
     methods: {
@@ -360,7 +375,8 @@
         if (this.warehouse_id) {
           if (this.delivery_date) {
             warehouseId = '|warehouse_id.e:' + this.warehouse_id
-          } else {
+          }
+          if (this.delivery_date == '') {
             warehouseId = 'warehouse_id.e:' + this.warehouse_id
           }
         } else {
@@ -451,7 +467,6 @@
   .search {
     padding-left: 100px;
     padding-right: 50px;
-
     margin-top: 50px;
   }
   thead {

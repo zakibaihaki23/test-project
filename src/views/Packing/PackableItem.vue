@@ -104,7 +104,7 @@
           <v-dialog v-model="dialog" persistent max-width="491px">
             <template v-slot:activator="{ on, attrs }">
               <div class="d-flex d-none d-sm-block">
-                <v-btn v-bind="attrs" v-on="on">Add Packable Item</v-btn>
+                <v-btn v-bind="attrs" v-on="on">Create Item</v-btn>
               </div>
             </template>
             <v-card style="border-radius: 20px;width: 491px; height: 500px;">
@@ -143,24 +143,6 @@
                         @selected="itemSelected"
                       >
                       </AddPackableItem>
-                      <!-- <v-autocomplete
-                        outlined
-                        single-line
-                        style="border-radius: 10px"
-                        item-text="item_name"
-                        item-value="id"
-                        v-model="item_list"
-                        :items="item_input"
-                        required
-                        @selected="itemSelected"
-                        append-icon=""
-                        clearable
-                        return-object
-                      >
-                        <template slot="selection" slot-scope="data">
-                          {{ data.item.item_name }}
-                        </template>
-                      </v-autocomplete> -->
                     </v-col>
                     <v-col cols="12">
                       <p style="color: gray">UOM *</p>
@@ -178,7 +160,7 @@
                 </v-container>
               </v-card-text>
               <v-card-actions>
-                <v-btn style="margin-left: 25%; bottom: 30px" @click="save">
+                <v-btn style="margin-left: 155px; bottom: 30px" @click="save">
                   Save
                 </v-btn>
               </v-card-actions>
@@ -377,16 +359,15 @@
   }
   .v-btn:not(.v-btn--round).v-size--default {
     position: absolute;
-    width: 200px;
+    width: 131px;
     height: 50px;
     background: #4662d4;
     color: white;
-    border-radius: 30px;
-    box-sizing: content-box;
+    border-radius: 25px;
+    font-size: 13px;
     margin-top: 50px;
     text-transform: capitalize;
     cursor: pointer;
-    padding: 5px;
   }
   .search {
     padding-left: 100px;

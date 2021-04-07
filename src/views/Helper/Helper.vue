@@ -385,7 +385,7 @@
     background: #4662d4;
     color: white;
     border-radius: 30px;
-
+    font-size: 13px;
     margin-top: 50px;
     text-transform: capitalize;
     cursor: pointer;
