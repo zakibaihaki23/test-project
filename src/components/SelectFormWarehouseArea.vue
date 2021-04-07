@@ -3,7 +3,7 @@
     <v-select
       v-model="warehouse"
       label="Warehouse"
-      solo
+      single-line
       outlined
       :items="items"
       item-text="name"
@@ -14,6 +14,7 @@
       :search-input.sync="search"
       @change="selected"
       :disabled="disabled"
+      style="border-radius: 12px"
     >
     </v-select>
   </div>

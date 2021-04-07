@@ -3,7 +3,7 @@
     <v-select
       v-model="areaSelected"
       label="Area"
-      solo
+      single-line
       outlined
       :items="area"
       item-text="city_name"
@@ -13,6 +13,7 @@
       return-object
       :search-input.sync="search"
       @change="selected"
+      style="border-radius: 12px"
     >
     </v-select>
   </div>
