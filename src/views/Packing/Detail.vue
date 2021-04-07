@@ -166,7 +166,7 @@
             <td>{{ props.item.total_kg }}</td>
             <!-- <pre>{{ helper }}</pre> -->
             <td>
-              <div v-if="props.item.helper.length > 0">
+              <div v-if="props.item.helper">
                 <div
                   v-for="(item, idx) in props.item.helper"
                   :key="idx"
@@ -262,12 +262,12 @@
           },
         ],
         data: [],
-        helper: [
-          {
-            name: '',
-            code: '',
-          },
-        ],
+        // helper: [
+        //   {
+        //     name: '',
+        //     code: '',
+        //   },
+        // ],
 
         // DOWNLOAD EXEL
         json_fields: {
