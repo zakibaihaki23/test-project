@@ -103,7 +103,7 @@
         <v-col cols="3" sm="6" md="6" lg="7">
           <template>
             <div class="d-flex d-none d-sm-block">
-              <v-btn @click="openDialog">Create Item</v-btn>
+              <v-btn @click="openDialog">Add Packable Item</v-btn>
             </div>
           </template>
           <v-dialog v-model="dialog" persistent max-width="491px">
@@ -174,16 +174,23 @@
         </v-col>
         <v-col>
           <div>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              rounded
-              label="Search...."
-              solo
-              class="search d-flex d-none d-sm-block"
-              hide-details
-            >
-            </v-text-field>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  class="search d-flex d-none d-sm-block"
+                  hide-details
+                >
+                </v-text-field>
+              </template>
+              <span>Search by item name</span>
+            </v-tooltip>
           </div>
         </v-col>
       </v-row>
@@ -386,7 +393,7 @@
   }
   .v-btn:not(.v-btn--round).v-size--default {
     position: absolute;
-    width: 200px;
+    width: 220px;
     font-weight: bold;
     height: 50px;
     background: #4662d4;

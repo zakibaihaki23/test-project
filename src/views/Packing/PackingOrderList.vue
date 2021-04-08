@@ -14,16 +14,23 @@
         </v-col>
         <v-col>
           <div>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              rounded
-              label="Search...."
-              solo
-              hide-details
-              class="search d-flex d-none d-sm-block"
-            >
-            </v-text-field>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  hide-details
+                  class="search d-flex d-none d-sm-block"
+                >
+                </v-text-field>
+              </template>
+              <span>search by packing order code</span>
+            </v-tooltip>
           </div>
         </v-col>
       </v-row>
