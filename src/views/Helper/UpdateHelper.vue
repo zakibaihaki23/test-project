@@ -59,6 +59,7 @@
               outlined
               single-line
               class="form"
+              :error-messages="error.phone_number"
             >
             </v-text-field>
           </div>
