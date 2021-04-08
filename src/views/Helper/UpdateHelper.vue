@@ -2,188 +2,219 @@
   <div class="regist">
     <h1>UPDATE HELPER</h1>
     <v-row></v-row>
-    <v-form>
-      <v-row>
-        <v-col cols="12" sm="6" lg="6" md="6" style="margin-right: 90px">
-          <div class="form-right-1">
-            <p style="color: gray">Helper ID *</p>
-            <v-text-field
-              disabled
-              v-model="helper.code"
-              outlined
-              single-line
-              class="form"
-            >
-            </v-text-field>
-          </div>
-        </v-col>
+    <ValidationObserver ref="obs" v-slot="{ invalid, validated }">
+      <v-form>
+        <v-row>
+          <v-col cols="12" sm="6" lg="6" md="6" style="margin-right: 90px">
+            <div class="form-right-1">
+              <ValidationProvider rules="required">
+                <p style="color: gray">Helper ID *</p>
+                <v-text-field
+                  disabled
+                  v-model="helper.code"
+                  outlined
+                  single-line
+                  class="form"
+                >
+                </v-text-field>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <!-- </v-row> -->
+          <!-- <v-row no-gutters> -->
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p>Name <span style="color: red">*</span></p>
+                <v-text-field
+                  label="Name"
+                  v-model="helper.name"
+                  outlined
+                  single-line
+                  class="form"
+                  :error-messages="error.name"
+                >
+                </v-text-field>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p>Type <span style="color: red">*</span></p>
+                <v-select
+                  v-model="type_id"
+                  :items="type"
+                  item-text="type_name"
+                  item-value="id"
+                  @selected="typeSelected"
+                  outlined
+                  single-line
+                  class="form"
+                >
+                </v-select>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p>Phone Number <span style="color: red">*</span></p>
+                <v-text-field
+                  maxlength="12"
+                  onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                  label="Phone Number"
+                  v-model="helper.phone_number"
+                  outlined
+                  single-line
+                  class="form"
+                  :error-messages="error.phone_number"
+                >
+                </v-text-field>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p>Warehouse <span style="color: red">*</span></p>
+                <v-autocomplete
+                  :items="warehouse"
+                  v-model="warehouse_list"
+                  item-text="warehouse_name"
+                  item-value="id"
+                  @selected="warehouseSelected"
+                  outlined
+                  single-line
+                  class="form"
+                  append-icon=""
+                >
+                </v-autocomplete>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <v-col cols="12">
+            <div class="form-right">
+              <p>Address</p>
+              <v-textarea
+                :counter="20"
+                :rules="rules"
+                :max-length="20"
+                label="Address"
+                v-model="helper.address"
+                outlined
+                single-line
+                class="form"
+              >
+              </v-textarea>
+            </div>
+          </v-col>
+        </v-row>
+
         <!-- </v-row> -->
-        <!-- <v-row no-gutters> -->
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="form-right">
-            <p>Name <span style="color: red">*</span></p>
-            <v-text-field
-              label="Name"
-              v-model="helper.name"
-              outlined
-              single-line
-              class="form"
-            >
-            </v-text-field>
-          </div>
-        </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="form-right">
-            <p>Type <span style="color: red">*</span></p>
-            <v-select
-              v-model="type_id"
-              :items="type"
-              item-text="type_name"
-              item-value="id"
-              @selected="typeSelected"
-              outlined
-              single-line
-              class="form"
-            >
-            </v-select>
-          </div>
-        </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="form-right">
-            <p>Phone Number <span style="color: red">*</span></p>
-            <v-text-field
-              maxlength="12"
-              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-              label="Phone Number"
-              v-model="helper.phone_number"
-              outlined
-              single-line
-              class="form"
-              :error-messages="error.phone_number"
-            >
-            </v-text-field>
-          </div>
-        </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="form-right">
-            <p>Warehouse <span style="color: red">*</span></p>
-            <v-autocomplete
-              :items="warehouse"
-              v-model="warehouse_list"
-              item-text="warehouse_name"
-              item-value="id"
-              @selected="warehouseSelected"
-              outlined
-              single-line
-              class="form"
-              append-icon=""
-            >
-            </v-autocomplete>
-          </div>
-        </v-col>
-        <v-col cols="12">
-          <div class="form-right">
-            <p>Address</p>
-            <v-textarea
-              :counter="20"
-              :rules="rules"
-              :max-length="20"
-              label="Address"
-              v-model="helper.address"
-              outlined
-              single-line
-              class="form"
-            >
-            </v-textarea>
-          </div>
-        </v-col>
-      </v-row>
 
-      <!-- </v-row> -->
-
-      <h1 style="margin-top: 20px">CREDENTIAL</h1>
-      <v-row style="margin-top: 20px">
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="form-right">
-            <p style="color: gray">Email *</p>
-            <v-text-field
-              label="Email *"
-              outlined
-              disabled
-              single-line
-              class="form"
-              v-model="helper.username"
-            >
-            </v-text-field>
-          </div>
-        </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6"> </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="form-right">
-            <p>Password <span style="color: red;">*</span></p>
-            <v-text-field
-              label="Password *"
-              outlined
-              single-line
-              class="form"
-              v-model="helper.password"
-              :type="value ? 'password' : 'text'"
-              :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-              @click:append="() => (value = !value)"
-            >
-            </v-text-field>
-          </div>
-        </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="form-right">
-            <p>Confirm Password <span style="color: red">*</span></p>
-            <v-text-field
-              label="Confirm Password *"
-              outlined
-              single-line
-              class="form"
-              v-model="helper.confirm_password"
-              :type="value ? 'password' : 'text'"
-              :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-              @click:append="() => (value = !value)"
-            >
-            </v-text-field>
-          </div>
-        </v-col>
-      </v-row>
-    </v-form>
-
-    <br />
-    <br /><br />
-
-    <v-divider></v-divider>
-    <div class="btn">
-      <v-row>
-        <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
-          <v-btn
-            :to="{ path: '/helper' }"
-            color="#E6E9ED"
-            style="margin: 10px; color: #768F9C"
-            class="cancel"
-            >Cancel</v-btn
-          >
-        </v-col>
-        <v-col md="1" sm="2" cols="7" lg="1" class="text-right">
-          <v-btn
-            style="margin: 10px;"
-            class="save"
-            @click="save"
-            :loading="loading"
-            >Save</v-btn
-          >
-        </v-col>
-      </v-row>
-    </div>
+        <h1 style="margin-top: 20px">CREDENTIAL</h1>
+        <v-row style="margin-top: 20px">
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p style="color: gray">Email *</p>
+                <v-text-field
+                  label="Email *"
+                  outlined
+                  disabled
+                  single-line
+                  class="form"
+                  v-model="helper.username"
+                >
+                </v-text-field>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="6"> </v-col>
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p>Password <span style="color: red;">*</span></p>
+                <v-text-field
+                  label="Password *"
+                  outlined
+                  single-line
+                  class="form"
+                  v-model="helper.password"
+                  :type="value ? 'password' : 'text'"
+                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="() => (value = !value)"
+                  :error-messages="error.password"
+                >
+                </v-text-field>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p>Confirm Password <span style="color: red">*</span></p>
+                <v-text-field
+                  label="Confirm Password *"
+                  outlined
+                  single-line
+                  class="form"
+                  v-model="helper.confirm_password"
+                  :type="value ? 'password' : 'text'"
+                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="() => (value = !value)"
+                  :error-messages="error.confirm_password"
+                >
+                </v-text-field>
+              </ValidationProvider>
+            </div>
+          </v-col>
+        </v-row>
+        <br />
+        <br /><br />
+        <v-divider></v-divider>
+        <div class="btn">
+          <v-row>
+            <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
+              <v-btn
+                :to="{ path: '/helper' }"
+                color="#E6E9ED"
+                style="margin: 10px; color: #768F9C"
+                class="cancel"
+                >Cancel</v-btn
+              >
+            </v-col>
+            <v-col md="1" sm="2" cols="7" lg="1" class="text-right">
+              <v-btn
+                style="margin: 10px;"
+                class="save"
+                :loading="loading"
+                v-if="!invalid && !validated"
+                @click="save"
+                >Save</v-btn
+              >
+              <v-btn
+                style="margin: 10px;"
+                class="save"
+                :loading="loading"
+                v-else
+                :disabled="invalid || !validated"
+                @click="save"
+                >Save</v-btn
+              >
+            </v-col>
+          </v-row>
+        </div>
+      </v-form>
+    </ValidationObserver>
   </div>
 </template>
 
 <script>
+  import { ValidationObserver, ValidationProvider } from 'vee-validate'
   export default {
+    components: { ValidationProvider, ValidationObserver },
     data() {
       return {
         edit: '',
@@ -208,6 +239,7 @@
           password: '',
           confirm_password: '',
         },
+        error: {},
       }
     },
     created() {
@@ -279,7 +311,7 @@
           })
           .catch((error) => {
             this.loading = false
-            this.$toast.error('Field must be filled')
+            this.error = error.response.data.errors
           })
       },
       typeSelected(d) {

@@ -39,34 +39,9 @@
       class="d-flex d-none d-sm-block"
       style="margin-right: 40px;"
     ></v-divider>
-    <v-row style="margin-top: 10px">
+    <v-col md="12"> </v-col>
+    <v-row style="margin-top: 1px">
       <v-col cols="10" md="4" lg="3" xl="2" sm="6">
-        <template>
-          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
-        </template>
-      </v-col>
-
-      <v-col cols="12" md="3" xl="2" lg="2" sm="10">
-        <SelectWarehouse
-          :areaId="area"
-          v-model="warehouse"
-          :warehouse="warehouse"
-          @selected="warehouseSelected"
-          :disabled="warehouseDisabled"
-        >
-        </SelectWarehouse>
-        <!-- <v-autocomplete
-          style="border-radius: 15px"
-          outlined
-          label="Warehouse"
-          solo
-          item-text="name"
-          clearable
-          hide-no-data
-          hide-selected
-        ></v-autocomplete> -->
-      </v-col>
-      <v-col cols="12" md="4" lg="3" xl="2" sm="10">
         <v-menu
           ref="menu"
           v-model="delivery_date_model"
@@ -106,9 +81,24 @@
           </v-date-picker>
         </v-menu>
       </v-col>
+      <v-col cols="12" md="3" xl="2" lg="2" sm="10">
+        <template>
+          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
+        </template>
+      </v-col>
+
+      <v-col cols="12" md="4" lg="3" xl="2" sm="10">
+        <SelectWarehouse
+          :areaId="area"
+          v-model="warehouse"
+          :warehouse="warehouse"
+          @selected="warehouseSelected"
+          :disabled="warehouseDisabled"
+        >
+        </SelectWarehouse>
+      </v-col>
     </v-row>
     <v-flex
-      shrink
       pb-3
       class="pa-10 pb-8 text-center"
       style="margin-top: 200px;"
@@ -173,14 +163,6 @@
     },
 
     watch: {
-      // search: {
-      //   handler: function(val) {
-      //     let that = this
-      //     that.renderData(val, this.warehouse)
-      //   },
-      //   deep: true,
-      // },
-
       warehouse: {
         handler: function(val) {
           this.renderData('', val)
@@ -228,17 +210,6 @@
         } else {
           areaId = ''
         }
-
-        // let date = ''
-        // if (this.date) {
-        //   if (this.warehouse_id) {
-        //     date = this.date
-        //   } else {
-        //     date = +this.date
-        //   }
-        // } else {
-        //   date = ''
-        // }
 
         this.$http
           .get('/warehouse', {
@@ -290,21 +261,6 @@
           this.warehouse_id = null
           this.downloadDisabled = false
         }
-
-        // this.area = ''
-        // this.areaId = ''
-        // if (area !== null) {
-        //   this.area = area.value
-        //   this.warehouseDisabled = false
-        // }
-        // this.renderData('')
-        // if (area == null) {
-        //   this.warehouse = ''
-        //   this.warehouse_id = ''
-        //   this.warehouse = this.warehouseDisabled = true
-        //   this.downloadDisabled = true
-        // }
-        // this.renderData('')
       },
       warehouseSelected(val) {
         this.warehouse = null
@@ -317,20 +273,6 @@
           this.downloadDisabled = false
         }
         this.renderData('')
-
-        // this.warehouse = null
-        // this.warehouse_id = null
-        // this.renderData('')
-        // if (val) {
-        //   this.warehouse = val.name
-        //   this.warehouse_id = val.value
-        //   this.downloadDisabled = false
-        // } else {
-        //   this.downloadDisabled = true
-        // }
-        // if (warehouse == null) {
-        //   this.downloadDisabled = true
-        // }
       },
     },
   }

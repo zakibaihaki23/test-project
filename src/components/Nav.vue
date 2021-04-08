@@ -98,9 +98,10 @@
     >
       <v-list>
         <v-list-item>
-          <v-list-item-content>
-            <v-img src="@/assets/Logo-Eden.png"></v-img>
-          </v-list-item-content>
+          <v-img
+            style="padding: 1px; margin-top: 10px"
+            src="@/assets/Logo-Eden.png"
+          ></v-img>
         </v-list-item>
       </v-list>
 
