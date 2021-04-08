@@ -17,8 +17,7 @@
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
             <v-btn 
-            @click="DownloadFile"
-            
+            @click="DownloadFile()"
             >
             Download
             </v-btn>
@@ -212,7 +211,6 @@
   import axios from 'axios'
 
 
-
   export default {
     components: { SelectWarehouse, SelectArea },
     data() {
@@ -290,18 +288,15 @@
 
       // Ambil Link Dari Postman
       DownloadFile() {
+        
         this.$http
           .get('/packing/'+ this.$route.params.id + '/template?export=1')
 
-          // axios({
-          //   url: 'http://storage.edenfarm.tech/magang/Packing_WHJKT001_07042021.xlsx',
-          //   method: 'GET',
-
           .then((response) => {
-            this.DownloadFile = response.data.file
-
+            window.open(response.data.file);
             console.log(response.data.file)
           })
+
       },
 
      
