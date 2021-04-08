@@ -36,7 +36,10 @@
     watch: {
       clear: {
         handler: function(val) {
-          this.renderData()
+          this.renderData('')
+          if (val == true) {
+            this.item_list = ''
+          }
         },
         deep: true,
       },

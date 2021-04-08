@@ -48,7 +48,7 @@
                         style="border-radius: 10px"
                         item-text="item_name"
                         item-value="id"
-                        v-model="item_list"
+                        v-model="packable_item"
                         :items="item_input"
                         required
                         append-icon=""
@@ -101,12 +101,12 @@
     <v-container>
       <v-row>
         <v-col cols="3" sm="6" md="6" lg="7">
+          <template>
+            <div class="d-flex d-none d-sm-block">
+              <v-btn @click="openDialog">Create Item</v-btn>
+            </div>
+          </template>
           <v-dialog v-model="dialog" persistent max-width="491px">
-            <template v-slot:activator="{ on, attrs }">
-              <div class="d-flex d-none d-sm-block">
-                <v-btn v-bind="attrs" v-on="on">Create Item</v-btn>
-              </div>
-            </template>
             <v-card style="border-radius: 20px;width: 491px; height: 500px;">
               <v-card-title>
                 <br />
@@ -139,8 +139,9 @@
                         Item <span style="color: red">*</span>
                       </p>
                       <AddPackableItem
-                        v-model="item_list"
+                        v-model="packable_item"
                         @selected="itemSelected"
+                        :clear="clear"
                       >
                       </AddPackableItem>
                     </v-col>
@@ -163,6 +164,7 @@
                 <v-btn
                   style="margin-left: 130px; bottom: 30px; font-size: 16px"
                   @click="save"
+                  :loading="loading"
                 >
                   Save
                 </v-btn>
@@ -241,13 +243,16 @@
     data() {
       return {
         page: 1,
+        clearItem: false,
         dialog: false,
         search: '',
         item: '',
         item_input: '',
-        item_list: '',
+        packable_item: null,
         uom: '',
+        clear: '',
         isLoading: true,
+        loading: false,
         headers: [
           // {
           //   text: 'No.',
@@ -274,12 +279,19 @@
       }
     },
     created() {
-      this.renderData()
+      this.renderData('')
     },
+
     methods: {
+      openDialog() {
+        // this.clearItem = true
+        // this.item_name = null
+        // this.packable_item = null
+        this.uom = null
+        this.dialog = true
+      },
       initialize() {
         this.dataTable = [this.dataTable]
-        this.total = [this.total]
       },
       renderData() {
         // GET PACKABLE WHEN 0
@@ -293,7 +305,6 @@
           })
           .then((response) => {
             this.item_input = []
-
             let array = response.data.data
             for (let i = 0; i < array.length; i++) {
               this.item_input.push({
@@ -302,6 +313,7 @@
                 uom_id: array[i].item_uom.id,
                 value: array[i].id,
               })
+
               // this.itemSelected(response.data.data)
             }
           })
@@ -309,6 +321,7 @@
         this.$http
           .get('/inventory/item', {
             params: {
+              orderby: '-id',
               embeds: 'item_uom_id',
               page: '1',
               conditions: 'packable:1',
@@ -333,22 +346,28 @@
           })
       },
       save() {
+        this.loading = true
+        this.clear = false
         this.$http
-          .put('/inventory/item/packable/' + this.item_list, {})
+          .put('/inventory/item/packable/' + this.packable_item, {})
           .then((response) => {
+            this.loading = false
             this.dialog = false
-            this.$toast.success('Add packable ' + response.data.status)
             this.renderData()
+            this.clear = true
+            this.$toast.success('Add packable ' + response.data.status)
           })
       },
       itemSelected(d) {
         this.uom_id = ''
         this.uom = ''
-        this.item_list = ''
+        this.packable_item = ''
+        this.item_name = ''
         if (d) {
           this.uom_id = d.uom_id
-          this.item_list = d.value
+          this.packable_item = d.value
           this.uom = d.uom
+          this.item_name = d.item_name
         }
       },
     },

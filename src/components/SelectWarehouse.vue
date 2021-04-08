@@ -39,7 +39,6 @@
     },
     mounted() {
       this.renderData('', this.areaId)
-      console.log(this.clear)
     },
     watch: {
       warehouse: {
