@@ -2,7 +2,7 @@
   <div class="regist">
     <h1>CREATE HELPER</h1>
     <v-row></v-row>
-    <ValidationObserver ref="obs" v-slot="{ invalid, validated, save }">
+    <ValidationObserver ref="obs" v-slot="{ invalid, validated }">
       <v-form>
         <v-row>
           <v-col cols="12" sm="6" lg="6" md="6">
@@ -27,7 +27,7 @@
                 <p>Phone Number <span style="color: red">*</span></p>
                 <v-text-field
                   v-model="helper.phone_number"
-                  maxlength="12"
+                  maxlength="15"
                   onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                   label="Phone Number"
                   outlined
@@ -276,7 +276,6 @@
           .catch((error) => {
             this.loading = false
             this.error = error.response.data.errors
-            this.$toast.error('all required field must be filled')
           })
       },
     },

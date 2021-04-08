@@ -29,7 +29,8 @@
               >
               </v-text-field>
             </template>
-            <v-date-picker v-model="date" scrollable>
+            <v-date-picker 
+              v-model="date" scrollable>
               <v-btn
                 text
                 color="primary"
@@ -86,6 +87,8 @@
         > 
         </v-textarea>
       </v-col>
+
+      <!-- <pre>{{dataTable}}</pre> -->
     </v-row>
 
     <br />
@@ -248,19 +251,20 @@
         } else {
           areaId = ''
         }
+        let updatedate = this.$moment(this.date).add(7).format('YYYY-MM-DD')
+        console.log(updatedate)
 
         // RENDER DATA TAMPILAN CREATE PACKABLE
         this.$http
           .get('/packing/item-recap', {
             params: {
               // embeds: 'item_uom_id', 'item_quantity',
-              conditions: 'purchaseorder.deliverydate__between:2021-04-02.2021-04-05|purchaseorder.outlet.city.id.e:65536|item.packable:1',
+              conditions: 'purchaseorder.deliverydate:'+updatedate+'T07:00:00+07:00',
             },
           })
           .then((response) => {
             
             this.dataTable = response.data.data
-
 
             if (this.dataTable === null) {
               this.dataTable = []
@@ -273,6 +277,12 @@
 
       //untuk menyimpan data Penambahan ke dalam API
       save() {
+          // var items = []
+          // for (let i = 0; i < this.dataTable.length; i++) {
+          //   items[i] = {
+          //     item_id: this.dataTable[i].id,
+          //   }
+          // }
         this.$http
           .post('/packing', {
             area_id: this.area,
@@ -280,13 +290,13 @@
             note: this.note,
             total_order: parseInt(this.total_order),
             delivery_date: this.date,
-            items: this.dataTable,
-          
+            items:this.dataTable,
           })
 
           .then((response) => {
             this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
+            console.log(this.dataTable)
           })
       },
 
@@ -313,7 +323,9 @@
         this.packer = ''
         if (val) {
           this.packer = val.id
+          console.log(val)
         }
+        console.log(this.packer)
       },
     },
   }

@@ -2,14 +2,19 @@
   <div class="helper">
     <h1>REPORT PACKING</h1>
     <v-container>
-      <v-row no-gutters>
-        <v-col md="6">
-          <div>
-            <v-btn v-model="download" v-show="downloadDisabled">Download</v-btn>
+      <v-row>
+        <v-col cols="3" sm="6" md="6" lg="7">
+          <div class="d-flex d-none d-sm-block">
+            <v-btn
+              style="margin-top: 50px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+              v-model="download"
+              v-show="downloadDisabled"
+              >Download</v-btn
+            >
           </div>
         </v-col>
-        <v-col md="6" offset="6">
-          <div class="search">
+        <v-col>
+          <div>
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
@@ -17,41 +22,26 @@
               label="Search...."
               solo
               hide-details
+              class="search d-flex d-none d-sm-block"
             >
             </v-text-field>
           </div>
         </v-col>
       </v-row>
     </v-container>
-    <p style="font-size: 20px; margin-top: 40px">Filter</p>
-    <v-row>
-      <v-col cols="2">
-        <template>
-          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
-        </template>
-      </v-col>
-
-      <v-col cols="2">
-        <SelectWarehouse
-          :areaId="area"
-          v-model="warehouse"
-          :warehouse="warehouse"
-          @selected="warehouseSelected"
-          :disabled="warehouseDisabled"
-        >
-        </SelectWarehouse>
-        <!-- <v-autocomplete
-          style="border-radius: 15px"
-          outlined
-          label="Warehouse"
-          solo
-          item-text="name"
-          clearable
-          hide-no-data
-          hide-selected
-        ></v-autocomplete> -->
-      </v-col>
-      <v-col cols="3">
+    <p
+      class="d-flex d-none d-sm-block"
+      style="font-size: 20px; margin-top: 40px"
+    >
+      Filter
+    </p>
+    <v-divider
+      class="d-flex d-none d-sm-block"
+      style="margin-right: 40px;"
+    ></v-divider>
+    <v-col md="12"> </v-col>
+    <v-row style="margin-top: 1px">
+      <v-col cols="10" md="4" lg="3" xl="2" sm="6">
         <v-menu
           ref="menu"
           v-model="delivery_date_model"
@@ -63,14 +53,15 @@
           <template v-slot:activator="{ on }">
             <div v-on="on">
               <v-text-field
-                style="border-radius: 15px"
+                style="border-radius: 10px; font-size: 13px"
                 prepend-inner-icon="mdi-calendar"
                 readonly
                 outlined
+                single-line
                 clearable
-                @click:clear=";(date = ''), renderData(search)"
+                dense
+                @click:clear=";(delivery_date = []), renderData(search)"
                 :value="format_delivery_date"
-                solo
               >
                 <template v-slot:label>
                   Delivery Date
@@ -78,22 +69,43 @@
               </v-text-field>
             </div>
           </template>
-          <v-date-picker
-            no-title
-            v-model="date"
-            @input=";(delivery_date_model = false), renderData(search)"
-          ></v-date-picker>
+          <v-date-picker scrollable no-title range v-model="delivery_date">
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              color="primary"
+              @click=";(delivery_date_model = false), renderData(search)"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
         </v-menu>
+      </v-col>
+      <v-col cols="12" md="3" xl="2" lg="2" sm="10">
+        <template>
+          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
+        </template>
+      </v-col>
+
+      <v-col cols="12" md="4" lg="3" xl="2" sm="10">
+        <SelectWarehouse
+          :areaId="area"
+          v-model="warehouse"
+          :warehouse="warehouse"
+          @selected="warehouseSelected"
+          :disabled="warehouseDisabled"
+        >
+        </SelectWarehouse>
       </v-col>
     </v-row>
     <v-flex
-      shrink
       pb-3
       class="pa-10 pb-8 text-center"
       style="margin-top: 200px;"
+      v-show="downloadDisabled"
     >
       <div class="text-center pb-4">
-        <v-layout justify-center align-center>
+        <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download.png"> </v-img>
         </v-layout>
         <h1 style="margin-top: 200px;">
@@ -101,18 +113,21 @@
         </h1>
       </div>
     </v-flex>
-
-    <!-- <div
-      class="text-center pb-4"
-      style="width: 450px; height: 450px; left: 440px; "
+    <v-flex
+      shrink
+      class="pa-10 pb-8 text-center"
+      style="margin-top: 200px;"
+      v-show="!downloadDisabled"
     >
-      <v-layout>
-        <v-img src="@/assets/download.png"> </v-img>
-      </v-layout>
-    </div>
-    <h1 style="margin-left: 478px;">
-      Please download to view data
-    </h1> -->
+      <div class="text-center pb-4">
+        <v-layout justify-center>
+          <v-img class="gbr" src="@/assets/download1.png"> </v-img>
+        </v-layout>
+        <h1 style="margin-top: 200px;">
+          Please download to display
+        </h1>
+      </div>
+    </v-flex>
   </div>
 </template>
 
@@ -128,6 +143,8 @@
         warehouse: null,
         delivery_date_model: '',
         date: '',
+        delivery_date_model: '',
+        delivery_date: '',
         warehouse_id: null,
         warehouseDisabled: true,
         downloadDisabled: false,
@@ -146,14 +163,6 @@
     },
 
     watch: {
-      // search: {
-      //   handler: function(val) {
-      //     let that = this
-      //     that.renderData(val, this.warehouse)
-      //   },
-      //   deep: true,
-      // },
-
       warehouse: {
         handler: function(val) {
           this.renderData('', val)
@@ -163,7 +172,28 @@
     },
     computed: {
       format_delivery_date() {
-        if (this.date) return this.$moment(this.date).format('DD/MM/YYYY')
+        if (this.delivery_date.length > 0) {
+          let ret = ''
+          if (this.delivery_date.length == 1) {
+            let date = this.delivery_date[0]
+            ret = this.$moment(date).format('DD/MM/YYYY')
+          } else {
+            let date = this.delivery_date[0]
+            let date2 = this.delivery_date[1]
+            if (date > date2) {
+              ret =
+                this.$moment(date2).format('DD/MM/YYYY') +
+                '-' +
+                this.$moment(date).format('DD/MM/YYYY')
+            } else {
+              ret =
+                this.$moment(date).format('DD/MM/YYYY') +
+                '-' +
+                this.$moment(date2).format('DD/MM/YYYY')
+            }
+          }
+          return ret
+        }
       },
     },
     methods: {
@@ -180,17 +210,6 @@
         } else {
           areaId = ''
         }
-
-        // let date = ''
-        // if (this.date) {
-        //   if (this.warehouse_id) {
-        //     date = this.date
-        //   } else {
-        //     date = +this.date
-        //   }
-        // } else {
-        //   date = ''
-        // }
 
         this.$http
           .get('/warehouse', {
@@ -242,21 +261,6 @@
           this.warehouse_id = null
           this.downloadDisabled = false
         }
-
-        // this.area = ''
-        // this.areaId = ''
-        // if (area !== null) {
-        //   this.area = area.value
-        //   this.warehouseDisabled = false
-        // }
-        // this.renderData('')
-        // if (area == null) {
-        //   this.warehouse = ''
-        //   this.warehouse_id = ''
-        //   this.warehouse = this.warehouseDisabled = true
-        //   this.downloadDisabled = true
-        // }
-        // this.renderData('')
       },
       warehouseSelected(val) {
         this.warehouse = null
@@ -269,20 +273,6 @@
           this.downloadDisabled = false
         }
         this.renderData('')
-
-        // this.warehouse = null
-        // this.warehouse_id = null
-        // this.renderData('')
-        // if (val) {
-        //   this.warehouse = val.name
-        //   this.warehouse_id = val.value
-        //   this.downloadDisabled = false
-        // } else {
-        //   this.downloadDisabled = true
-        // }
-        // if (warehouse == null) {
-        //   this.downloadDisabled = true
-        // }
       },
     },
   }
@@ -298,7 +288,7 @@
     padding-left: 80px;
     padding-right: 50px;
   }
-  .v-btn:not(.v-btn--round).v-size--default {
+  /* .v-btn:not(.v-btn--round).v-size--default {
     position: absolute;
     width: 200px;
     height: 50px;
@@ -311,7 +301,7 @@
     text-transform: capitalize;
     cursor: pointer;
     padding: 5px;
-  }
+  } */
   .search {
     padding-left: 100px;
     padding-right: 50px;
@@ -342,5 +332,6 @@
   }
   .gbr {
     position: absolute;
+    bottom: 100px;
   }
 </style>
