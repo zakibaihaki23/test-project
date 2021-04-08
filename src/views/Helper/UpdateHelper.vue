@@ -52,6 +52,8 @@
           <div class="form-right">
             <p>Phone Number <span style="color: red">*</span></p>
             <v-text-field
+              maxlength="12"
+              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
               label="Phone Number"
               v-model="helper.phone_number"
               outlined
