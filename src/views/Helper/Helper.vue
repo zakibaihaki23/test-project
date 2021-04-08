@@ -1,6 +1,6 @@
 <template>
   <div class="helper">
-    <h2>HELPER LIST</h2>
+    <h1>HELPER LIST</h1>
     <!-- SHOW ONLY ON XS DEVICE -->
     <!-- <v-container>
       <v-row>
@@ -106,13 +106,11 @@
             <td>{{ props.item.code }}</td>
             <td>{{ props.item.name }}</td>
             <td>{{ props.item.phone_number }}</td>
-            <td>{{ props.item.address }}</td>
-            <!-- <td v-if="props.item.user">
-              {{ props.item.user.is_active }}
+            <td>
+              <div v-if="props.item.address">{{ props.item.address }}</div>
+              <div v-else>-</div>
             </td>
-            <td v-else>
-              -
-            </td> -->
+
             <td>{{ props.item.helper_type.type_name }}</td>
             <td>{{ props.item.warehouse.warehouse_name }}</td>
             <td v-if="props.item.user">
@@ -189,43 +187,42 @@
           {
             text: 'Helper ID',
             value: 'code',
-            class: 'black--text',
+            class: 'black--text title',
           },
           {
             text: 'Name',
             value: 'name',
-            class: 'black--text',
+            class: 'black--text title',
           },
           {
             text: 'Phone Number',
             value: 'phone_number',
-            class: 'black--text',
+            class: 'black--text title',
           },
           {
             text: 'Address',
             value: 'address',
-            class: 'black--text',
+            class: 'black--text title',
           },
 
           {
             text: 'Type',
             value: 'helper_type.type_name',
-            class: 'black--text',
+            class: 'black--text title',
           },
           {
             text: 'Warehouse',
             value: 'warehouse.warehouse_name',
-            class: 'black--text',
+            class: 'black--text title',
           },
           {
             text: 'Status',
             value: 'user.is_active',
-            class: 'black--text',
+            class: 'black--text title',
           },
           {
-            text: 'actions',
             value: 'actions',
-            class: 'black--text',
+            class: 'black--text title',
           },
         ],
 
@@ -369,7 +366,7 @@
     border: none;
   }
   .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
-    font-size: 13px;
+    font-size: 17px;
   }
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
@@ -385,8 +382,9 @@
     background: #4662d4;
     color: white;
     border-radius: 30px;
-    box-sizing: content-box;
+    font-size: 16px;
     margin-top: 50px;
+    font-weight: bold;
     text-transform: capitalize;
     cursor: pointer;
     padding: 5px;

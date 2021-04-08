@@ -3,9 +3,9 @@
     <v-autocomplete
       v-model="warehouses"
       label="Warehouse"
-      style="border-radius: 15px; width: 250px"
+      style="border-radius: 10px; width: 250px; font-size: 13px"
       outlined
-      solo
+      single-line
       :items="items"
       item-text="name"
       item-value="value"
@@ -17,6 +17,7 @@
       clearable
       :disabled="disabled"
       append-icon=""
+      dense
     >
     </v-autocomplete>
   </div>

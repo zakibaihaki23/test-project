@@ -2,10 +2,10 @@
   <div>
     <v-autocomplete
       v-model="statusSelected"
-      style="border-radius: 15px; width: 250px"
+      style="border-radius: 10px; width: 250px;font-size: 13px"
       outlined
       label="Status"
-      solo
+      single-line
       :items="status"
       item-text="text"
       item-value="value"
@@ -15,6 +15,7 @@
       return-object
       :search-input.sync="search"
       @change="selected"
+      dense
     >
     </v-autocomplete>
   </div>

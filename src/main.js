@@ -5,12 +5,21 @@ import router from './router'
 import store from './store'
 import http from './axios'
 import Toast from 'vue-toastification'
-import moment from 'moment'
+// import moment from 'moment'
 import './assets/main.css'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
+import './vee-validate'
+import VueTelInputVuetify from 'vue-tel-input-vuetify/lib'
 
+Vue.use(VueTelInputVuetify, {
+  vuetify,
+})
+Vue.use(DatePicker)
 Vue.config.silent = true
-Vue.prototype.moment = moment
+// Vue.prototype.moment = moment
 Vue.use(http)
+
 import 'vue-toastification/dist/index.css'
 
 Vue.use(Toast, {
@@ -37,6 +46,7 @@ store.dispatch('auth/attempt', localStorage.getItem('token')).then(() => {
     router,
     store,
     vuetify,
+    DatePicker,
     render: (h) => h(App),
   }).$mount('#app')
 })

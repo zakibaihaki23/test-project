@@ -1,17 +1,19 @@
 <template>
   <div class="helper">
-    <h2>PACKING ORDER LIST</h2>
+    <h1>PACKING ORDER LIST</h1>
     <v-container>
-      <v-row no-gutters>
-        <v-col md="6">
-          <div>
-            <v-btn :to="{ path: '/packing-order/create' }"
-              >Create Packing</v-btn
+      <v-row>
+        <v-col cols="3" sm="6" md="6" lg="7">
+          <div class="d-flex d-none d-sm-block">
+            <v-btn
+              style="margin-top: 50px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+              :to="{ path: '/packing-order/create' }"
+              >Create Packing Order</v-btn
             >
           </div>
         </v-col>
-        <v-col md="6" offset="6">
-          <div class="search">
+        <v-col>
+          <div>
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
@@ -19,41 +21,26 @@
               label="Search...."
               solo
               hide-details
+              class="search d-flex d-none d-sm-block"
             >
             </v-text-field>
           </div>
         </v-col>
       </v-row>
     </v-container>
-    <p style="font-size: 20px; margin-top: 40px">Filter</p>
-    <v-row>
-      <v-col cols="2">
-        <template>
-          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
-        </template>
-      </v-col>
-
-      <v-col cols="2">
-        <SelectWarehouse
-          :areaId="area"
-          v-model="warehouse"
-          :warehouse="warehouse"
-          @selected="warehouseSelected"
-          :disabled="warehouseDisabled"
-        >
-        </SelectWarehouse>
-        <!-- <v-autocomplete
-          style="border-radius: 15px"
-          outlined
-          label="Warehouse"
-          solo
-          item-text="name"
-          clearable
-          hide-no-data
-          hide-selected
-        ></v-autocomplete> -->
-      </v-col>
-      <v-col cols="3">
+    <p
+      class="d-flex d-none d-sm-block"
+      style="font-size: 25px; margin-top: 40px"
+    >
+      Filter
+    </p>
+    <v-divider
+      class="d-flex d-none d-sm-block"
+      style="margin-right: 40px;"
+    ></v-divider>
+    <v-col md="12"> </v-col>
+    <v-row style="margin-top: 1px">
+      <v-col cols="10" md="4" lg="3" xl="2" sm="6">
         <v-menu
           ref="menu"
           v-model="delivery_date_model"
@@ -65,14 +52,15 @@
           <template v-slot:activator="{ on }">
             <div v-on="on">
               <v-text-field
-                style="border-radius: 15px"
+                style="border-radius: 10px; font-size: 13px"
                 prepend-inner-icon="mdi-calendar"
                 readonly
                 outlined
+                single-line
                 clearable
-                @click:clear=";(delivery_date = ''), renderData(search)"
+                dense
+                @click:clear=";(delivery_date = []), renderData(search)"
                 :value="format_delivery_date"
-                solo
               >
                 <template v-slot:label>
                   Delivery Date
@@ -80,12 +68,33 @@
               </v-text-field>
             </div>
           </template>
-          <v-date-picker
-            no-title
-            v-model="delivery_date"
-            @input=";(delivery_date_model = false), renderData(search)"
-          ></v-date-picker>
+          <v-date-picker scrollable no-title range v-model="delivery_date">
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              color="primary"
+              @click=";(delivery_date_model = false), renderData(search)"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
         </v-menu>
+      </v-col>
+      <v-col cols="12" md="3" xl="2" lg="2" sm="10">
+        <template>
+          <SelectArea v-model="area" @selected="areaSelected"></SelectArea>
+        </template>
+      </v-col>
+
+      <v-col cols="12" md="4" lg="3" xl="2" sm="10">
+        <SelectWarehouse
+          :areaId="area"
+          v-model="warehouse"
+          :warehouse="warehouse"
+          @selected="warehouseSelected"
+          :disabled="warehouseDisabled"
+        >
+        </SelectWarehouse>
       </v-col>
     </v-row>
     <br />
@@ -110,7 +119,8 @@
               <div v-if="props.item.status == 1">
                 {{ 'Active' }}
               </div>
-              <div v-else>{{ 'Finished' }}</div>
+              <div v-if="props.item.status === 2">{{ 'Finished' }}</div>
+              <div v-if="props.item.status === 3">{{ 'Cancelled' }}</div>
             </td>
             <td>
               <v-menu offset-y>
@@ -179,22 +189,29 @@
 </template>
 
 <script>
+  import moment from 'moment'
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
   export default {
     components: { SelectWarehouse, SelectArea },
     data() {
       return {
+        dates: '',
         page: 1,
         warehouseList: '',
         warehouse: null,
         delivery_date_model: '',
-        delivery_date: '',
+        delivery_date: [
+          new Date(Date.now() - 3600 * 1000 * 720).toISOString().substr(0, 10),
+          new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
+        ],
+        // delivery_date2: [
+        //   new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
+        // ],
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
         isLoading: true,
-
         area: '',
         search: '',
         table: [
@@ -236,7 +253,6 @@
             warehouse_name: '',
           },
         },
-        total: [],
       }
     },
 
@@ -255,13 +271,50 @@
     },
     computed: {
       format_delivery_date() {
-        if (this.delivery_date)
-          return this.$moment(this.delivery_date).format('DD/MM/YYYY')
+        // if (this.delivery_date) {
+        //   if (this.delivery_date[0] > this.delivery_date[1]) {
+        //     var date = this.delivery_date[1]
+        //     var date2 = this.delivery_date[0]
+        //     this.delivery_date[0] = date
+        //     this.delivery_date[1] = date2
+        //   } else {
+        //     var date = this.delivery_date[0]
+        //     var date2 = this.delivery_date[1]
+        //   }
+        //   let ret =
+        //     this.$moment(date).format('DD/MM/YYYY') +
+        //     ' - ' +
+        //     this.$moment(date2).format('DD/MM/YYYY')
+        //   return ret
+        // }
+
+        if (this.delivery_date.length > 0) {
+          let ret = ''
+          if (this.delivery_date.length == 1) {
+            let date = this.delivery_date[0]
+            ret = this.$moment(date).format('DD/MM/YYYY')
+          } else {
+            let date = this.delivery_date[0]
+            let date2 = this.delivery_date[1]
+            if (date > date2) {
+              ret =
+                this.$moment(date2).format('DD/MM/YYYY') +
+                '-' +
+                this.$moment(date).format('DD/MM/YYYY')
+            } else {
+              ret =
+                this.$moment(date).format('DD/MM/YYYY') +
+                '-' +
+                this.$moment(date2).format('DD/MM/YYYY')
+            }
+          }
+          return ret
+        }
       },
     },
     methods: {
       formatDate(val) {
-        return this.$moment(val).format('DD/MM/YYYY')
+        return moment(val).format('DD-MM-YYYY')
       },
       initialize() {
         this.dataTable = [this.dataTable]
@@ -275,16 +328,41 @@
           areaId = ''
         }
 
+        // let delivery_date = ''
+        // if (this.delivery_date) {
+        //   if (this.warehouse_id) {
+        //     delivery_date = '|deliverydate__between:' + this.delivery_date
+        //   } else {
+        //     delivery_date = '|deliverydate__between:' + this.delivery_date
+        //   }
+        // } else {
+        //   delivery_date = ''
+        // }
         let delivery_date = ''
-        if (this.delivery_date) {
-          if (this.warehouse_id) {
-            delivery_date = '|delivery_date:' + this.delivery_date
+        if (this.delivery_date.length > 0) {
+          if (this.delivery_date.length == 1) {
+            delivery_date = 'delivery_date:' + this.delivery_date[0]
           } else {
-            delivery_date = 'delivery_date:' + this.delivery_date
+            let date = this.delivery_date[0]
+            let date2 = this.delivery_date[1]
+            if (date > date2) {
+              delivery_date = 'deliverydate__between:' + date2 + '.' + date
+            } else {
+              delivery_date = 'deliverydate__between:' + date + '.' + date2
+            }
           }
-        } else {
-          delivery_date = ''
         }
+
+        // let dates = ''
+        // if (this.dates) {
+        //   if (this.warehouse_id) {
+        //     dates = '|delivery_date:' + this.dates
+        //   } else {
+        //     dates = 'delivery_date:' + this.dates
+        //   }
+        // } else {
+        //   dates = ''
+        // }
 
         this.$http
           .get('/warehouse', {
@@ -296,7 +374,12 @@
 
         let warehouseId = ''
         if (this.warehouse_id) {
-          warehouseId = 'warehouse_id.e:' + this.warehouse_id
+          if (this.delivery_date) {
+            warehouseId = '|warehouse_id.e:' + this.warehouse_id
+          }
+          if (this.delivery_date == '') {
+            warehouseId = 'warehouse_id.e:' + this.warehouse_id
+          }
         } else {
           warehouseId = ''
         }
@@ -305,7 +388,7 @@
           .get('/packing', {
             params: {
               orderby: '-id,warehouse_id',
-              conditions: warehouseId + delivery_date,
+              conditions: delivery_date + warehouseId,
             },
           })
           .then((response) => {
@@ -369,6 +452,9 @@
 </script>
 
 <style scoped>
+  .mx-input {
+    height: 600px !important;
+  }
   .mytable table tr {
     border: none;
   }
@@ -378,23 +464,12 @@
     padding-left: 80px;
     padding-right: 50px;
   }
-  .v-btn:not(.v-btn--round).v-size--default {
-    position: absolute;
-    width: 200px;
-    height: 50px;
-    background: #4662d4;
-    color: white;
-    border-radius: 30px;
-    box-sizing: content-box;
-    margin-top: 50px;
-    text-transform: capitalize;
-    cursor: pointer;
-    padding: 5px;
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+    font-size: 17px;
   }
   .search {
     padding-left: 100px;
     padding-right: 50px;
-
     margin-top: 50px;
   }
   thead {

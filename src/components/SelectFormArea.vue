@@ -3,7 +3,7 @@
     <v-select
       v-model="areaSelected"
       label="Area"
-      solo
+      single-line
       outlined
       :items="area"
       item-text="city_name"
