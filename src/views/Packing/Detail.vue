@@ -1,6 +1,7 @@
 <template>
   <div class="helper">
     <h1>PACKING ORDER DETAIL</h1>
+    
     <v-row>
       <v-col md="12" style="margin-top: 1px" v-model="packing_code">
         <h2>Packing Order Code : {{ this.packing_code }}</h2>
@@ -15,18 +16,14 @@
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn>
-              <download-excel
-                class="btn btn-default"
-                :data="json_data"
-                :fields="json_fields"
-                name="Packing Order.xls"
-              >
-                Download
-              </download-excel>
+            <v-btn 
+            @click="DownloadFile"
+            
+            >
+            Download
             </v-btn>
           </div>
-
+        
           <!-- V-DIALOG BUAT TOMBOL UPLOAD MASUK KE DIALOG -->
           <v-dialog v-model="dialog" persistent max-width="430px">
             <template v-slot:activator="{ on, attrs }">
@@ -208,12 +205,13 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import JsonExcel from 'vue-json-excel'
+
+
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
+  import axios from 'axios'
 
-  Vue.component('downloadExcel', JsonExcel)
+
 
   export default {
     components: { SelectWarehouse, SelectArea },
@@ -222,12 +220,14 @@
         defaultButtonText: 'Choose File',
         selectedFile: null,
         isSelecting: false,
+        download: '',
         dialog: false,
         item: '',
         uom: '',
         search: '',
         file: 0,
         packing_code: '',
+        
 
         headers: [
           {
@@ -262,55 +262,6 @@
           },
         ],
         data: [],
-        // helper: [
-        //   {
-        //     name: '',
-        //     code: '',
-        //   },
-        // ],
-
-        // DOWNLOAD EXEL
-        json_fields: {
-          'Complete name': 'name',
-          City: 'city',
-          Telephone: 'phone.mobile',
-          'Telephone 2': {
-            field: 'phone.landline',
-            callback: (value) => {
-              return `Landline Phone - ${value}`
-            },
-          },
-        },
-        json_data: [
-          {
-            name: 'Tony Peña',
-            city: 'New York',
-            country: 'United States',
-            birthdate: '1978-03-15',
-            phone: {
-              mobile: '1-541-754-3010',
-              landline: '(541) 754-3010',
-            },
-          },
-          {
-            name: 'Thessaloniki',
-            city: 'Athens',
-            country: 'Greece',
-            birthdate: '1987-11-23',
-            phone: {
-              mobile: '+1 855 275 5071',
-              landline: '(2741) 2621-244',
-            },
-          },
-        ],
-        json_meta: [
-          [
-            {
-              key: 'charset',
-              value: 'utf-8',
-            },
-          ],
-        ],
       }
     },
 
@@ -336,6 +287,24 @@
             this.data = response.data.data.packing_items
           })
       },
+
+      // Ambil Link Dari Postman
+      DownloadFile() {
+        this.$http
+          .get('/packing/'+ this.$route.params.id + '/template?export=1')
+
+          // axios({
+          //   url: 'http://storage.edenfarm.tech/magang/Packing_WHJKT001_07042021.xlsx',
+          //   method: 'GET',
+
+          .then((response) => {
+            this.DownloadFile = response.data.file
+
+            console.log(response.data.file)
+          })
+      },
+
+     
 
       onButtonClick() {
         this.isSelecting = true
