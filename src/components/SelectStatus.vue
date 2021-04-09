@@ -1,23 +1,30 @@
 <template>
   <div>
-    <v-autocomplete
-      v-model="statusSelected"
-      style="border-radius: 10px; width: 250px;font-size: 13px"
-      outlined
-      label="Status"
-      single-line
-      :items="status"
-      item-text="text"
-      item-value="value"
-      clearable
-      hide-no-data
-      hide-selected
-      return-object
-      :search-input.sync="search"
-      @change="selected"
-      dense
-    >
-    </v-autocomplete>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+        <v-autocomplete
+          v-bind="attrs"
+          v-on="on"
+          v-model="statusSelected"
+          style="border-radius: 10px; width: 250px;font-size: 13px"
+          outlined
+          label="Status"
+          single-line
+          :items="status"
+          item-text="text"
+          item-value="value"
+          clearable
+          hide-no-data
+          hide-selected
+          return-object
+          :search-input.sync="search"
+          @change="selected"
+          dense
+        >
+        </v-autocomplete>
+      </template>
+      <span>Select Status</span>
+    </v-tooltip>
   </div>
 </template>
 

@@ -81,7 +81,12 @@
     <v-col md="12"> </v-col>
     <v-row style="margin-top: 1px">
       <v-col xl="2" md="2" sm="6" cols="12" lg="2">
-        <SelectStatus v-model="status" @selected="statusSelected">
+        <SelectStatus
+          v-bind="attrs"
+          v-on="on"
+          v-model="status"
+          @selected="statusSelected"
+        >
         </SelectStatus>
       </v-col>
       <v-col xl="10" md="10" sm="6" cols="12" lg="10">
