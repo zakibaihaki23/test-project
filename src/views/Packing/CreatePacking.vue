@@ -131,7 +131,7 @@
     <v-divider></v-divider>
     <div class="btn">
       <v-btn
-        :to="{ path: '/packing' }"
+        :to="{ path: '/packing-order' }"
         color="#E6E9ED"
         style="margin: 10px; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
         class="cancel"
