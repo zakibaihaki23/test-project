@@ -223,14 +223,16 @@
                     </v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <template class="menu">
-                    <v-list-item link style="width: 150px; ">
-                      <div>
-                        <v-list-item-title link>Delete</v-list-item-title>
-                      </div>
-                    </v-list-item>
-                  </template>
+                <v-list class="menu">
+                  <v-list-item
+                    link
+                    style="width: 150px; "
+                    @click="unpackable(props.item.id)"
+                  >
+                    <div>
+                      Delete
+                    </div>
+                  </v-list-item>
                 </v-list>
               </v-menu>
             </td>
@@ -286,14 +288,12 @@
       }
     },
     created() {
-      this.renderData('')
+      this.renderData()
     },
 
     methods: {
       openDialog() {
-        // this.clearItem = true
-        // this.item_name = null
-        // this.packable_item = null
+        this.renderData('')
         this.uom = null
         this.dialog = true
       },
@@ -302,9 +302,11 @@
       },
       renderData() {
         // GET PACKABLE WHEN 0
+
         this.$http
           .get('/inventory/item', {
             params: {
+              orderby: '-id',
               embeds: 'item_uom_id',
               page: '1',
               conditions: 'packable:0',
@@ -350,6 +352,17 @@
             if (this.dataTable === null) {
               this.dataTable = []
             }
+          })
+      },
+      unpackable(id) {
+        this.clear = false
+        this.$http
+          .put('/inventory/item/unpackable/' + id, {})
+          .then((response) => {
+            this.clear = true
+            this.dialog = false
+            this.renderData()
+            this.$toast.success('Item not packable')
           })
       },
       save() {

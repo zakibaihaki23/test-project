@@ -8,7 +8,7 @@
             <v-btn
               style="margin-top: 50px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
               v-model="download"
-              v-show="downloadDisabled"
+              :disabled="downloadDisabled"
               >Download</v-btn
             >
           </div>
@@ -100,30 +100,30 @@
     </v-row>
     <v-flex
       pb-3
-      class="pa-10 pb-8 text-center"
-      style="margin-top: 200px;"
-      v-show="downloadDisabled"
+      class=" pb-8 text-center"
+      style="margin-top: 300px;"
+      v-show="!downloadDisabled"
     >
       <div class="text-center pb-4">
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download.png"> </v-img>
         </v-layout>
-        <h1 style="margin-top: 200px;">
+        <h1 style="margin-top: 160px;">
           Please download to view data
         </h1>
       </div>
     </v-flex>
     <v-flex
       shrink
-      class="pa-10 pb-8 text-center"
-      style="margin-top: 200px;"
-      v-show="!downloadDisabled"
+      class=" pb-8 text-center"
+      style="margin-top: 300px;"
+      v-show="downloadDisabled"
     >
       <div class="text-center pb-4">
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download1.png"> </v-img>
         </v-layout>
-        <h1 style="margin-top: 200px;">
+        <h1 style="margin-top: 160px;">
           Please download to display
         </h1>
       </div>
@@ -147,7 +147,7 @@
         delivery_date: '',
         warehouse_id: null,
         warehouseDisabled: true,
-        downloadDisabled: false,
+        downloadDisabled: true,
         dateDisabled: true,
         areaId: null,
         area: '',
@@ -259,7 +259,7 @@
           this.warehouseDisabled = true
           this.warehouse = null
           this.warehouse_id = null
-          this.downloadDisabled = false
+          this.downloadDisabled = true
         }
       },
       warehouseSelected(val) {
@@ -268,9 +268,9 @@
         if (val) {
           this.warehouse = val
           this.warehouse_id = val.value
-          this.downloadDisabled = true
-        } else {
           this.downloadDisabled = false
+        } else {
+          this.downloadDisabled = true
         }
         this.renderData('')
       },

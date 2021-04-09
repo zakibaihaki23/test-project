@@ -8,7 +8,8 @@
     chips
     small-chips
     multiple
-    item-text="name"
+    item-text="code"
+    single-line
     item-value="id"
     @change="selected"
     clearable
@@ -20,7 +21,7 @@
     <template slot="item" slot-scope="data">
       {{ data.item.code }} - {{ data.item.name }}
     </template>
-    <template v-slot:label> Packer <span style="color:red;">*</span></template>
+    <template v-slot:label style="padding: 10px"> Packer</template>
   </v-autocomplete>
 </template>
 
@@ -54,7 +55,6 @@
 
           .then((response) => {
             this.packer = response.data.data
-            console.log(this.packer)
 
             if (this.packer === null) {
               this.packer = []
