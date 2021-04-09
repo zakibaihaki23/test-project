@@ -8,7 +8,8 @@
     chips
     small-chips
     multiple
-    item-text="name"
+    item-text="code"
+    single-line
     item-value="id"
     @change="selected"
     clearable
@@ -54,7 +55,6 @@
 
           .then((response) => {
             this.packer = response.data.data
-            console.log(this.packer)
 
             if (this.packer === null) {
               this.packer = []

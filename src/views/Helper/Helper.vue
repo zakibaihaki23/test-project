@@ -148,7 +148,21 @@
                   <v-divider
                     style="margin-left: 10px;margin-right: 10px"
                   ></v-divider>
-                  <v-list-item link v-if="props.item.user">
+                  <v-list-item
+                    link
+                    v-if="props.item.user.is_active == 0"
+                    @click="unarchive(props.item.id)"
+                  >
+                    <div>
+                      <v-list-item-title>Active </v-list-item-title>
+                    </div>
+                  </v-list-item>
+                  <v-list-item v-else @click="archive(props.item.id)">
+                    <div>
+                      <v-list-item-title>Inactive</v-list-item-title>
+                    </div>
+                  </v-list-item>
+                  <!-- <v-list-item link v-if="props.item.user">
                     <v-list-item-title link>
                       <div
                         @click="unarchive(props.item.id)"
@@ -160,7 +174,7 @@
                         {{ 'Inactive' }}
                       </div>
                     </v-list-item-title>
-                  </v-list-item>
+                  </v-list-item> -->
                 </v-list>
               </v-menu>
             </td>
