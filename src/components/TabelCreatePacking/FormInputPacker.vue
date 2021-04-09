@@ -50,11 +50,15 @@
       // },
       renderData() {
         this.$http
-          .get('/helper')
+          .get('/helper',
+              {
+                  params: {
+                      conditions: 'user_id.is_active:1',
+                  },
+              })
 
           .then((response) => {
             this.packer = response.data.data
-            console.log(this.packer)
 
             if (this.packer === null) {
               this.packer = []

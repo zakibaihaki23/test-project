@@ -62,7 +62,7 @@
     methods: {
       renderData(search, areaId) {
         if (areaId) {
-          areaId = 'city_id.e:' + areaId
+          areaId = 'is_archived:0|city_id.e:' + areaId
         } else {
           areaId = ''
         }

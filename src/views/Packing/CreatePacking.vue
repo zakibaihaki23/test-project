@@ -119,7 +119,7 @@
               <pre>{{ props.item.total_order }}</pre>
             </td>
             <td>
-              <FormInputPacker v-model="packer" @selected="inputPacker">
+              <FormInputPacker v-model="packer" @click.native="sendIdx(props.index)" @selected="inputPacker">
               </FormInputPacker>
             </td>
           </tr>
@@ -170,7 +170,12 @@
         warehouseDisabled: true,
         total_order: '',
         delivery_date: '',
-        
+          dataTable:[
+
+          ],
+        idx:'',
+          items:[],
+
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
           .substr(0, 10),
@@ -230,6 +235,16 @@
     },
 
     methods: {
+        sendIdx(id){
+            this.idx = id
+        },
+        inputPacker(val) {
+            this.dataTable[this.idx].helper_id = []
+            if (val) {
+                this.dataTable[this.idx].helper_id = val
+            }
+            console.log(this.dataTable)
+        },
       formatDate(date) {
         if (!date) return null
 
@@ -277,12 +292,12 @@
 
       //untuk menyimpan data Penambahan ke dalam API
       save() {
-          // var items = []
-          // for (let i = 0; i < this.dataTable.length; i++) {
-          //   items[i] = {
-          //     item_id: this.dataTable[i].id,
-          //   }
-          // }
+          var items = []
+          for (let i = 0; i < this.dataTable.length; i++) {
+            items[i] = {
+              item_id: this.dataTable[i].id,
+            }
+          }
         this.$http
           .post('/packing', {
             area_id: this.area,
@@ -296,7 +311,6 @@
           .then((response) => {
             this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
-            console.log(this.dataTable)
           })
       },
 
@@ -319,14 +333,7 @@
         this.renderData()
       },
 
-      inputPacker(val) {
-        this.packer = ''
-        if (val) {
-          this.packer = val.id
-          console.log(val)
-        }
-        console.log(this.packer)
-      },
+
     },
   }
 </script>
