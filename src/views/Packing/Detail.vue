@@ -211,7 +211,8 @@
 <script>
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
-  import axios from 'axios'
+  // import axios from 'axios'
+  // import vueXlsxTable from 'vue-xlsx-table'
 
   export default {
     components: { SelectWarehouse, SelectArea },
@@ -286,7 +287,7 @@
           })
       },
 
-      // Ambil Link Dari Postman
+      // DOWNLOAD FILE FROM
       DownloadFile() {
         this.$http
           .get('/packing/' + this.$route.params.id + '/template?export=1')
