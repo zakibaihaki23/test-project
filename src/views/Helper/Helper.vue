@@ -81,7 +81,12 @@
     <v-col md="12"> </v-col>
     <v-row style="margin-top: 1px">
       <v-col xl="2" md="2" sm="6" cols="12" lg="2">
-        <SelectStatus v-model="status" @selected="statusSelected">
+        <SelectStatus
+          v-bind="attrs"
+          v-on="on"
+          v-model="status"
+          @selected="statusSelected"
+        >
         </SelectStatus>
       </v-col>
       <v-col xl="10" md="10" sm="6" cols="12" lg="10">
@@ -112,7 +117,10 @@
             </td>
 
             <td>{{ props.item.helper_type.type_name }}</td>
-            <td>{{ props.item.warehouse.warehouse_name }}</td>
+            <td>
+              {{ props.item.warehouse.warehouse_code }} -
+              {{ props.item.warehouse.warehouse_name }}
+            </td>
             <td v-if="props.item.user">
               <div v-if="props.item.user.is_active == 0">
                 {{ 'Inactive' }}
@@ -148,7 +156,21 @@
                   <v-divider
                     style="margin-left: 10px;margin-right: 10px"
                   ></v-divider>
-                  <v-list-item link v-if="props.item.user">
+                  <v-list-item
+                    link
+                    v-if="props.item.user.is_active == 0"
+                    @click="unarchive(props.item.id)"
+                  >
+                    <div>
+                      <v-list-item-title>Active </v-list-item-title>
+                    </div>
+                  </v-list-item>
+                  <v-list-item v-else @click="archive(props.item.id)">
+                    <div>
+                      <v-list-item-title>Inactive</v-list-item-title>
+                    </div>
+                  </v-list-item>
+                  <!-- <v-list-item link v-if="props.item.user">
                     <v-list-item-title link>
                       <div
                         @click="unarchive(props.item.id)"
@@ -160,7 +182,7 @@
                         {{ 'Inactive' }}
                       </div>
                     </v-list-item-title>
-                  </v-list-item>
+                  </v-list-item> -->
                 </v-list>
               </v-menu>
             </td>
@@ -223,20 +245,12 @@
           {
             value: 'actions',
             class: 'black--text title',
+            sortable: false,
           },
         ],
 
-        dataTable: {
-          warehouse: {
-            warehouse_name: '',
-          },
-          helper_type: {
-            type_name: '',
-          },
-          user: {
-            name: '',
-          },
-        },
+        dataTable: [],
+
         id: '',
         warehouse: null,
         warehouse_id: '',
@@ -248,7 +262,6 @@
     },
     created() {
       this.renderData()
-      this.initialize()
     },
     // mounted() {
     //   this.renderData('', this.status)
@@ -263,10 +276,6 @@
     // },
 
     methods: {
-      initialize() {
-        this.dataTable = [this.dataTable]
-      },
-
       //get data user dari API
       renderData() {
         let isActive = ''

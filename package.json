@@ -23,6 +23,7 @@
     "vue-tel-input-vuetify": "^1.2.16",
     "vue-toasted": "^1.1.28",
     "vue-toastification": "^1.7.11",
+    "vue-xlsx-table": "^1.2.8",
     "vue2-datepicker": "^3.9.0",
     "vuetify": "^2.4.0",
     "vuex": "^3.6.2",

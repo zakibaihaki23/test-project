@@ -29,8 +29,7 @@
               >
               </v-text-field>
             </template>
-            <v-date-picker 
-              v-model="date" scrollable>
+            <v-date-picker v-model="date" scrollable>
               <v-btn
                 text
                 color="primary"
@@ -51,9 +50,7 @@
           </v-dialog>
 
           <p>Area <span style="color: red">*</span></p>
-          <SelectFormArea 
-           v-model="area" 
-           @selected="areaSelected">
+          <SelectFormArea v-model="area" @selected="areaSelected">
           </SelectFormArea>
         </div>
       </v-col>
@@ -71,20 +68,19 @@
             :disabled="warehouseDisabled"
           >
           </SelectFormWarehouseArea>
-
-        
         </div>
       </v-col>
 
       <!-- BAGIAN BAWAH -->
       <v-col md="12">
         <p>Note <span style="color: red"></span></p>
-        <v-textarea 
-        outlined label="Note" 
-        style="border-radius: 12px"
-        v-model="note" 
-        single-line
-        > 
+        <v-textarea
+          outlined
+          label="Note"
+          style="border-radius: 12px"
+          v-model="note"
+          single-line
+        >
         </v-textarea>
       </v-col>
 
@@ -157,9 +153,63 @@
 
   export default {
     components: { SelectFormArea, SelectFormWarehouseArea, FormInputPacker },
+    // BODY JSON CREATE PACKING
+    // {
+    //     "delivery_date":"2021-03-11",
+    //     "note":"Masukkkk",
+    //     "area_id":"196608",
+    //     "warehouse_id":"65536",
+    //     "items":[
+    //     	{
+    //     		"item_id":"65536",
+    //     		"total_order":10,
+    //     		"helper":[
+    //     			{
+    //     				"helper_id":"1572864"
+    //     			},
+    //                 {
+    //     				"helper_id":"1900544"
+    //     			},
+    //                 {
+    //     				"helper_id":"1900544"
+    //     			},
+    //                 {
+    //                     "helper_id": "2424832"
+    //                 }
+    //     			]
+    //     	},
+    //     	{
+    //     		"item_id":"131072",
+    //     		"total_order":5,
+    //             "helper":[
+    //     			{
+    //     				"helper_id":"1900544"
+    //     			},
+    //                 {
+    //     				"helper_id":"1572864"
+    //     			},
+    //                 {
+    //                     "helper_id": "2424832"
+    //                 }
+    //     			]
+    //     	},
+    //     	{
+    //     		"item_id":"196608",
+    //     		"total_order":0,
+    //             "helper":[
+    //     			{
+    //     				"helper_id":"1572864"
+    //     			}
+    //     			]
+    //     	}
+    //     ]
 
+    // }
     data() {
       return {
+        items: {
+          helper_id: [],
+        },
         warehouse: '',
         warehouseList: '',
         note: '',
@@ -170,7 +220,7 @@
         warehouseDisabled: true,
         total_order: '',
         delivery_date: '',
-        
+        dataTable: [],
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
           .substr(0, 10),
@@ -215,8 +265,6 @@
       }
     },
 
-    
-
     computed: {
       computedDateFormatted() {
         return this.formatDate(this.date)
@@ -251,7 +299,9 @@
         } else {
           areaId = ''
         }
-        let updatedate = this.$moment(this.date).add(7).format('YYYY-MM-DD')
+        let updatedate = this.$moment(this.date)
+          .add(7)
+          .format('YYYY-MM-DD')
         console.log(updatedate)
 
         // RENDER DATA TAMPILAN CREATE PACKABLE
@@ -259,12 +309,13 @@
           .get('/packing/item-recap', {
             params: {
               // embeds: 'item_uom_id', 'item_quantity',
-              conditions: 'purchaseorder.deliverydate:'+updatedate+'T07:00:00+07:00',
+              conditions:
+                'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00',
             },
           })
           .then((response) => {
-            
             this.dataTable = response.data.data
+            this.dataTable.push()
 
             if (this.dataTable === null) {
               this.dataTable = []
@@ -277,27 +328,29 @@
 
       //untuk menyimpan data Penambahan ke dalam API
       save() {
-          // var items = []
-          // for (let i = 0; i < this.dataTable.length; i++) {
-          //   items[i] = {
-          //     item_id: this.dataTable[i].id,
-          //   }
-          // }
-        this.$http
-          .post('/packing', {
-            area_id: this.area,
-            warehouse_id: this.warehouse_id,
-            note: this.note,
-            total_order: parseInt(this.total_order),
-            delivery_date: this.date,
-            items:this.dataTable,
-          })
+        // var items = []
+        // for (let i = 0; i < this.dataTable.length; i++) {
+        //   items[i] = {
+        //     item_id: this.dataTable[i].id,
+        //   }
+        // }
+        this.dataTable.push(this.items)
+        console.log(this.dataTable)
+        // this.$http
+        //   .post('/packing', {
+        //     area_id: this.area,
+        //     warehouse_id: this.warehouse_id,
+        //     note: this.note,
+        //     total_order: parseInt(this.total_order),
+        //     delivery_date: this.date,
+        //     items:this.dataTable,
+        //   })
 
-          .then((response) => {
-            this.$router.push('/packing-order')
-            this.$toast.success('Data has been saved successfully')
-            console.log(this.dataTable)
-          })
+        //   .then((response) => {
+        //     this.$router.push('/packing-order')
+        //     this.$toast.success('Data has been saved successfully')
+        //     console.log(this.dataTable)
+        //   })
       },
 
       areaSelected(val) {
@@ -315,7 +368,7 @@
         if (val) {
           this.warehouseList = val
           this.warehouse_id = val.value
-        } 
+        }
         this.renderData()
       },
 

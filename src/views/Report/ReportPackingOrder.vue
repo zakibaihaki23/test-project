@@ -8,23 +8,9 @@
             <v-btn
               style="margin-top: 50px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
               v-model="download"
-              v-show="downloadDisabled"
+              :disabled="downloadDisabled"
               >Download</v-btn
             >
-          </div>
-        </v-col>
-        <v-col>
-          <div>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              rounded
-              label="Search...."
-              solo
-              hide-details
-              class="search d-flex d-none d-sm-block"
-            >
-            </v-text-field>
           </div>
         </v-col>
       </v-row>
@@ -52,21 +38,28 @@
         >
           <template v-slot:activator="{ on }">
             <div v-on="on">
-              <v-text-field
-                style="border-radius: 10px; font-size: 13px"
-                prepend-inner-icon="mdi-calendar"
-                readonly
-                outlined
-                single-line
-                clearable
-                dense
-                @click:clear=";(delivery_date = []), renderData(search)"
-                :value="format_delivery_date"
-              >
-                <template v-slot:label>
-                  Delivery Date
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-bind="attrs"
+                    v-on="on"
+                    style="border-radius: 10px; font-size: 13px"
+                    prepend-inner-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    single-line
+                    clearable
+                    dense
+                    @click:clear=";(delivery_date = []), renderData(search)"
+                    :value="format_delivery_date"
+                  >
+                    <template v-slot:label>
+                      Delivery Date
+                    </template>
+                  </v-text-field>
                 </template>
-              </v-text-field>
+                <span>Select Delivery Date</span>
+              </v-tooltip>
             </div>
           </template>
           <v-date-picker scrollable no-title range v-model="delivery_date">
@@ -100,30 +93,30 @@
     </v-row>
     <v-flex
       pb-3
-      class="pa-10 pb-8 text-center"
-      style="margin-top: 200px;"
-      v-show="downloadDisabled"
+      class=" pb-8 text-center"
+      style="margin-top: 300px;"
+      v-show="!downloadDisabled"
     >
       <div class="text-center pb-4">
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download.png"> </v-img>
         </v-layout>
-        <h1 style="margin-top: 200px;">
+        <h1 style="margin-top: 160px;">
           Please download to view data
         </h1>
       </div>
     </v-flex>
     <v-flex
       shrink
-      class="pa-10 pb-8 text-center"
-      style="margin-top: 200px;"
-      v-show="!downloadDisabled"
+      class=" pb-8 text-center"
+      style="margin-top: 300px;"
+      v-show="downloadDisabled"
     >
       <div class="text-center pb-4">
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download1.png"> </v-img>
         </v-layout>
-        <h1 style="margin-top: 200px;">
+        <h1 style="margin-top: 160px;">
           Please download to display
         </h1>
       </div>
@@ -147,7 +140,7 @@
         delivery_date: '',
         warehouse_id: null,
         warehouseDisabled: true,
-        downloadDisabled: false,
+        downloadDisabled: true,
         dateDisabled: true,
         areaId: null,
         area: '',
@@ -259,7 +252,7 @@
           this.warehouseDisabled = true
           this.warehouse = null
           this.warehouse_id = null
-          this.downloadDisabled = false
+          this.downloadDisabled = true
         }
       },
       warehouseSelected(val) {
@@ -268,9 +261,9 @@
         if (val) {
           this.warehouse = val
           this.warehouse_id = val.value
-          this.downloadDisabled = true
-        } else {
           this.downloadDisabled = false
+        } else {
+          this.downloadDisabled = true
         }
         this.renderData('')
       },
