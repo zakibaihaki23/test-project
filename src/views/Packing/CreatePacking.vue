@@ -68,6 +68,8 @@
             :disabled="warehouseDisabled"
           >
           </SelectFormWarehouseArea>
+
+
         </div>
       </v-col>
 
@@ -115,11 +117,7 @@
               <pre>{{ props.item.total_order }}</pre>
             </td>
             <td>
-              <FormInputPacker
-                v-model="packer"
-                @click.native="sendIdx(props.index)"
-                @selected="inputPacker"
-              >
+              <FormInputPacker v-model="packer" :warehouse_id="warehouseList.value" @click.native="sendIdx(props.index)" @selected="inputPacker">
               </FormInputPacker>
             </td>
           </tr>
@@ -231,16 +229,16 @@
     },
 
     methods: {
-      sendIdx(id) {
-        this.idx = id
-      },
-      inputPacker(val) {
-        this.dataTable[this.idx].helper_id = []
-        if (val) {
-          this.dataTable[this.idx].helper_id = val
-        }
-        console.log(this.dataTable)
-      },
+        sendIdx(id){
+            this.idx = id
+        },
+        inputPacker(val) {
+            this.dataTable[this.idx].helper = []
+            if (val) {
+                this.dataTable[this.idx].helper = val
+            }
+            console.log(this.dataTable)
+        },
       formatDate(date) {
         if (!date) return null
 
@@ -318,7 +316,7 @@
           this.area = val.id
           this.warehouseDisabled = false
         }
-        this.renderData()
+        // this.renderData()
       },
 
       warehouseSelected(val) {

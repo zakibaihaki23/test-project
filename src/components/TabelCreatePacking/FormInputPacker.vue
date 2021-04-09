@@ -32,7 +32,7 @@
         packer: [],
       }
     },
-
+      props: ['warehouse_id'],
     created() {
       this.renderData()
       //   this.initialize(0)
@@ -54,7 +54,7 @@
           .get('/helper',
               {
                   params: {
-                      conditions: 'user_id.is_active:1',
+                      conditions: 'user_id.is_active:1|warehouse_id.e:'+this.warehouse_id,
                   },
               })
 
