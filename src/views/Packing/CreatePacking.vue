@@ -153,7 +153,58 @@
 
   export default {
     components: { SelectFormArea, SelectFormWarehouseArea, FormInputPacker },
+    // BODY JSON CREATE PACKING
+    // {
+    //     "delivery_date":"2021-03-11",
+    //     "note":"Masukkkk",
+    //     "area_id":"196608",
+    //     "warehouse_id":"65536",
+    //     "items":[
+    //     	{
+    //     		"item_id":"65536",
+    //     		"total_order":10,
+    //     		"helper":[
+    //     			{
+    //     				"helper_id":"1572864"
+    //     			},
+    //                 {
+    //     				"helper_id":"1900544"
+    //     			},
+    //                 {
+    //     				"helper_id":"1900544"
+    //     			},
+    //                 {
+    //                     "helper_id": "2424832"
+    //                 }
+    //     			]
+    //     	},
+    //     	{
+    //     		"item_id":"131072",
+    //     		"total_order":5,
+    //             "helper":[
+    //     			{
+    //     				"helper_id":"1900544"
+    //     			},
+    //                 {
+    //     				"helper_id":"1572864"
+    //     			},
+    //                 {
+    //                     "helper_id": "2424832"
+    //                 }
+    //     			]
+    //     	},
+    //     	{
+    //     		"item_id":"196608",
+    //     		"total_order":0,
+    //             "helper":[
+    //     			{
+    //     				"helper_id":"1572864"
+    //     			}
+    //     			]
+    //     	}
+    //     ]
 
+    // }
     data() {
       return {
         items: {
