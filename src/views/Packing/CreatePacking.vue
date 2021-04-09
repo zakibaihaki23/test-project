@@ -115,7 +115,11 @@
               <pre>{{ props.item.total_order }}</pre>
             </td>
             <td>
-              <FormInputPacker v-model="packer" @selected="inputPacker">
+              <FormInputPacker
+                v-model="packer"
+                @click.native="sendIdx(props.index)"
+                @selected="inputPacker"
+              >
               </FormInputPacker>
             </td>
           </tr>
@@ -153,63 +157,9 @@
 
   export default {
     components: { SelectFormArea, SelectFormWarehouseArea, FormInputPacker },
-    // BODY JSON CREATE PACKING
-    // {
-    //     "delivery_date":"2021-03-11",
-    //     "note":"Masukkkk",
-    //     "area_id":"196608",
-    //     "warehouse_id":"65536",
-    //     "items":[
-    //     	{
-    //     		"item_id":"65536",
-    //     		"total_order":10,
-    //     		"helper":[
-    //     			{
-    //     				"helper_id":"1572864"
-    //     			},
-    //                 {
-    //     				"helper_id":"1900544"
-    //     			},
-    //                 {
-    //     				"helper_id":"1900544"
-    //     			},
-    //                 {
-    //                     "helper_id": "2424832"
-    //                 }
-    //     			]
-    //     	},
-    //     	{
-    //     		"item_id":"131072",
-    //     		"total_order":5,
-    //             "helper":[
-    //     			{
-    //     				"helper_id":"1900544"
-    //     			},
-    //                 {
-    //     				"helper_id":"1572864"
-    //     			},
-    //                 {
-    //                     "helper_id": "2424832"
-    //                 }
-    //     			]
-    //     	},
-    //     	{
-    //     		"item_id":"196608",
-    //     		"total_order":0,
-    //             "helper":[
-    //     			{
-    //     				"helper_id":"1572864"
-    //     			}
-    //     			]
-    //     	}
-    //     ]
 
-    // }
     data() {
       return {
-        items: {
-          helper_id: [],
-        },
         warehouse: '',
         warehouseList: '',
         note: '',
@@ -221,6 +171,9 @@
         total_order: '',
         delivery_date: '',
         dataTable: [],
+        idx: '',
+        items: [],
+
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
           .substr(0, 10),
@@ -278,6 +231,16 @@
     },
 
     methods: {
+      sendIdx(id) {
+        this.idx = id
+      },
+      inputPacker(val) {
+        this.dataTable[this.idx].helper_id = []
+        if (val) {
+          this.dataTable[this.idx].helper_id = val
+        }
+        console.log(this.dataTable)
+      },
       formatDate(date) {
         if (!date) return null
 
@@ -315,7 +278,6 @@
           })
           .then((response) => {
             this.dataTable = response.data.data
-            this.dataTable.push()
 
             if (this.dataTable === null) {
               this.dataTable = []
@@ -328,29 +290,26 @@
 
       //untuk menyimpan data Penambahan ke dalam API
       save() {
-        // var items = []
-        // for (let i = 0; i < this.dataTable.length; i++) {
-        //   items[i] = {
-        //     item_id: this.dataTable[i].id,
-        //   }
-        // }
-        this.dataTable.push(this.items)
-        console.log(this.dataTable)
-        // this.$http
-        //   .post('/packing', {
-        //     area_id: this.area,
-        //     warehouse_id: this.warehouse_id,
-        //     note: this.note,
-        //     total_order: parseInt(this.total_order),
-        //     delivery_date: this.date,
-        //     items:this.dataTable,
-        //   })
+        var items = []
+        for (let i = 0; i < this.dataTable.length; i++) {
+          items[i] = {
+            item_id: this.dataTable[i].id,
+          }
+        }
+        this.$http
+          .post('/packing', {
+            area_id: this.area,
+            warehouse_id: this.warehouse_id,
+            note: this.note,
+            total_order: parseInt(this.total_order),
+            delivery_date: this.date,
+            items: this.dataTable,
+          })
 
-        //   .then((response) => {
-        //     this.$router.push('/packing-order')
-        //     this.$toast.success('Data has been saved successfully')
-        //     console.log(this.dataTable)
-        //   })
+          .then((response) => {
+            this.$router.push('/packing-order')
+            this.$toast.success('Data has been saved successfully')
+          })
       },
 
       areaSelected(val) {
@@ -370,15 +329,6 @@
           this.warehouse_id = val.value
         }
         this.renderData()
-      },
-
-      inputPacker(val) {
-        this.packer = ''
-        if (val) {
-          this.packer = val.id
-          console.log(val)
-        }
-        console.log(this.packer)
       },
     },
   }
