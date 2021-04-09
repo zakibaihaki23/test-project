@@ -199,6 +199,7 @@
   import moment from 'moment'
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
+
   export default {
     components: { SelectWarehouse, SelectArea },
     data() {
@@ -255,17 +256,12 @@
             sortable: false,
           },
         ],
-        dataTable: {
-          warehouse: {
-            warehouse_name: '',
-          },
-        },
+        dataTable: [],
       }
     },
 
     created() {
       this.renderData()
-      this.initialize(0)
     },
     watch: {
       search: {
@@ -323,10 +319,7 @@
       formatDate(val) {
         return moment(val).format('DD-MM-YYYY')
       },
-      initialize() {
-        this.dataTable = [this.dataTable]
-        this.total = [this.total]
-      },
+
       renderData(search) {
         let areaId = ''
         if (this.area) {
@@ -335,16 +328,14 @@
           areaId = ''
         }
 
-        // let delivery_date = ''
-        // if (this.delivery_date) {
-        //   if (this.warehouse_id) {
-        //     delivery_date = '|deliverydate__between:' + this.delivery_date
-        //   } else {
-        //     delivery_date = '|deliverydate__between:' + this.delivery_date
-        //   }
-        // } else {
-        //   delivery_date = ''
-        // }
+        let filterArea = ''
+        if (this.area) {
+          filterArea = '|warehouse.city.id.e:' + this.area
+        }
+        if (this.area && this.delivery_date == '') {
+          filterArea = 'warehouse.city.id.e:' + this.area
+        }
+
         let delivery_date = ''
         if (this.delivery_date.length > 0) {
           if (this.delivery_date.length == 1) {
@@ -387,6 +378,9 @@
           if (this.delivery_date == '') {
             warehouseId = 'warehouse_id.e:' + this.warehouse_id
           }
+          if (this.area) {
+            warehouseId = '|warehouse_id.e:' + this.warehouse_id
+          }
         } else {
           warehouseId = ''
         }
@@ -395,7 +389,7 @@
           .get('/packing', {
             params: {
               orderby: '-id,warehouse_id',
-              conditions: delivery_date + warehouseId,
+              conditions: delivery_date + filterArea + warehouseId,
             },
           })
           .then((response) => {
@@ -417,6 +411,8 @@
         this.area = null
         this.areaId = null
         if (area) {
+          this.warehouse = null
+          this.warehouse_id = null
           this.area = area.value
           this.warehouseDisabled = false
         } else {
@@ -424,26 +420,7 @@
           this.warehouse = null
           this.warehouse_id = null
         }
-        this.renderData()
-        // this.area = null
-        // this.areaId = null
-        // this.warehouse_id = null
-        // this.warehouse = null
-        // if (area) {
-        //   this.area = area.value
-        //   this.warehouseDisabled = false
-        // } else {
-        //   this.warehouseDisabled = true
-        //   this.warehouse = null
-        //   this.warehouse_id = null
-        //   console.log('tes 2')
-        // }
-        // this.renderData()
-        // if (area === null) {
-        //   this.warehouse = ''
-        //   this.warehouse_id = ''
-        //   this.warehouse = this.warehouseDisabled = true
-        // }
+        this.renderData('')
       },
       warehouseSelected(val) {
         this.warehouse = null
