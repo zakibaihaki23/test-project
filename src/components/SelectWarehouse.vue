@@ -1,25 +1,32 @@
 <template>
   <div>
-    <v-autocomplete
-      v-model="warehouses"
-      label="Warehouse"
-      style="border-radius: 10px; width: 250px; font-size: 13px"
-      outlined
-      single-line
-      :items="items"
-      item-text="name"
-      item-value="value"
-      name="warehouse"
-      hide-selected
-      return-object
-      :search-input.sync="search"
-      @change="selected"
-      clearable
-      :disabled="disabled"
-      append-icon=""
-      dense
-    >
-    </v-autocomplete>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+        <v-autocomplete
+          v-bind="attrs"
+          v-on="on"
+          v-model="warehouses"
+          label="Warehouse"
+          style="border-radius: 10px; width: 250px; font-size: 13px"
+          outlined
+          single-line
+          :items="items"
+          item-text="name"
+          item-value="value"
+          name="warehouse"
+          hide-selected
+          return-object
+          :search-input.sync="search"
+          @change="selected"
+          clearable
+          :disabled="disabled"
+          append-icon=""
+          dense
+        >
+        </v-autocomplete>
+      </template>
+      <span>Select Warehouse</span>
+    </v-tooltip>
   </div>
 </template>
 

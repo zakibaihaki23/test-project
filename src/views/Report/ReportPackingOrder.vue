@@ -13,20 +13,6 @@
             >
           </div>
         </v-col>
-        <v-col>
-          <div>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              rounded
-              label="Search...."
-              solo
-              hide-details
-              class="search d-flex d-none d-sm-block"
-            >
-            </v-text-field>
-          </div>
-        </v-col>
       </v-row>
     </v-container>
     <p
@@ -52,21 +38,28 @@
         >
           <template v-slot:activator="{ on }">
             <div v-on="on">
-              <v-text-field
-                style="border-radius: 10px; font-size: 13px"
-                prepend-inner-icon="mdi-calendar"
-                readonly
-                outlined
-                single-line
-                clearable
-                dense
-                @click:clear=";(delivery_date = []), renderData(search)"
-                :value="format_delivery_date"
-              >
-                <template v-slot:label>
-                  Delivery Date
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-bind="attrs"
+                    v-on="on"
+                    style="border-radius: 10px; font-size: 13px"
+                    prepend-inner-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    single-line
+                    clearable
+                    dense
+                    @click:clear=";(delivery_date = []), renderData(search)"
+                    :value="format_delivery_date"
+                  >
+                    <template v-slot:label>
+                      Delivery Date
+                    </template>
+                  </v-text-field>
                 </template>
-              </v-text-field>
+                <span>Select Delivery Date</span>
+              </v-tooltip>
             </div>
           </template>
           <v-date-picker scrollable no-title range v-model="delivery_date">

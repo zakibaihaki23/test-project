@@ -58,21 +58,28 @@
         >
           <template v-slot:activator="{ on }">
             <div v-on="on">
-              <v-text-field
-                style="border-radius: 10px; font-size: 13px"
-                prepend-inner-icon="mdi-calendar"
-                readonly
-                outlined
-                single-line
-                clearable
-                dense
-                @click:clear=";(delivery_date = []), renderData(search)"
-                :value="format_delivery_date"
-              >
-                <template v-slot:label>
-                  Delivery Date
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-bind="attrs"
+                    v-on="on"
+                    style="border-radius: 10px; font-size: 13px"
+                    prepend-inner-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    single-line
+                    clearable
+                    dense
+                    @click:clear=";(delivery_date = []), renderData(search)"
+                    :value="format_delivery_date"
+                  >
+                    <template v-slot:label>
+                      Delivery Date
+                    </template>
+                  </v-text-field>
                 </template>
-              </v-text-field>
+                <span>Select Delivery Date</span>
+              </v-tooltip>
             </div>
           </template>
           <v-date-picker scrollable no-title range v-model="delivery_date">
@@ -119,7 +126,10 @@
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.document_code }}</td>
-            <td>{{ props.item.warehouse.warehouse_name }}</td>
+            <td>
+              {{ props.item.warehouse.warehouse_code }} -
+              {{ props.item.warehouse.warehouse_name }}
+            </td>
             <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td>
             <td>{{ props.item.note }}</td>
             <td>

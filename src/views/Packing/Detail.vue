@@ -1,7 +1,7 @@
 <template>
   <div class="helper">
     <h1>PACKING ORDER DETAIL</h1>
-    
+
     <v-row>
       <v-col md="12" style="margin-top: 1px" v-model="packing_code">
         <h2>Packing Order Code : {{ this.packing_code }}</h2>
@@ -16,13 +16,11 @@
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn 
-            @click="DownloadFile()"
-            >
-            Download
+            <v-btn @click="DownloadFile()">
+              Download
             </v-btn>
           </div>
-        
+
           <!-- V-DIALOG BUAT TOMBOL UPLOAD MASUK KE DIALOG -->
           <v-dialog v-model="dialog" persistent max-width="430px">
             <template v-slot:activator="{ on, attrs }">
@@ -122,16 +120,23 @@
         </v-col>
         <v-col>
           <div>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              rounded
-              label="Search...."
-              solo
-              hide-details
-              class="search d-flex d-none d-sm-block"
-            >
-            </v-text-field>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  hide-details
+                  class="search d-flex d-none d-sm-block"
+                >
+                </v-text-field>
+              </template>
+              <span>Search by item name</span>
+            </v-tooltip>
           </div>
         </v-col>
       </v-row>
@@ -204,12 +209,9 @@
 </template>
 
 <script>
-
-
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
   import axios from 'axios'
-
 
   export default {
     components: { SelectWarehouse, SelectArea },
@@ -225,12 +227,10 @@
         search: '',
         file: 0,
         packing_code: '',
-        
-
         headers: [
           {
             text: 'Item',
-            value: 'item_name',
+            value: 'item.item_name',
             sortable: false,
             class: 'black--text title',
           },
@@ -288,18 +288,14 @@
 
       // Ambil Link Dari Postman
       DownloadFile() {
-        
         this.$http
-          .get('/packing/'+ this.$route.params.id + '/template?export=1')
+          .get('/packing/' + this.$route.params.id + '/template?export=1')
 
           .then((response) => {
-            window.open(response.data.file);
+            window.open(response.data.file)
             console.log(response.data.file)
           })
-
       },
-
-     
 
       onButtonClick() {
         this.isSelecting = true
