@@ -62,9 +62,9 @@
     methods: {
       renderData(search, areaId) {
         if (areaId) {
-          areaId = 'city_id.e:' + areaId + '|is_archived:0'
+          areaId = 'is_archived:0|city_id.e:' + areaId
         } else {
-          areaId = 'is_archived:0'
+          areaId = ''
         }
 
         this.$http
