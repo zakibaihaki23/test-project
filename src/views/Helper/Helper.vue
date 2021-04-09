@@ -237,6 +237,7 @@
           {
             value: 'actions',
             class: 'black--text title',
+            sortable: false,
           },
         ],
 

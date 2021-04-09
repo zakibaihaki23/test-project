@@ -121,20 +121,26 @@
     <br />
     <v-divider></v-divider>
     <div class="btn">
-      <v-btn
-        :to="{ path: '/packing' }"
-        color="#E6E9ED"
-        style="margin: 10px; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
-        class="cancel"
-        link
-        >Cancel</v-btn
-      >
-      <v-btn
-        style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
-        class="save"
-        @click="save"
-        >Save</v-btn
-      >
+      <v-row>
+        <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
+          <v-btn
+            :to="{ path: '/packing-order' }"
+            color="#E6E9ED"
+            style="margin: 10px; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
+            class="cancel"
+            link
+            >Cancel</v-btn
+          >
+        </v-col>
+        <v-col md="1" sm="2" cols="5" lg="1" class="text-right">
+          <v-btn
+            style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
+            class="save"
+            @click="save"
+            >Save</v-btn
+          >
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -250,6 +256,5 @@
   }
   .btn {
     margin-top: 30px;
-    padding-left: 1100px;
   }
 </style>

@@ -161,9 +161,9 @@
                   single-line
                   class="form"
                   v-model="helper.confirm_password"
-                  :type="value ? 'password' : 'text'"
-                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="() => (value = !value)"
+                  :type="val_confirm ? 'password' : 'text'"
+                  :append-icon="val_confirm ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="() => (val_confirm = !val_confirm)"
                   :error-messages="error.confirm_password"
                 >
                 </v-text-field>
@@ -220,6 +220,7 @@
         edit: '',
         rules: [(v) => v.length <= 20 || 'Max 20 characters'],
         value: String,
+        val_confirm: String,
         editedIndex: -1,
         warehouse: '',
         warehouse_list: '',

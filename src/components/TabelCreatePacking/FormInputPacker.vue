@@ -21,7 +21,7 @@
     <template slot="item" slot-scope="data">
       {{ data.item.code }} - {{ data.item.name }}
     </template>
-    <template v-slot:label> Packer <span style="color:red;">*</span></template>
+    <template v-slot:label style="padding: 10px"> Packer</template>
   </v-autocomplete>
 </template>
 
