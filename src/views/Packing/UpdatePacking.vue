@@ -108,9 +108,6 @@
             <td>
               {{ props.item.total_order }}
             </td>
-            <td>
-              <FormInputPacker @selected="inputPacker"> </FormInputPacker>
-            </td>
           </tr>
         </template>
       </v-data-table>
@@ -137,6 +134,7 @@
             style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
             class="save"
             @click="save"
+            :disabled="disable"
             >Save</v-btn
           >
         </v-col>
@@ -152,6 +150,7 @@
 
     data() {
       return {
+        disable: true,
         packing: {
           area: '',
           warehouse_id: '',
@@ -160,7 +159,9 @@
           date: '',
           packer: '',
           dataTable: [],
+          idx: '',
           code: '',
+          items: [],
         },
 
         table: [
@@ -185,22 +186,17 @@
             class: '  black--text title',
             sortable: false,
           },
-          {
-            text: 'Packer',
-            align: 'left',
-            with: '10%',
-            class: '  black--text title',
-            sortable: false,
-          },
         ],
       }
     },
-
     created() {
       this.renderData()
     },
 
     methods: {
+      sendIdx(id) {
+        this.idx = idx
+      },
       //untuk mendapatkan data dari API ke dalam format text-field
       renderData() {
         this.$http
@@ -223,23 +219,33 @@
       },
       //menyimpan data update ke dalam API
       save() {
-        console.log(this.dataTable)
-        // this.$http
-        //   .post('/packing', {
-        //     note: this.packing.note,
-        //   })
+        var items = []
+        for (let i = 0; i < this.dataTable.length; i++) {
+          items[i] = {
+            item_id: this.dataTable[i].id,
+          }
+        }
+        this.$http
+          .put('/packing/' + this.$route.params.id, {
+            area_id: this.area,
+            warehouse_id: this.warehouse_id,
+            note: this.note,
+            total_order: parseInt(this.total_order),
+            delivery_date: this.date,
+            items: this.dataTable,
+          })
 
-        //   .then((response) => {
-        //     this.$router.push('/packing-order')
-        //     this.$toast.success('Data has been saved successfully')
-        //   })
+          .then((response) => {
+            this.$router.push('/packing-order')
+            this.$toast.success('Data has been saved successfully')
+          })
       },
       inputPacker(val) {
-        this.packer = ''
+        this.dataTable[this.idx].helper_id = []
         if (val) {
-          this.packer = val
+          this.dataTable[this.idx].helper_id = val
         }
-        console.log(this.packer)
+        console.log(this.dataTable)
       },
     },
   }
