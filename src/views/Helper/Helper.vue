@@ -327,7 +327,7 @@
             this.renderData()
           })
           .catch((error) => {
-            console.log(error)
+            this.$toast.error(error.response.data.errors.id)
           })
       },
 

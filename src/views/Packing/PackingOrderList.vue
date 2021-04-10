@@ -131,7 +131,12 @@
               {{ props.item.warehouse.warehouse_name }}
             </td>
             <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td>
-            <td>{{ props.item.note }}</td>
+            <td>
+              <div v-if="props.item.note">
+                {{ props.item.note }}
+              </div>
+              <div v-else>-</div>
+            </td>
             <td>
               <div v-if="props.item.status == 1">
                 {{ 'Active' }}
