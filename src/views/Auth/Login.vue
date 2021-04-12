@@ -30,52 +30,59 @@
         style="bottom: 250px;"
       >
         <v-container class="login-container" fluid>
-          <v-form
-            @submit.prevent="submit"
-            ref="form"
-            v-model="valid"
-            lazy-validation
-          >
-            <v-text-field
-              prepend-inner-icon="mdi-account"
-              v-model="form.email"
-              label="E-Mail"
-              required
-              class="form"
-              flat
-              solo
-              :error-messages="error.email"
-              style="margin-top: 50px; width: 300px; margin-left: 35px"
+          <ValidationObserver ref="obs" v-slot="{ invalid, validated }">
+            <v-form
+              @submit.prevent="submit"
+              ref="form"
+              v-model="valid"
+              lazy-validation
             >
-            </v-text-field>
-            <v-text-field
-              prepend-inner-icon="mdi-lock"
-              v-model="form.password"
-              :error-messages="error.password"
-              label="Password"
-              :type="value ? 'password' : 'text'"
-              :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-              @click:append="() => (value = !value)"
-              flat
-              @keyup.enter="submit"
-              solo
-              class="form"
-              style=" margin-top: 50px; width: 300px; margin-left: 35px"
-            >
-              <v-spacer></v-spacer>
-            </v-text-field>
-            <!-- <v-checkbox label="Remember Me"></v-checkbox> -->
-            <v-btn
-              style="height: 50px; width: 300px; margin-left: 35px"
-              elevation="1"
-              depressed
-              type="submit"
-              @click="submit"
-              :loading="loading"
-            >
-              <!----><!----><span>Login</span>
-            </v-btn>
-          </v-form>
+              <ValidationProvider rules="required">
+                <v-text-field
+                  prepend-inner-icon="mdi-account"
+                  v-model="form.email"
+                  label="E-Mail"
+                  required
+                  class="form"
+                  flat
+                  solo
+                  :error-messages="error.email"
+                  style="margin-top: 50px; width: 300px; margin-left: 35px"
+                >
+                </v-text-field>
+              </ValidationProvider>
+              <ValidationProvider rules="required">
+                <v-text-field
+                  prepend-inner-icon="mdi-lock"
+                  v-model="form.password"
+                  :error-messages="error.password"
+                  label="Password"
+                  :type="value ? 'password' : 'text'"
+                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="() => (value = !value)"
+                  flat
+                  @keyup.enter="submit"
+                  solo
+                  class="form"
+                  style=" margin-top: 50px; width: 300px; margin-left: 35px"
+                >
+                  <v-spacer></v-spacer>
+                </v-text-field>
+              </ValidationProvider>
+              <!-- <v-checkbox label="Remember Me"></v-checkbox> -->
+              <v-btn
+                style="height: 50px; width: 300px; margin-left: 35px"
+                elevation="1"
+                depressed
+                type="submit"
+                @click="submit"
+                :loading="loading"
+                :disabled="invalid || !validated"
+              >
+                <!----><!----><span>Login</span>
+              </v-btn>
+            </v-form>
+          </ValidationObserver>
         </v-container>
       </v-card>
     </div>
@@ -84,8 +91,10 @@
 
 <script>
   import { mapActions } from 'vuex'
+  import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
   export default {
+    components: { ValidationObserver, ValidationProvider },
     name: 'Login',
     data() {
       return {
