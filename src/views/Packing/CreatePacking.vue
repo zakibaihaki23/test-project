@@ -142,6 +142,7 @@
         style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
         class="save"
         @click="save"
+        :loading="loading"
         >Save</v-btn
       >
     </div>
@@ -171,6 +172,7 @@
         dataTable: [],
         idx: '',
         items: [],
+        loading: false,
 
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
@@ -288,6 +290,7 @@
 
       //untuk menyimpan data Penambahan ke dalam API
       save() {
+        this.loading = true
         var items = []
         for (let i = 0; i < this.dataTable.length; i++) {
           items[i] = {
@@ -307,6 +310,11 @@
           .then((response) => {
             this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
+          })
+           .catch((error) => {
+            this.error = error.response.data.errors
+            this.$toast.error('Something wrong with your input')
+            this.loading = false
           })
       },
 
