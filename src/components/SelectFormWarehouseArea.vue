@@ -10,7 +10,6 @@
       item-value="value"
       hide-selected
       return-object
-      :search-input.sync="search"
       @change="selected"
       :disabled="disabled"
       style="border-radius: 12px"
@@ -39,15 +38,12 @@
       this.renderData('', this.areaId)
     },
     watch: {
-      search: {
-        handler: function(val) {
-          this.renderData(val)
-        },
-        deep: true,
-      },
       clear: {
         handler: function(val) {
-          this.renderData()
+          this.renderData('')
+          if (val == true) {
+            this.warehouse = ''
+          }
         },
         deep: true,
       },
@@ -61,15 +57,11 @@
       },
     },
     methods: {
-      renderData(search, areaId) {
+      renderData(areaId) {
         if (areaId) {
-          areaId =
-            'is_archived:0|city_id.e:' +
-            areaId +
-            '|warehouse_name.icontains:' +
-            search
+          areaId = 'is_archived:0|city_id.e:' + areaId
         } else {
-          areaId = 'is_archived:0|warehouse_name.icontains:' + search
+          areaId = ''
         }
 
         this.$http
