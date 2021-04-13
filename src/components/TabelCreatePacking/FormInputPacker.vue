@@ -8,7 +8,7 @@
     chips
     small-chips
     multiple
-    item-text="code"
+    item-text="name"
     single-line
     item-value="id"
     @change="selected"
@@ -21,6 +21,9 @@
     <template slot="item" slot-scope="data">
       {{ data.item.code }} - {{ data.item.name }}
     </template>
+    <template v-slot:selection="{ item }">
+            <v-chip color="primary" text-color="white">{{item.name}}</v-chip>
+        </template>
     <template v-slot:label style="padding: 10px"> Packer</template>
   </v-autocomplete>
 </template>

@@ -57,7 +57,7 @@
 
       <!-- BAGIAN KANAN -->
       <v-col md="6">
-        <div class="form-right">
+        <div class="form-left">
           <p style="margin-top:177px;">
             Warehouse <span style="color: red">*</span>
           </p>
@@ -126,6 +126,7 @@
     </div>
 
     <!-- BAGIAN FOOTER -->
+    <pre>{{this.packer}}</pre>
     <br /><br />
     <br />
     <v-divider></v-divider>
@@ -133,7 +134,7 @@
       <v-btn
         :to="{ path: '/packing-order' }"
         color="#E6E9ED"
-        style="margin: 10px; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
+        style="margin: 10px; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px;"
         class="cancel"
         link
         >Cancel</v-btn
@@ -214,6 +215,7 @@
             class: '  black--text title',
             sortable: false,
           },
+          
         ],
       }
     },
@@ -232,110 +234,117 @@
 
     methods: {
         sendIdx(id){
-            this.idx = id
+          this.idx = id
         },
         inputPacker(val) {
-            this.dataTable[this.idx].helper = []
-            if (val) {
-                this.dataTable[this.idx].helper = val
-            }
-            console.log(this.dataTable)
-        },
-      formatDate(date) {
-        if (!date) return null
-
-        const [year, month, day] = date.split('-')
-        return `${day}/${month}/${year}`
-      },
-
-      parseDate(date) {
-        if (!date) return null
-
-        const [month, day, year] = date.split('/')
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-      },
-
-      renderData() {
-        let areaId = ''
-        if (this.area) {
-          areaId = 'city_id.e:' + this.area
-        } else {
-          areaId = ''
-        }
-        let updatedate = this.$moment(this.date)
-          .add(7)
-          .format('YYYY-MM-DD')
-        console.log(updatedate)
-
-        // RENDER DATA TAMPILAN CREATE PACKABLE
-        this.$http
-          .get('/packing/item-recap', {
-            params: {
-              // embeds: 'item_uom_id', 'item_quantity',
-              conditions:
-                'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00',
-            },
-          })
-          .then((response) => {
-            this.dataTable = response.data.data
-
-            if (this.dataTable === null) {
-              this.dataTable = []
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      },
-
-      //untuk menyimpan data Penambahan ke dalam API
-      save() {
-        this.loading = true
-        var items = []
-        for (let i = 0; i < this.dataTable.length; i++) {
-          items[i] = {
-            item_id: this.dataTable[i].id,
+          this.dataTable[this.idx].helper = []
+          if (val) {
+            this.dataTable[this.idx].helper = val
           }
-        }
-        this.$http
-          .post('/packing', {
-            area_id: this.area,
-            warehouse_id: this.warehouse_id,
-            note: this.note,
-            total_order: parseInt(this.total_order),
-            delivery_date: this.date,
-            items: this.dataTable,
-          })
+          console.log(this.dataTable)
+        },
+        formatDate(date) {
+          if (!date) return null
 
-          .then((response) => {
-            this.$router.push('/packing-order')
-            this.$toast.success('Data has been saved successfully')
-          })
-           .catch((error) => {
-            this.error = error.response.data.errors
-            this.$toast.error('Something wrong with your input')
-            this.loading = false
-          })
-      },
+          const [year, month, day] = date.split('-')
+          return `${day}/${month}/${year}`
+        },
 
-      areaSelected(val) {
-        this.area = ''
-        if (val) {
-          this.area = val.id
-          this.warehouseDisabled = false
-        }
-        // this.renderData()
-      },
+        parseDate(date) {
+          if (!date) return null
 
-      warehouseSelected(val) {
-        this.warehouseList = null
-        this.warehouse_id = null
-        if (val) {
-          this.warehouseList = val
-          this.warehouse_id = val.value
-        }
-        this.renderData()
-      },
+          const [month, day, year] = date.split('/')
+          return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+        },
+
+        renderData() {
+          let areaId = ''
+          if (this.area) {
+            areaId = 'city_id.e:' + this.area
+          } else {
+            areaId = ''
+          }
+          let updatedate = this.$moment(this.date)
+            .add(7)
+            .format('YYYY-MM-DD')
+          console.log(updatedate)
+
+          // RENDER DATA TAMPILAN CREATE PACKABLE
+          this.$http
+            .get('/packing/item-recap', {
+              params: {
+                // embeds: 'item_uom_id', 'item_quantity',
+                conditions:
+                  'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00',
+              },
+            })
+            .then((response) => {
+              this.dataTable = response.data.data
+
+              if (this.dataTable === null) {
+                this.dataTable = []
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          },
+
+          //untuk menyimpan data Penambahan ke dalam API
+          save() {
+            this.loading = true
+            var items = []
+            for (let i = 0; i < this.dataTable.length; i++) {
+              items[i] = {
+                item_id: this.dataTable[i].id,
+              }
+            }
+            this.$http
+              .post('/packing', {
+                area_id: this.area,
+                warehouse_id: this.warehouse_id,
+                note: this.note,
+                total_order: parseInt(this.total_order),
+                delivery_date: this.date,
+                items: this.dataTable,
+              })
+
+              .then((response) => {
+                this.$router.push('/packing-order')
+                this.$toast.success('Data has been saved successfully')
+              })
+              .catch((error) => {
+                this.error = error.response.data.errors
+                this.$toast.error(error.response.data.errors.area_id)
+                this.$toast.error(error.response.data.errors.warehouse_id)
+                if(error.response.data.errors.id)(
+                  this.$toast.error(error.response.data.errors.id)
+                )
+                this.loading = false
+                console.log(this.error)
+              })
+            },
+
+          areaSelected(val) {
+            this.area = ''
+            this.dataTable = []
+            if (val) {
+              this.area = val.id
+              this.warehouseDisabled = false
+            }
+            // this.renderData()
+          },
+
+          warehouseSelected(val) {
+            this.warehouseList = null
+            this.warehouse_id = null
+            this.dataTable = []
+            if (val) {
+              this.warehouseList = val
+              this.warehouse_id = val.value
+            }
+            this.renderData()
+          },
     },
   }
 </script>
@@ -348,6 +357,9 @@
   .form-right {
     margin-top: 50px;
     padding-right: 90px;
+  }
+  .form-left {
+    margin-top: 0px;
   }
   .name {
     border-radius: 15px;

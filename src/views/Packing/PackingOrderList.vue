@@ -165,11 +165,13 @@
                     </v-list-item>
                     <v-divider
                       style="margin-left: 10px;margin-right: 10px"
+                      v-if="props.item.status == 1"
                     ></v-divider>
                     <v-list-item
                       :to="{ path: `/packing-order/update/${props.item.id}` }"
                       link
                       style="width: 150px; "
+                      v-if="props.item.status == 1"
                     >
                       <div>
                         <v-list-item-title>Update</v-list-item-title>
@@ -178,27 +180,62 @@
                   </template>
                   <v-divider
                     style="margin-left: 10px;margin-right: 10px"
+                    v-if="props.item.status == 1"
                   ></v-divider>
-                  <v-list-item link>
-                    <v-list-item-title>
-                      Cancel
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-divider
-                    style="margin-left: 10px;margin-right: 10px"
-                  ></v-divider>
-                  <v-list-item link>
-                    <v-list-item-title>
-                      <div
-                        @click="archive(props.item.id)"
+                  <v-dialog v-model="dialog" persistent max-width="360px">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item
+                        v-bind="attrs"
+                        v-on="on"
                         v-if="props.item.status == 1"
                       >
-                        {{ 'Finish' }}
-                      </div>
-                      <div @click="unarchive(props.item.id)" v-else>
-                        {{ 'Unfinished' }}
-                      </div>
-                    </v-list-item-title>
+                        Cancel
+                      </v-list-item>
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline"> </v-card-title>
+                      <v-card-text style="font-size: 16px"
+                        >Are you sure to change this status to
+                        <b>Cancel</b> ?</v-card-text
+                      >
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+
+                        <v-btn
+                          text
+                          @click="dialog = false"
+                          style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                        >
+                          No
+                        </v-btn>
+                        <v-btn
+                          text
+                          @click="cancel(props.item.id)"
+                          style="margin-bottom: 20px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4; margin-left: 20px;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                        >
+                          Yes
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  <!-- <v-list-item
+                    link
+                    v-if="props.item.status == 1"
+                    @click="cancel(props.item.id)"
+                    v-on="cancelDialog"
+                  >
+                    Cancel
+                  </v-list-item> -->
+                  <v-divider
+                    v-if="props.item.status == 1"
+                    style="margin-left: 10px;margin-right: 10px"
+                  ></v-divider>
+                  <v-list-item
+                    link
+                    v-if="props.item.status == 1"
+                    @click="finish(props.item.id)"
+                  >
+                    Finish
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -220,6 +257,7 @@
     data() {
       return {
         dates: '',
+        dialog: false,
         page: 1,
         warehouseList: '',
         warehouse: null,
@@ -366,17 +404,6 @@
           }
         }
 
-        // let dates = ''
-        // if (this.dates) {
-        //   if (this.warehouse_id) {
-        //     dates = '|delivery_date:' + this.dates
-        //   } else {
-        //     dates = 'delivery_date:' + this.dates
-        //   }
-        // } else {
-        //   dates = ''
-        // }
-
         this.$http
           .get('/warehouse', {
             params: {
@@ -445,6 +472,29 @@
           this.warehouse_id = val.value
         }
         this.renderData('')
+      },
+      cancel(id) {
+        this.$http
+          .put('/packing/' + id + '/cancel', {})
+          .then((response) => {
+            this.$toast.success('Packing order cancelled')
+            this.dialog = false
+            this.renderData()
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      },
+      finish(id) {
+        this.$http
+          .put('/packing/' + id + '/finish', {})
+          .then((response) => {
+            this.$toast.success('Packing order finished')
+            this.renderData()
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       },
     },
   }

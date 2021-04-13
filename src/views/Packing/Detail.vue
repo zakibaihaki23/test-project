@@ -76,7 +76,7 @@
 
                         <!-- TOMBOL PILIH FILE UNTUK UPLOAD -->
                         <v-col cols="5">
-                          <v-btn
+                          <!-- <v-btn
                             style="margin-left:23px; margin-top:-7px;"
                             color="primary"
                             class="text-none"
@@ -96,7 +96,8 @@
                             type="file"
                             accept=".xls, .xlsx"
                             @change="onFileChanged"
-                          />
+                          /> -->
+                          <vue-xlsx-table  @on-select-file="handleSelectedFile" style="background: #768f9c; height:45px; border-radius: 20px;" class="px-6 ml-2 no-caps white--text"  :readAsBS="true"> Choose File</vue-xlsx-table>
                         </v-col>
                         <v-col style="padding-top: 60px">
                           <span style="margin-left:121px;">Or</span></v-col
@@ -277,6 +278,29 @@
     },
 
     methods: {
+      handleSelectedFile(convertedData){
+         this.disable = false
+                let that = this
+                convertedData.body.forEach((item) => {
+                    let value = {};
+                    value.product_id = item.Product_ID;
+                    value.shadow_price = parseFloat(item.Shadow_Price);
+                    value.price_set_id = this.filter.price_set_id
+                    that.prices.push(value)
+                }); 
+                console.log(that.prices)
+                this.$http.put("/price/product_price/template/shadow/update", {
+                    prices:that.prices
+                })
+                .then(response => {
+                    window.location.reload("/price/product")
+                    console.log(response);
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+      },
       renderData() {
         this.$http
           .get('/packing/' + this.$route.params.id)

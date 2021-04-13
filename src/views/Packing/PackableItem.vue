@@ -189,7 +189,7 @@
                 >
                 </v-text-field>
               </template>
-              <span>Search by item name</span>
+              <span>Search by item name, item code and uom</span>
             </v-tooltip>
           </div>
         </v-col>
@@ -212,6 +212,7 @@
       >
         <template v-slot:item="props">
           <tr>
+            <td>{{ props.item.item_code }}</td>
             <td>{{ props.item.item_name }}</td>
             <td>{{ props.item.item_uom.item_uom_name }}</td>
             <td>
@@ -263,11 +264,11 @@
         isLoading: true,
         loading: false,
         headers: [
-          // {
-          //   text: 'No.',
-          //   value: 'no',
-          //   sortable: false,
-          // },
+          {
+            text: 'Item Code',
+            value: 'item_code',
+            class: 'black--text title',
+          },
           {
             text: 'Item',
             value: 'item_name',
@@ -276,7 +277,6 @@
           {
             text: 'UOM',
             value: 'item_uom.item_uom_name',
-            class: 'black--text',
             class: 'black--text title',
           },
           {
