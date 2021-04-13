@@ -1,4 +1,8 @@
 <template>
+<v-container fluid>
+  <v-row
+    align="center"
+  >
   <v-autocomplete
     v-model="values"
     :items="packer"
@@ -26,6 +30,8 @@
         </template>
     <template v-slot:label style="padding: 10px"> Packer</template>
   </v-autocomplete>
+    </v-row>
+    </v-container>
 </template>
 
 <script>

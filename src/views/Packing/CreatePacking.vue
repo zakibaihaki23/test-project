@@ -190,7 +190,7 @@
           {
             text: 'Item',
             align: 'left',
-            with: '10%',
+            width: '40%',
             class: ' black--text title',
             sortable: false,
           },
@@ -211,7 +211,7 @@
           {
             text: 'Packer',
             align: 'left',
-            with: '10%',
+            width: '40%',
             class: '  black--text title',
             sortable: false,
           },
@@ -332,6 +332,7 @@
               this.area = val.id
               this.warehouseDisabled = false
             }
+            //  
             // this.renderData()
           },
 
