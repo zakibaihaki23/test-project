@@ -98,6 +98,7 @@
                             accept=".xls, .xlsx"
                             @change="onFileChanged"
                           /> -->
+                          
                           <v-btn
                             style="margin-left: 30px;
                                   margin-top: 0px;"
@@ -198,6 +199,105 @@
                 -
               </div>
             </td>
+            <td v-show="status == 1">
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" v-on="on" icon>
+                    <v-icon dark>
+                      mdi-dots-horizontal
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-dialog v-model="dialog4" persistent max-width="491px">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="openDialog(props.item.id)"
+                      >
+                        Assign Packer
+                      </v-list-item>
+                    </template>
+                    <v-card
+                      style="border-radius: 20px;width: 491px; height: 500px;"
+                    >
+                      <v-card-title>
+                        <br />
+                        <br />
+                        <span
+                          style="padding-top:15px; margin-left: 34%; "
+                          class="headline"
+                          >Assign Packer</span
+                        >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          style="margin-left:10px; margin-top: 5px; background: #6C757D"
+                          dark
+                          fab
+                          small
+                          @click="dialog4 = false"
+                        >
+                          <v-icon>
+                            mdi-close
+                          </v-icon>
+                        </v-btn>
+                      </v-card-title>
+
+                      <v-card-text>
+                        <v-container>
+                          <v-row style="margin-top: 1px">
+                            <v-col cols="12">
+                              <p style="color: gray; font-size: 20px">
+                                Item *
+                              </p>
+                              <v-text-field
+                                disabled
+                                outlined
+                                single-line
+                                style="border-radius: 10px"
+                                v-model="props.item.item.item_name"
+                                required
+                                append-icon=""
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12">
+                              <p style="color: black; font-size: 20px">
+                                Packer
+                              </p>
+                              <v-text-field
+                                outlined
+                                single-line
+                                style="border-radius: 10px"
+                                required
+                                v-model="props.item.helper"
+                                append-icon=""
+                              >
+                              </v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-row>
+                          <v-col xl="12" cols="12" md="12" sm="12" lg="12">
+                            <v-btn
+                              style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
+                              @click="save"
+                              :loading="loading"
+                            >
+                              Save
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-list>
+              </v-menu>
+              <!-- <AssignPacker v-model="dialog4" @selected="assignPacker">
+              </AssignPacker> -->
+            </td>
           </tr>
         </template>
       </v-data-table>
@@ -228,11 +328,12 @@
 <script>
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
+  import AssignPacker from '../../components/AssignPacker'
   // import axios from 'axios'
   // import vueXlsxTable from 'vue-xlsx-table'
 
   export default {
-    components: { SelectWarehouse, SelectArea },
+    components: { SelectWarehouse, SelectArea, AssignPacker },
     data() {
       return {
         defaultButtonText: 'Choose File',
@@ -240,7 +341,8 @@
         isSelecting: false,
         download: '',
         dialog: false,
-        item: '',
+        dialog4: false,
+        item: null,
         uom: '',
         search: '',
         file: 0,
@@ -276,8 +378,13 @@
             sortable: false,
             class: 'black--text title',
           },
+          {
+            value: 'actions',
+            sortable: false,
+          },
         ],
         data: [],
+        status: [],
       }
     },
 
@@ -315,8 +422,8 @@
                 .catch(err => {
                     console.log(err)
                 })
-
       },
+    
       renderData() {
         this.$http
           .get('/packing/' + this.$route.params.id)
@@ -324,6 +431,7 @@
           .then((response) => {
             this.packing_code = response.data.data.document_code
             this.data = response.data.data.packing_items
+            this.status = response.data.data.status
           })
       },
 
@@ -372,8 +480,7 @@
                 console.log(this.error)
               })
       },
-  
-
+      
     },
   }
 </script>

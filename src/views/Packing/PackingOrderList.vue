@@ -182,50 +182,16 @@
                     style="margin-left: 10px;margin-right: 10px"
                     v-if="props.item.status == 1"
                   ></v-divider>
-                  <v-dialog v-model="dialog" persistent max-width="360px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-list-item
-                        v-bind="attrs"
-                        v-on="on"
-                        v-if="props.item.status == 1"
-                      >
-                        Cancel
-                      </v-list-item>
-                    </template>
-                    <v-card>
-                      <v-card-title class="headline"> </v-card-title>
-                      <v-card-text style="font-size: 16px"
-                        >Are you sure to change this status to
-                        <b>Cancel</b> ?</v-card-text
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
 
-                        <v-btn
-                          text
-                          @click="dialog = false"
-                          style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
-                        >
-                          No
-                        </v-btn>
-                        <v-btn
-                          text
-                          @click="cancel(props.item.id)"
-                          style="margin-bottom: 20px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4; margin-left: 20px;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
-                        >
-                          Yes
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                  <!-- <v-list-item
+                  <v-list-item
                     link
                     v-if="props.item.status == 1"
-                    @click="cancel(props.item.id)"
-                    v-on="cancelDialog"
+                    @click="
+                      openDialog(props.item.status, props.item.id, 'cancel')
+                    "
                   >
                     Cancel
-                  </v-list-item> -->
+                  </v-list-item>
                   <v-divider
                     v-if="props.item.status == 1"
                     style="margin-left: 10px;margin-right: 10px"
@@ -233,7 +199,9 @@
                   <v-list-item
                     link
                     v-if="props.item.status == 1"
-                    @click="finish(props.item.id)"
+                    @click="
+                      openDialog(props.item.status, props.item.id, 'finish')
+                    "
                   >
                     Finish
                   </v-list-item>
@@ -243,6 +211,49 @@
           </tr>
         </template>
       </v-data-table>
+      <v-dialog v-model="dialog" persistent max-width="360px">
+        <v-card style="height: 200px">
+          <v-card-title class="headline"> </v-card-title>
+          <v-card-text
+            style="font-size: 16px; margin-top: 10px"
+            class="text-center"
+            >Are you sure to change this status to<br />
+            <b>{{ text }}</b> ?</v-card-text
+          >
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-row>
+              <v-col xl="5" cols="6" md="6" sm="6" lg="6">
+                <v-btn
+                  text
+                  @click="dialog = false"
+                  style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                >
+                  No
+                </v-btn>
+              </v-col>
+              <v-col xl="5" cols="6" md="6" sm="6" lg="6">
+                <v-btn
+                  v-if="text == 'Cancel'"
+                  text
+                  @click="cancel(idUser)"
+                  style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                >
+                  Yes
+                </v-btn>
+                <v-btn
+                  v-if="text == 'Finish'"
+                  text
+                  @click="finish(idUser)"
+                  style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                >
+                  Yes
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </div>
 </template>
@@ -369,6 +380,16 @@
       },
     },
     methods: {
+      openDialog(status, id, action) {
+        this.dialog = true
+        this.idUser = id
+        this.statusUser = status
+        if (action == 'cancel') {
+          this.text = 'Cancel'
+        } else if (action == 'finish') {
+          this.text = 'Finish'
+        }
+      },
       formatDate(val) {
         return moment(val).format('DD-MM-YYYY')
       },
@@ -490,6 +511,7 @@
           .put('/packing/' + id + '/finish', {})
           .then((response) => {
             this.$toast.success('Packing order finished')
+            this.dialog = false
             this.renderData()
           })
           .catch((error) => {

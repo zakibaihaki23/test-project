@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-select
+    <v-autocomplete
       v-model="warehouse"
       label="Warehouse"
       single-line
@@ -8,15 +8,15 @@
       :items="items"
       item-text="name"
       item-value="value"
-      hide-no-data
       hide-selected
       return-object
       :search-input.sync="search"
       @change="selected"
       :disabled="disabled"
       style="border-radius: 12px"
+      clearable
     >
-    </v-select>
+    </v-autocomplete>
   </div>
 </template>
 
@@ -25,25 +25,26 @@
     name: 'SelectFormWarehouseArea',
     data() {
       return {
-        search: '',
+        search: null,
         warehouse: null,
         items: [],
         warehouseFilter: null,
       }
     },
     props: ['clear', 'warehouse', 'disabled', 'areaId'],
-
+    created() {
+      this.renderData('', this.areaId)
+    },
     mounted() {
       this.renderData('', this.areaId)
     },
     watch: {
-      // warehouse: {
-      //   handler: function(val) {
-      //     if (val && val.length == 0) {
-      //       this.renderData()
-      //     }
-      //   },
-      // },
+      search: {
+        handler: function(val) {
+          this.renderData(val)
+        },
+        deep: true,
+      },
       clear: {
         handler: function(val) {
           this.renderData()
@@ -70,7 +71,8 @@
         this.$http
           .get('/warehouse', {
             params: {
-              conditions: areaId,
+              perpage: 10,
+              conditions: areaId + '|warehouse_name.icontains:' + search,
             },
           })
           .then((response) => {

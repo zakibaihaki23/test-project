@@ -119,7 +119,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   style="margin-left:10px; margin-top: 5px;"
-                  color="red"
+                  color="#6C757D"
                   dark
                   fab
                   small
