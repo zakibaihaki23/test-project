@@ -8,7 +8,6 @@
       :items="items"
       item-text="name"
       item-value="value"
-      hide-no-data
       hide-selected
       return-object
       :search-input.sync="search"
@@ -33,7 +32,9 @@
       }
     },
     props: ['clear', 'warehouse', 'disabled', 'areaId'],
-
+    created() {
+      this.renderData('', this.areaId)
+    },
     mounted() {
       this.renderData('', this.areaId)
     },

@@ -68,7 +68,10 @@
                   item-text="name"
                   item-value="value"
                   label="Warehouse"
+                  :search-input.sync="search"
                   outlined
+                  return-object
+                  hide-selected
                   single-line
                   class="form"
                   v-model="warehouse_id"
@@ -196,6 +199,7 @@
     components: { ValidationProvider, ValidationObserver },
     data() {
       return {
+        search: null,
         saveDisabled: true,
         loading: false,
         rules: {
@@ -220,16 +224,30 @@
       }
     },
     created() {
-      this.renderData()
+      this.renderData('')
+    },
+    watch: {
+      search: {
+        handler: function(val) {
+          this.renderData(val)
+        },
+        deep: true,
+      },
     },
 
     methods: {
       //untuk mendapatkan list warehouse dari API
-      renderData() {
+      renderData(search) {
+        if (search) {
+          search = '|warehouse_name.icontains:' + search
+        } else {
+          search = ''
+        }
         this.$http
           .get('/warehouse', {
             params: {
-              conditions: 'is_archived:0',
+              perpage: 10,
+              conditions: 'is_archived:0' + search,
             },
           })
           .then((response) => {

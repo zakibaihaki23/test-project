@@ -84,6 +84,8 @@
                   item-text="warehouse_name"
                   item-value="id"
                   @selected="warehouseSelected"
+                  hide-selected
+                  return-object
                   outlined
                   single-line
                   class="form"
@@ -218,6 +220,7 @@
     data() {
       return {
         edit: '',
+        search: null,
         rules: [(v) => v.length <= 20 || 'Max 20 characters'],
         value: String,
         val_confirm: String,
@@ -244,12 +247,20 @@
       }
     },
     created() {
-      this.renderData()
+      this.renderData('')
+    },
+    watch: {
+      search: {
+        handler: function(val) {
+          this.renderData(val)
+        },
+        deep: true,
+      },
     },
 
     methods: {
       //untuk mendapatkan data dari API ke dalam format text-field
-      renderData() {
+      renderData(search) {
         this.$http
           .get('/helper/' + this.$route.params.id, {
             params: {
@@ -279,16 +290,22 @@
                 })
               }
 
-              this.$http.get('/warehouse').then((response) => {
-                this.warehouse = []
-                let array = response.data.data
-                for (let i = 0; i < array.length; i++) {
-                  this.warehouse.push({
-                    warehouse_name: array[i].warehouse_name,
-                    id: array[i].id,
-                  })
-                }
-              })
+              this.$http
+                .get('/warehouse', {
+                  params: {
+                    conditions: 'is_archived:0',
+                  },
+                })
+                .then((response) => {
+                  this.warehouse = []
+                  let array = response.data.data
+                  for (let i = 0; i < array.length; i++) {
+                    this.warehouse.push({
+                      warehouse_name: array[i].warehouse_name,
+                      id: array[i].id,
+                    })
+                  }
+                })
             })
           })
       },
