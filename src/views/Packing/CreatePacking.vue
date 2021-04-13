@@ -126,6 +126,7 @@
     </div>
 
     <!-- BAGIAN FOOTER -->
+    <pre>{{this.packer}}</pre>
     <br /><br />
     <br />
     <v-divider></v-divider>
@@ -315,10 +316,10 @@
               .catch((error) => {
                 this.error = error.response.data.errors
                 this.$toast.error(error.response.data.errors.area_id)
-                this.$toast.error(error.response.data.errors.city_id)
                 this.$toast.error(error.response.data.errors.warehouse_id)
-                this.$toast.error(error.response.data.errors.id)
-                
+                if(error.response.data.errors.id)(
+                  this.$toast.error(error.response.data.errors.id)
+                )
                 this.loading = false
                 console.log(this.error)
               })
@@ -326,6 +327,7 @@
 
           areaSelected(val) {
             this.area = ''
+            this.dataTable = []
             if (val) {
               this.area = val.id
               this.warehouseDisabled = false
@@ -336,6 +338,7 @@
           warehouseSelected(val) {
             this.warehouseList = null
             this.warehouse_id = null
+            this.dataTable = []
             if (val) {
               this.warehouseList = val
               this.warehouse_id = val.value
