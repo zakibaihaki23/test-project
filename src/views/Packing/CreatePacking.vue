@@ -325,6 +325,7 @@
                 console.log(this.error)
               })
             },
+            
 
           areaSelected(val) {
             this.area = ''
