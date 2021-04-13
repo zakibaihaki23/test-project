@@ -31,7 +31,7 @@
               </div>
             </template>
 
-            <v-card style="border-radius:20px;width: 430px; height: 500px">
+            <v-card style="border-radius:20px;width: 430px; height: 460px">
               <v-card-title>
                 <br />
                 <br />
@@ -54,11 +54,12 @@
                   </v-icon>
                 </v-btn>
               </v-card-title>
+              
+              <!-- ISI DIDALAM TOMBOL UPLOAD -->
               <v-card-text>
-                <!-- CONTAINER KE-1 -->
                 <v-container v-if="this.file <= 0">
                   <v-row>
-                    <div style=" padding-left:15%;">
+                    <div style=" margin-left:15%;">
                       <div
                         style="
                         width: 280px;
@@ -97,7 +98,17 @@
                             accept=".xls, .xlsx"
                             @change="onFileChanged"
                           /> -->
-                          <vue-xlsx-table  @on-select-file="handleSelectedFile" style="background: #768f9c; height:45px; border-radius: 20px;" class="px-6 ml-2 no-caps white--text"  :readAsBS="true"> Choose File</vue-xlsx-table>
+                          <v-btn
+                            style="margin-left: 30px;
+                                  margin-top: 0px;"
+                            >
+                           <vue-xlsx-table
+                            @on-select-file="handleSelectedFile" 
+                            :readAsBS="true"
+                            >
+                            Choose File
+                            </vue-xlsx-table>
+                          </v-btn>
                         </v-col>
                         <v-col style="padding-top: 60px">
                           <span style="margin-left:121px;">Or</span></v-col
@@ -112,9 +123,14 @@
                   </v-row>
                   <br />
                 </v-container>
-
-                <br />
-                <br />
+                <v-btn
+                  style="margin-left: 22px;
+                        margin-top: 0px;
+                        width: 350px; 
+                        height: 45px;"
+                  >
+                  Send File
+                </v-btn>
               </v-card-text>
             </v-card>
           </v-dialog>
