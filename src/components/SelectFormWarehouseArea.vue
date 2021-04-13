@@ -63,16 +63,20 @@
     methods: {
       renderData(search, areaId) {
         if (areaId) {
-          areaId = 'is_archived:0|city_id.e:' + areaId
+          areaId =
+            'is_archived:0|city_id.e:' +
+            areaId +
+            '|warehouse_name.icontains:' +
+            search
         } else {
-          areaId = ''
+          areaId = 'is_archived:0|warehouse_name.icontains:' + search
         }
 
         this.$http
           .get('/warehouse', {
             params: {
               perpage: 10,
-              conditions: areaId + '|warehouse_name.icontains:' + search,
+              conditions: areaId,
             },
           })
           .then((response) => {
