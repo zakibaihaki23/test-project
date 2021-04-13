@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <!-- <div>
     <v-tooltip top>
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ on, attrs }"> -->
         <v-autocomplete
           v-bind="attrs"
           v-on="on"
@@ -24,10 +24,10 @@
           dense
         >
         </v-autocomplete>
-      </template>
+      <!-- </template>
       <span>Select Warehouse</span>
     </v-tooltip>
-  </div>
+  </div> -->
 </template>
 
 <script>

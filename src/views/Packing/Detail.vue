@@ -358,6 +358,22 @@
 
         // do something
       },
+
+      save(){
+        this.$http
+        .get('/v1/packing/' + this.$route.params.id)
+
+        .then((response) => {
+                this.$router.push('/packing-order')
+                this.$toast.success('Data has been saved successfully')
+              })
+              .catch((error) => {
+                this.error = error.response.data.errors
+                console.log(this.error)
+              })
+      },
+  
+
     },
   }
 </script>

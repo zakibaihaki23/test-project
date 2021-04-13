@@ -65,6 +65,7 @@
             v-model="warehouseList"
             @selected="warehouseSelected"
             :areaId="area"
+            :warehouse="warehouseList"
             :disabled="warehouseDisabled"
           >
           </SelectFormWarehouseArea>
@@ -344,6 +345,7 @@
               this.warehouseList = val
               this.warehouse_id = val.value
             }
+            console.log(val,'dssadasdasd')
             this.renderData()
           },
     },
