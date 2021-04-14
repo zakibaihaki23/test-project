@@ -137,6 +137,8 @@
 >>>>>>> c4699500f1e8e93895f199b51f5aca79636ab9bc
                   Send File
                 </v-btn> -->
+
+                <!-- INI PERUBAHANNYA  BE -->
               </v-card-text>
             </v-card>
           </v-dialog>
