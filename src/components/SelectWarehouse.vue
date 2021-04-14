@@ -2,29 +2,28 @@
   <!-- <div>
     <v-tooltip top>
       <template v-slot:activator="{ on, attrs }"> -->
-        <v-autocomplete
-          v-bind="attrs"
-          v-on="on"
-          v-model="warehouses"
-          label="Warehouse"
-          style="border-radius: 10px; width: 250px; font-size: 13px"
-          outlined
-          single-line
-          :items="items"
-          item-text="name"
-          item-value="value"
-          name="warehouse"
-          hide-selected
-          return-object
-          :search-input.sync="search"
-          @change="selected"
-          clearable
-          :disabled="disabled"
-          append-icon=""
-          dense
-        >
-        </v-autocomplete>
-      <!-- </template>
+  <v-autocomplete
+    v-bind="attrs"
+    v-on="on"
+    v-model="warehouses"
+    label="Warehouse"
+    style="border-radius: 10px; width: 250px; font-size: 13px"
+    outlined
+    single-line
+    :items="items"
+    item-text="name"
+    item-value="value"
+    name="warehouse"
+    hide-selected
+    return-object
+    @change="selected"
+    clearable
+    :disabled="disabled"
+    append-icon=""
+    dense
+  >
+  </v-autocomplete>
+  <!-- </template>
       <span>Select Warehouse</span>
     </v-tooltip>
   </div> -->
@@ -48,12 +47,14 @@
       this.renderData('', this.areaId)
     },
     watch: {
-      search: {
-        handler: function(val) {
-          this.renderData(val)
-        },
-        deep: true,
-      },
+      // search: {
+      //   handler: function(val) {
+      //     if (val) {
+      //       this.renderData(val)
+      //     }
+      //   },
+      //   deep: true,
+      // },
       warehouse: {
         handler: function(val) {
           if (val == null) {
@@ -88,8 +89,7 @@
         this.$http
           .get('/warehouse', {
             params: {
-              perpage: 10,
-              conditions: areaId + '|warehouse_name.icontains:' + search,
+              conditions: areaId,
             },
           })
           .then((response) => {

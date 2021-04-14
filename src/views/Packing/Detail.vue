@@ -161,6 +161,8 @@
         :page.sync="page"
         :items-per-page="20"
         @page-count="pageCount = $event"
+        :loading="isLoading"
+        loading-text="Please Wait....."
       >
         <template v-slot:item="props">
           <tr>
@@ -348,6 +350,7 @@
       return {
         sendFile: '',
         selectedFile: null,
+        isLoading: true,
         isSelecting: false,
         download: '',
         dialog: false,
@@ -417,15 +420,30 @@
 
     methods: {
       savePacker() {
+        // let arr = []
+        // if (val) {
+        //   this.addPacker = val
+        //   for (let i = 0; i < val.length; i++) {
+        //     arr.push(val[i].id)
+        //   }
+        // }
+        // this.packer = arr
         // this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
         //   helper: this.packer,
         // })
-        console.log('MASUKKKKKKK')
+        console.log(arr, 'MASUKKKKKKK')
       },
 
       addPacker(val) {
-        this.helper = val
-        console.log(this.helper)
+        let arr = []
+        if (val) {
+          this.helper = val
+          for (let i = 0; i < val.length; i++) {
+            arr.push(val[i].id)
+          }
+          this.packer = arr
+        }
+        console.log(arr)
       },
       openDialog(id, item_name, packer) {
         this.dialog2 = true
@@ -445,10 +463,10 @@
         let data = []
         convertedData.body.forEach((item) => {
           data.push({
-            'packing_item_id' : item.Packing_Item_Id,
-            'total_pack': parseFloat(item.Total_Pack),
-            'total_kg': parseFloat(item.Total_Kg),
-            'helper_id': item.Packer_Id,
+            packing_item_id: item.Packing_Item_Id,
+            total_pack: parseFloat(item.Total_Pack),
+            total_kg: parseFloat(item.Total_Kg),
+            helper_id: item.Packer_Id,
           })
         })
         let send = {
@@ -473,6 +491,7 @@
           .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
+            this.isLoading = false
             this.warehouse = response.data.data.warehouse.id
             this.packing_code = response.data.data.document_code
             this.data = response.data.data.packing_items
