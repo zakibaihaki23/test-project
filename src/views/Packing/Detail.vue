@@ -126,14 +126,15 @@
                   </v-row>
                   <br />
                 </v-container>
-                <v-btn
+                <!-- <v-btn
                   style="margin-left: 22px;
                         margin-top: 0px;
                         width: 350px; 
                         height: 45px;"
+                
                   >
                   Send File
-                </v-btn>
+                </v-btn> -->
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -324,6 +325,7 @@
         </v-col>
       </v-row>
     </div>
+     
   </div>
 </template>
 
@@ -331,6 +333,7 @@
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
   import AssignPacker from '../../components/AssignPacker'
+  import Vue from 'vue'
 
 
   export default {
@@ -338,7 +341,7 @@
 
     data() {
       return {
-        defaultButtonText: 'Choose File',
+        sendFile: '',
         selectedFile: null,
         isSelecting: false,
         download: '',
@@ -349,6 +352,7 @@
         search: '',
         file: 0,
         packing_code: '',
+        data: [],
         headers: [
           {
             text: 'Item',
@@ -403,10 +407,41 @@
     },
 
     methods: {
+
+      // BAGIAN UPLOAD FILE XLXS TO JSON
       handleSelectedFile (convertedData) {
-        console.log(convertedData)
+           console.log(convertedData)
+           this.disable = false
+                let that = this
+                    let data = [];
+                    convertedData.body.forEach((item) => {
+                    data.push(
+                      {
+                        "packing_item_id":item.Packing_Item_Id,
+                        "total_pack": parseFloat (item.Total_Pack),
+                        "total_kg" : parseFloat (item.Total_Kg),
+                        "helper_id":item.Packer_Id,
+                      }
+                    )
+                }); 
+                let send = {
+                  "packings" : data
+                }
+                  console.log(send)
+                  this.sendFile = send
+                this.$http
+                .put('/packing/' + this.$route.params.id, send)
+                .then(response => {
+                    // Vue.$toast.open({
+                    //     position: 'top-right',
+                    //     message: 'Data has been saved successfully',
+                    //     type: 'success',
+                    // });
+                    window.location.reload()
+                })
+                
       },
-    
+
       renderData() {
         this.$http
           .get('/packing/' + this.$route.params.id)
@@ -427,27 +462,6 @@
             window.open(response.data.file)
             console.log(response.data.file)
           })
-      },
-
-      onButtonClick() {
-        this.isSelecting = true
-        window.addEventListener(
-          'focus',
-          () => {
-            this.isSelecting = false
-          },
-          { once: true }
-        )
-
-        this.$refs.uploader.click()
-      },
-
-      onFileChanged(e) {
-        this.selectedFile = e.target.files[0]
-
-        console.log(this.selectedFile)
-
-        // do something
       },
 
       save(){
