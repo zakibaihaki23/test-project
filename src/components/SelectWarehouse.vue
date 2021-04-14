@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <!-- <div>
     <v-tooltip top>
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ on, attrs }"> -->
         <v-autocomplete
           v-bind="attrs"
           v-on="on"
@@ -24,10 +24,10 @@
           dense
         >
         </v-autocomplete>
-      </template>
+      <!-- </template>
       <span>Select Warehouse</span>
     </v-tooltip>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -35,7 +35,7 @@
     name: 'SelectFormWarehouseArea',
     data() {
       return {
-        search: '',
+        search: null,
         warehouses: null,
         items: [],
       }
@@ -48,6 +48,12 @@
       this.renderData('', this.areaId)
     },
     watch: {
+      search: {
+        handler: function(val) {
+          this.renderData(val)
+        },
+        deep: true,
+      },
       warehouse: {
         handler: function(val) {
           if (val == null) {
@@ -82,7 +88,8 @@
         this.$http
           .get('/warehouse', {
             params: {
-              conditions: areaId,
+              perpage: 10,
+              conditions: areaId + '|warehouse_name.icontains:' + search,
             },
           })
           .then((response) => {

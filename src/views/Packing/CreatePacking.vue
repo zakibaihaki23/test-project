@@ -7,7 +7,44 @@
       <v-col md="6">
         <div class="form-right">
           <p>Delivery Date <span style="color: red">*</span></p>
-          <v-dialog
+          <v-menu
+            ref="menu"
+            v-model="delivery_date_model"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on }">
+              <div v-on="on">
+                <v-text-field
+                  style="border-radius: 12px;"
+                  prepend-inner-icon="mdi-calendar"
+                  readonly
+                  outlined
+                  single-line
+                  clearable
+                  @click:clear="
+                    ;(delivery_date = ''), renderData(search, statuses)
+                  "
+                  :value="format_delivery_date"
+                  class="rounded-form"
+                >
+                  <template v-slot:label>
+                    Delivery Date
+                  </template>
+                </v-text-field>
+              </div>
+            </template>
+            <v-date-picker
+              no-title
+              v-model="delivery_date"
+              @input="
+                ;(delivery_date_model = false), renderData(search, statuses)
+              "
+            ></v-date-picker>
+          </v-menu>
+          <!-- <v-dialog
             ref="dialog"
             v-model="modal"
             :return-value.sync="date"
@@ -47,7 +84,7 @@
                 OK
               </v-btn>
             </v-date-picker>
-          </v-dialog>
+          </v-dialog> -->
 
           <p>Area <span style="color: red">*</span></p>
           <SelectFormArea v-model="area" @selected="areaSelected">
@@ -65,11 +102,10 @@
             v-model="warehouseList"
             @selected="warehouseSelected"
             :areaId="area"
+            :warehouse="warehouseList"
             :disabled="warehouseDisabled"
           >
           </SelectFormWarehouseArea>
-
-
         </div>
       </v-col>
 
@@ -117,7 +153,12 @@
               <pre>{{ props.item.total_order }}</pre>
             </td>
             <td>
-              <FormInputPacker v-model="packer" :warehouse_id="warehouseList.value" @click.native="sendIdx(props.index)" @selected="inputPacker">
+              <FormInputPacker
+                v-model="packer"
+                :warehouse_id="warehouseList.value"
+                @click.native="sendIdx(props.index)"
+                @selected="inputPacker"
+              >
               </FormInputPacker>
             </td>
           </tr>
@@ -126,7 +167,7 @@
     </div>
 
     <!-- BAGIAN FOOTER -->
-    <pre>{{this.packer}}</pre>
+    <pre>{{ this.packer }}</pre>
     <br /><br />
     <br />
     <v-divider></v-divider>
@@ -170,6 +211,7 @@
         warehouseDisabled: true,
         total_order: '',
         delivery_date: '',
+        delivery_date_model: '',
         dataTable: [],
         idx: '',
         items: [],
@@ -215,14 +257,17 @@
             class: '  black--text title',
             sortable: false,
           },
-          
         ],
       }
     },
 
     computed: {
       computedDateFormatted() {
-        return this.formatDate(this.date)
+        return this.formatDate(this.delivery_date)
+      },
+      format_delivery_date() {
+        if (this.delivery_date)
+          return this.$moment(this.delivery_date).format('DD/MM/YYYY')
       },
     },
 
@@ -233,119 +278,116 @@
     },
 
     methods: {
-        sendIdx(id){
-          this.idx = id
-        },
-        inputPacker(val) {
-          this.dataTable[this.idx].helper = []
-          if (val) {
-            this.dataTable[this.idx].helper = val
-          }
-          console.log(this.dataTable)
-        },
-        formatDate(date) {
-          if (!date) return null
+      sendIdx(id) {
+        this.idx = id
+      },
+      inputPacker(val) {
+        this.dataTable[this.idx].helper = []
+        if (val) {
+          this.dataTable[this.idx].helper = val
+        }
+      },
+      formatDate(date) {
+        if (!date) return null
 
-          const [year, month, day] = date.split('-')
-          return `${day}/${month}/${year}`
-        },
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+      },
 
-        parseDate(date) {
-          if (!date) return null
+      parseDate(date) {
+        if (!date) return null
 
-          const [month, day, year] = date.split('/')
-          return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-        },
+        const [month, day, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      },
 
-        renderData() {
-          let areaId = ''
-          if (this.area) {
-            areaId = 'city_id.e:' + this.area
-          } else {
-            areaId = ''
-          }
-          let updatedate = this.$moment(this.date)
-            .add(7)
-            .format('YYYY-MM-DD')
-          console.log(updatedate)
+      renderData() {
+        let areaId = ''
+        if (this.area) {
+          areaId = 'city_id.e:' + this.area
+        } else {
+          areaId = ''
+        }
+        let updatedate = this.$moment(this.date)
+          .add(7)
+          .format('YYYY-MM-DD')
 
-          // RENDER DATA TAMPILAN CREATE PACKABLE
-          this.$http
-            .get('/packing/item-recap', {
-              params: {
-                // embeds: 'item_uom_id', 'item_quantity',
-                conditions:
-                  'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00',
-              },
-            })
-            .then((response) => {
-              this.dataTable = response.data.data
-
-              if (this.dataTable === null) {
-                this.dataTable = []
-              }
-            })
-            .catch((error) => {
-              console.log(error)
-            })
-          },
-
-          //untuk menyimpan data Penambahan ke dalam API
-          save() {
-            this.loading = true
-            var items = []
-            for (let i = 0; i < this.dataTable.length; i++) {
-              items[i] = {
-                item_id: this.dataTable[i].id,
-              }
-            }
-            this.$http
-              .post('/packing', {
-                area_id: this.area,
-                warehouse_id: this.warehouse_id,
-                note: this.note,
-                total_order: parseInt(this.total_order),
-                delivery_date: this.date,
-                items: this.dataTable,
-              })
-
-              .then((response) => {
-                this.$router.push('/packing-order')
-                this.$toast.success('Data has been saved successfully')
-              })
-              .catch((error) => {
-                this.error = error.response.data.errors
-                this.$toast.error(error.response.data.errors.area_id)
-                this.$toast.error(error.response.data.errors.warehouse_id)
-                if(error.response.data.errors.id)(
-                  this.$toast.error(error.response.data.errors.id)
-                )
-                this.loading = false
-                console.log(this.error)
-              })
+        // RENDER DATA TAMPILAN CREATE PACKABLE
+        this.$http
+          .get('/packing/item-recap', {
+            params: {
+              // embeds: 'item_uom_id', 'item_quantity',
+              conditions:
+                'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00',
             },
+          })
+          .then((response) => {
+            this.dataTable = response.data.data
 
-          areaSelected(val) {
-            this.area = ''
-            this.dataTable = []
-            if (val) {
-              this.area = val.id
-              this.warehouseDisabled = false
+            if (this.dataTable === null) {
+              this.dataTable = []
             }
-            //  
-            // this.renderData()
-          },
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      },
 
-          warehouseSelected(val) {
-            this.warehouseList = null
-            this.warehouse_id = null
-            this.dataTable = []
-            if (val) {
-              this.warehouseList = val
-              this.warehouse_id = val.value
-            }
-            this.renderData()
-          },
+      //untuk menyimpan data Penambahan ke dalam API
+      save() {
+        this.loading = true
+        var items = []
+        for (let i = 0; i < this.dataTable.length; i++) {
+          items[i] = {
+            item_id: this.dataTable[i].id,
+          }
+        }
+        this.$http
+          .post('/packing', {
+            area_id: this.area,
+            warehouse_id: this.warehouse_id,
+            note: this.note,
+            total_order: parseInt(this.total_order),
+            delivery_date: this.date,
+            items: this.dataTable,
+          })
+
+          .then((response) => {
+            this.$router.push('/packing-order')
+            this.$toast.success('Data has been saved successfully')
+          })
+          .catch((error) => {
+            this.error = error.response.data.errors
+            this.$toast.error(error.response.data.errors.area_id)
+            this.$toast.error(error.response.data.errors.warehouse_id)
+            if (error.response.data.errors.id)
+              this.$toast.error(error.response.data.errors.id)
+            this.loading = false
+            console.log(this.error)
+          })
+      },
+
+      areaSelected(val) {
+        this.area = ''
+        this.dataTable = []
+        if (val) {
+          this.area = val.id
+          this.warehouseDisabled = false
+        }
+        //
+        // this.renderData()
+      },
+
+      warehouseSelected(val) {
+        this.warehouseList = null
+        this.warehouse_id = null
+        this.dataTable = []
+        if (val) {
+          this.warehouseList = val
+          this.warehouse_id = val.value
+        }
+        this.renderData()
+      },
     },
   }
 </script>

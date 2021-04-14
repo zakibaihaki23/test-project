@@ -3,6 +3,7 @@
     <v-autocomplete
       outlined
       single-line
+      :search-input.sync="search"
       style="border-radius: 10px"
       item-text="item_name"
       item-value="value"
@@ -23,7 +24,7 @@
     name: 'AddPackableItem',
     data() {
       return {
-        search: '',
+        search: null,
         item_list: null,
         items: [],
       }
@@ -34,6 +35,12 @@
       this.renderData('')
     },
     watch: {
+      search: {
+        handler: function(val) {
+          this.renderData(val)
+        },
+        deep: true,
+      },
       clear: {
         handler: function(val) {
           this.renderData('')
@@ -45,14 +52,15 @@
       },
     },
     methods: {
-      renderData() {
+      renderData(search) {
         // GET PACKABLE WHEN 0
         this.$http
           .get('/inventory/item', {
             params: {
               embeds: 'item_uom_id',
+              perpage: 10,
               page: '1',
-              conditions: 'packable:0',
+              conditions: 'packable:0' + '|item_name.icontains:' + search,
             },
           })
           .then((response) => {
