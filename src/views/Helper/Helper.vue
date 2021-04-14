@@ -346,7 +346,7 @@
               self.dialog = false
               self.renderData()
               self.loadingBtn = false
-              self.btnDisabled = true
+              self.btnDisabled = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
@@ -370,11 +370,11 @@
               self.dialog = false
               self.renderData()
               self.loadingBtn = false
-              self.btnDisabled = true
+              self.btnDisabled = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
-            console.log(error)
+            self.btnDisabled = false
           })
       },
 

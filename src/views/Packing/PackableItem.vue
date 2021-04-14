@@ -161,13 +161,25 @@
                 </v-container>
               </v-card-text>
               <v-card-actions>
-                <v-btn
+                <v-spacer></v-spacer>
+                <v-row>
+                  <v-col>
+                    <v-btn
+                      style="bottom: 30px; margin-top: 5px; background: #4662d4; color: white; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 220px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                      @click="save"
+                      :loading="loading"
+                    >
+                      Save
+                    </v-btn>
+                  </v-col>
+                  <!-- <v-btn
                   style="margin-left: 25%;bottom: 40px; margin-top: 15px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
                   @click="save"
                   :loading="loading"
                 >
                   Save
-                </v-btn>
+                </v-btn> -->
+                </v-row>
               </v-card-actions>
             </v-card>
           </v-dialog>

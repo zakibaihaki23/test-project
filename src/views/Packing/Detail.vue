@@ -428,10 +428,10 @@
         //   }
         // }
         // this.packer = arr
-        // this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
-        //   helper: this.packer,
-        // })
-        console.log(arr, 'MASUKKKKKKK')
+        this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
+          helper: this.packerName,
+        })
+        console.log(this.packerName, 'MASUKKKKKKK')
       },
 
       addPacker(val) {
@@ -441,7 +441,7 @@
           for (let i = 0; i < val.length; i++) {
             arr.push(val[i].id)
           }
-          this.packer = arr
+          this.packerName = arr
         }
         console.log(arr)
       },
