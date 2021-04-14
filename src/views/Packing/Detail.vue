@@ -124,21 +124,6 @@
                   </v-row>
                   <br />
                 </v-container>
-                <!-- <v-btn
-                  style="margin-left: 22px;
-                        margin-top: 0px;
-                        width: 350px; 
-                        height: 45px;"
-<<<<<<< HEAD
-                >
-=======
-                
-                  >
->>>>>>> c4699500f1e8e93895f199b51f5aca79636ab9bc
-                  Send File
-                </v-btn> -->
-
-                <!-- INI PERUBAHANNYA  BE -->
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -355,7 +340,6 @@
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
   import AssignPacker from '../../components/AssignPacker'
-  import Vue from 'vue'
 
   export default {
     components: { SelectWarehouse, SelectArea, AssignPacker },
@@ -433,14 +417,15 @@
 
     methods: {
       savePacker() {
-        this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
-          helper: this.packer,
-        })
-        console.log(this.helper)
+        // this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
+        //   helper: this.packer,
+        // })
+        console.log('MASUKKKKKKK')
       },
 
       addPacker(val) {
         this.helper = val
+        console.log(this.helper)
       },
       openDialog(id, item_name, packer) {
         this.dialog2 = true
