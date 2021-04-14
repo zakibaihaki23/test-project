@@ -124,14 +124,19 @@
                   </v-row>
                   <br />
                 </v-container>
-                <v-btn
+                <!-- <v-btn
                   style="margin-left: 22px;
                         margin-top: 0px;
                         width: 350px; 
                         height: 45px;"
+<<<<<<< HEAD
                 >
+=======
+                
+                  >
+>>>>>>> c4699500f1e8e93895f199b51f5aca79636ab9bc
                   Send File
-                </v-btn>
+                </v-btn> -->
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -348,13 +353,14 @@
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
   import AssignPacker from '../../components/AssignPacker'
+  import Vue from 'vue'
 
   export default {
     components: { SelectWarehouse, SelectArea, AssignPacker },
 
     data() {
       return {
-        defaultButtonText: 'Choose File',
+        sendFile: '',
         selectedFile: null,
         isSelecting: false,
         download: '',
@@ -369,6 +375,7 @@
         search: '',
         file: 0,
         packing_code: '',
+        data: [],
         headers: [
           {
             text: 'Item',
@@ -441,6 +448,37 @@
       },
       handleSelectedFile(convertedData) {
         console.log(convertedData)
+      },
+
+      // BAGIAN UPLOAD FILE XLXS TO JSON
+      handleSelectedFile(convertedData) {
+        console.log(convertedData)
+        this.disable = false
+        let that = this
+        let data = []
+        convertedData.body.forEach((item) => {
+          data.push({
+            packing_item_id: item.Packing_Item_Id,
+            total_pack: parseFloat(item.Total_Pack),
+            total_kg: parseFloat(item.Total_Kg),
+            helper_id: item.Packer_Id,
+          })
+        })
+        let send = {
+          packings: data,
+        }
+        console.log(send)
+        this.sendFile = send
+        this.$http
+          .put('/packing/' + this.$route.params.id, send)
+          .then((response) => {
+            // Vue.$toast.open({
+            //     position: 'top-right',
+            //     message: 'Data has been saved successfully',
+            //     type: 'success',
+            // });
+            window.location.reload()
+          })
       },
 
       renderData() {
