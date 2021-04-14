@@ -162,7 +162,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn
-                  style="margin-left: 130px; bottom: 30px; font-size: 16px"
+                  style="margin-left: 25%;bottom: 40px; margin-top: 15px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
                   @click="save"
                   :loading="loading"
                 >
