@@ -54,7 +54,7 @@
                   </v-icon>
                 </v-btn>
               </v-card-title>
-              
+
               <!-- ISI DIDALAM TOMBOL UPLOAD -->
               <v-card-text>
                 <v-container v-if="this.file <= 0">
@@ -98,20 +98,18 @@
                             accept=".xls, .xlsx"
                             @change="onFileChanged"
                           /> -->
-                          
-                          
+
                           <v-btn
                             style="margin-left: 30px;
                                   margin-top: 0px;"
+                          >
+                            <vue-xlsx-table
+                              @on-select-file="handleSelectedFile"
+                              :readAsBS="true"
                             >
-                           <vue-xlsx-table
-                            @on-select-file="handleSelectedFile" 
-                            :readAsBS="true"
-                            >
-                            Choose File
+                              Choose File
                             </vue-xlsx-table>
                           </v-btn>
-                          
                         </v-col>
                         <v-col style="padding-top: 60px">
                           <span style="margin-left:121px;">Or</span></v-col
@@ -131,7 +129,7 @@
                         margin-top: 0px;
                         width: 350px; 
                         height: 45px;"
-                  >
+                >
                   Send File
                 </v-btn>
               </v-card-text>
@@ -163,7 +161,6 @@
     </v-container>
     <br />
     <br />
-
     <div>
       <v-data-table
         :headers="headers"
@@ -211,90 +208,17 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-dialog v-model="dialog4" persistent max-width="491px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-list-item
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="openDialog(props.item.id)"
-                      >
-                        Assign Packer
-                      </v-list-item>
-                    </template>
-                    <v-card
-                      style="border-radius: 20px;width: 491px; height: 500px;"
-                    >
-                      <v-card-title>
-                        <br />
-                        <br />
-                        <span
-                          style="padding-top:15px; margin-left: 34%; "
-                          class="headline"
-                          >Assign Packer</span
-                        >
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          style="margin-left:10px; margin-top: 5px; background: #6C757D"
-                          dark
-                          fab
-                          small
-                          @click="dialog4 = false"
-                        >
-                          <v-icon>
-                            mdi-close
-                          </v-icon>
-                        </v-btn>
-                      </v-card-title>
-
-                      <v-card-text>
-                        <v-container>
-                          <v-row style="margin-top: 1px">
-                            <v-col cols="12">
-                              <p style="color: gray; font-size: 20px">
-                                Item *
-                              </p>
-                              <v-text-field
-                                disabled
-                                outlined
-                                single-line
-                                style="border-radius: 10px"
-                                v-model="props.item.item.item_name"
-                                required
-                                append-icon=""
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                              <p style="color: black; font-size: 20px">
-                                Packer
-                              </p>
-                              <v-text-field
-                                outlined
-                                single-line
-                                style="border-radius: 10px"
-                                required
-                                v-model="props.item.helper"
-                                append-icon=""
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                        </v-container>
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-row>
-                          <v-col xl="12" cols="12" md="12" sm="12" lg="12">
-                            <v-btn
-                              style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
-                              @click="save"
-                              :loading="loading"
-                            >
-                              Save
-                            </v-btn>
-                          </v-col>
-                        </v-row>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
+                  <v-list-item
+                    @click="
+                      openDialog(
+                        props.item.id,
+                        props.item.item.item_name,
+                        props.item.helper
+                      )
+                    "
+                  >
+                    Assign Packer
+                  </v-list-item>
                 </v-list>
               </v-menu>
               <!-- <AssignPacker v-model="dialog4" @selected="assignPacker">
@@ -303,6 +227,99 @@
           </tr>
         </template>
       </v-data-table>
+      <v-dialog v-model="dialog2" persistent max-width="491px">
+        <v-card style="border-radius: 20px;width: 491px; height: 500px;">
+          <v-card-title>
+            <br />
+            <br />
+            <span style="padding-top:15px; margin-left: 34%; " class="headline"
+              >Assign Packer</span
+            >
+            <v-spacer></v-spacer>
+            <v-btn
+              style="margin-left:10px; margin-top: 5px; background: #6C757D"
+              dark
+              fab
+              small
+              @click="dialog2 = false"
+            >
+              <v-icon>
+                mdi-close
+              </v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <v-card-text>
+            <v-container>
+              <v-row style="margin-top: 1px">
+                <v-col cols="12">
+                  <p style="color: gray; font-size: 20px">
+                    Item *
+                  </p>
+                  <v-text-field
+                    v-model="itemName"
+                    disabled
+                    outlined
+                    single-line
+                    style="border-radius: 10px"
+                    required
+                    append-icon=""
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <p style="color: black; font-size: 20px">
+                    Packer
+                  </p>
+
+                  <!-- <AssignPacker v-model="packer"> </AssignPacker> -->
+                  <v-autocomplete
+                    outlined
+                    :items="packer"
+                    single-line
+                    style="border-radius: 10px"
+                    required
+                    chips
+                    color="blue-grey lighten-2"
+                    item-text="name"
+                    item-value="id"
+                    v-model="packerName"
+                    append-icon=""
+                    return-object
+                    @change="addPacker"
+                    multiple
+                  >
+                    <template slot="item" slot-scope="data">
+                      {{ data.item.code }} - {{ data.item.name }}
+                    </template>
+                    <template v-slot:selection="{ item }">
+                      <v-chip color="primary" text-color="white">{{
+                        item.name
+                      }}</v-chip>
+                    </template>
+                    <template v-slot:label style="padding: 10px">
+                      Packer</template
+                    >
+                  </v-autocomplete>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-row>
+              <v-col xl="12" cols="12" md="12" sm="12" lg="12">
+                <v-btn
+                  style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
+                  :loading="loading"
+                  @click="addPacker"
+                >
+                  Save
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
     <br />
     <br />
@@ -332,9 +349,8 @@
   import SelectArea from '../../components/SelectArea'
   import AssignPacker from '../../components/AssignPacker'
 
-
   export default {
-    components: { SelectWarehouse, SelectArea, AssignPacker, },
+    components: { SelectWarehouse, SelectArea, AssignPacker },
 
     data() {
       return {
@@ -343,10 +359,14 @@
         isSelecting: false,
         download: '',
         dialog: false,
-        dialog4: false,
+        dialog2: false,
         item: null,
+        warehouse: [],
+        index: '',
         uom: '',
+        packer: [],
         search: '',
+        helper_id: '',
         file: 0,
         packing_code: '',
         headers: [
@@ -403,20 +423,72 @@
     },
 
     methods: {
-      handleSelectedFile (convertedData) {
+      addPacker(val) {
+        console.log(val)
+      },
+      openDialog(id, item_name, packer) {
+        this.dialog2 = true
+        this.idItem = id
+        this.itemName = item_name
+        this.packerName = packer
+      },
+      handleSelectedFile(convertedData) {
         console.log(convertedData)
       },
-    
+
       renderData() {
         this.$http
           .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
+            this.warehouse = response.data.data.warehouse.id
             this.packing_code = response.data.data.document_code
             this.data = response.data.data.packing_items
             this.status = response.data.data.status
+            this.$http
+              .get('/helper', {
+                params: {
+                  conditions:
+                    'user_id.is_active:1|warehouse_id.e:' + this.warehouse,
+                },
+              })
+
+              .then((response) => {
+                this.packer = response.data.data
+
+                if (this.packer === null) {
+                  this.packer = []
+                }
+              })
+              .catch((error) => {
+                console.log(error)
+              })
           })
+
+        // this.$http
+        //   .get('/helper', {
+        //     params: {
+        //       conditions: 'user_id.is_active:1',
+        //     },
+        //   })
+
+        //   .then((response) => {
+        //     this.packer = response.data.data
+
+        //     if (this.packer === null) {
+        //       this.packer = []
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     console.log(error)
+        //   })
       },
+      // addPacker() {
+      //   // this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
+      //   //   helper: this.packer,
+      //   // })
+      //   // console.log(this.packer[index].id)
+      // },
 
       // DOWNLOAD FILE FROM
       DownloadFile() {
@@ -450,20 +522,19 @@
         // do something
       },
 
-      save(){
+      save() {
         this.$http
-        .get('/v1/packing/' + this.$route.params.id)
+          .get('/v1/packing/' + this.$route.params.id)
 
-        .then((response) => {
-                this.$router.push('/packing-order')
-                this.$toast.success('Data has been saved successfully')
-              })
-              .catch((error) => {
-                this.error = error.response.data.errors
-                console.log(this.error)
-              })
+          .then((response) => {
+            this.$router.push('/packing-order')
+            this.$toast.success('Data has been saved successfully')
+          })
+          .catch((error) => {
+            this.error = error.response.data.errors
+            console.log(this.error)
+          })
       },
-      
     },
   }
 </script>
