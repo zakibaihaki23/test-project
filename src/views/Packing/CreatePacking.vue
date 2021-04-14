@@ -352,6 +352,7 @@
             items: this.dataTable,
           })
 
+
           .then((response) => {
             this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
@@ -366,18 +367,6 @@
             console.log(this.error)
           })
       },
-
-          warehouseSelected(val) {
-            this.warehouseList = null
-            this.warehouse_id = null
-            this.dataTable = []
-            if (val) {
-              this.warehouseList = val
-              this.warehouse_id = val.value
-            }
-          
-            this.renderData()
-          },
       areaSelected(val) {
         this.area = ''
         this.dataTable = []
@@ -399,6 +388,7 @@
         }
         this.renderData()
       },
+
     },
   }
 </script>
