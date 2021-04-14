@@ -311,7 +311,7 @@
                 <v-btn
                   style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
                   :loading="loading"
-                  @click="addPacker"
+                  @click="savePacker"
                 >
                   Save
                 </v-btn>
@@ -365,8 +365,8 @@
         index: '',
         uom: '',
         packer: [],
+        helper: [],
         search: '',
-        helper_id: '',
         file: 0,
         packing_code: '',
         headers: [
@@ -423,8 +423,15 @@
     },
 
     methods: {
+      savePacker() {
+        this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
+          helper: this.packer,
+        })
+        console.log(this.helper)
+      },
+
       addPacker(val) {
-        console.log(val)
+        this.helper = val
       },
       openDialog(id, item_name, packer) {
         this.dialog2 = true
