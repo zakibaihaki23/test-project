@@ -99,6 +99,7 @@
                             @change="onFileChanged"
                           /> -->
                           
+                          
                           <v-btn
                             style="margin-left: 30px;
                                   margin-top: 0px;"
@@ -110,6 +111,7 @@
                             Choose File
                             </vue-xlsx-table>
                           </v-btn>
+                          
                         </v-col>
                         <v-col style="padding-top: 60px">
                           <span style="margin-left:121px;">Or</span></v-col
@@ -329,11 +331,11 @@
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
   import AssignPacker from '../../components/AssignPacker'
-  // import axios from 'axios'
-  // import vueXlsxTable from 'vue-xlsx-table'
+
 
   export default {
-    components: { SelectWarehouse, SelectArea, AssignPacker },
+    components: { SelectWarehouse, SelectArea, AssignPacker, },
+
     data() {
       return {
         defaultButtonText: 'Choose File',
@@ -401,27 +403,8 @@
     },
 
     methods: {
-      handleSelectedFile(convertedData){
-         this.disable = false
-                let that = this
-                convertedData.body.forEach((item) => {
-                    let value = {};
-                    value.product_id = item.Product_ID;
-                    value.shadow_price = parseFloat(item.Shadow_Price);
-                    value.price_set_id = this.filter.price_set_id
-                    that.prices.push(value)
-                }); 
-                console.log(that.prices)
-                this.$http.put("/price/product_price/template/shadow/update", {
-                    prices:that.prices
-                })
-                .then(response => {
-                    window.location.reload("/price/product")
-                    console.log(response);
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+      handleSelectedFile (convertedData) {
+        console.log(convertedData)
       },
     
       renderData() {

@@ -37,7 +37,9 @@
     watch: {
       search: {
         handler: function(val) {
-          this.renderData(val)
+          if (val) {
+            this.renderData(val)
+          }
         },
         deep: true,
       },
@@ -67,6 +69,7 @@
             this.items = []
 
             let array = response.data.data
+
             for (let i = 0; i < array.length; i++) {
               this.items.push({
                 item_name: array[i].item_name,

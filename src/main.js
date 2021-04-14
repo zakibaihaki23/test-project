@@ -11,7 +11,9 @@ import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 import './vee-validate'
 import VueTelInputVuetify from 'vue-tel-input-vuetify/lib'
+import vueXlsxTable from 'vue-xlsx-table'
 
+Vue.use(vueXlsxTable, { rABS: false })
 Vue.use(VueTelInputVuetify, {
   vuetify,
 })

@@ -24,9 +24,7 @@
                   outlined
                   single-line
                   clearable
-                  @click:clear="
-                    ;(delivery_date = ''), renderData(search, statuses)
-                  "
+                  @click:clear="delivery_date = ''"
                   :value="format_delivery_date"
                   class="rounded-form"
                 >
@@ -36,13 +34,24 @@
                 </v-text-field>
               </div>
             </template>
-            <v-date-picker
-              no-title
-              v-model="delivery_date"
-              @input="
-                ;(delivery_date_model = false), renderData(search, statuses)
-              "
-            ></v-date-picker>
+            <v-date-picker no-title v-model="delivery_date">
+              <v-btn
+                text
+                color="primary"
+                style="margin-left: 130px"
+                @click="delivery_date_model = false"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                text
+                style="margin-left: 10px"
+                color="primary"
+                @click="delivery_date_model = false"
+              >
+                OK
+              </v-btn>
+            </v-date-picker>
           </v-menu>
           <!-- <v-dialog
             ref="dialog"
@@ -98,11 +107,12 @@
           <p style="margin-top:177px;">
             Warehouse <span style="color: red">*</span>
           </p>
+
           <SelectFormWarehouseArea
-            v-model="warehouseList"
+            v-model="warehouse"
             @selected="warehouseSelected"
             :areaId="area"
-            :warehouse="warehouseList"
+            :warehouse="warehouse"
             :disabled="warehouseDisabled"
           >
           </SelectFormWarehouseArea>
@@ -155,7 +165,7 @@
             <td>
               <FormInputPacker
                 v-model="packer"
-                :warehouse_id="warehouseList.value"
+                :warehouse_id="warehouse.value"
                 @click.native="sendIdx(props.index)"
                 @selected="inputPacker"
               >
@@ -201,12 +211,12 @@
 
     data() {
       return {
-        warehouse: '',
-        warehouseList: '',
+        warehouse: null,
+        warehouseList: null,
         note: '',
         warehouse_id: null,
         area: '',
-        areaId: '',
+        areaId: null,
         packer: '',
         warehouseDisabled: true,
         total_order: '',
@@ -302,12 +312,6 @@
       },
 
       renderData() {
-        let areaId = ''
-        if (this.area) {
-          areaId = 'city_id.e:' + this.area
-        } else {
-          areaId = ''
-        }
         let updatedate = this.$moment(this.date)
           .add(7)
           .format('YYYY-MM-DD')
@@ -348,7 +352,7 @@
             warehouse_id: this.warehouse_id,
             note: this.note,
             total_order: parseInt(this.total_order),
-            delivery_date: this.date,
+            delivery_date: this.delivery_date,
             items: this.dataTable,
           })
 
@@ -366,27 +370,31 @@
             console.log(this.error)
           })
       },
-
-      areaSelected(val) {
-        this.area = ''
+      areaSelected(area) {
+        this.area = null
+        this.areaId = null
         this.dataTable = []
-        if (val) {
-          this.area = val.id
+        if (area) {
+          this.area = area.id
           this.warehouseDisabled = false
+        } else {
+          this.warehouseDisabled = true
+          this.warehouse = null
+          this.warehouse_id = null
         }
         //
         // this.renderData()
       },
 
       warehouseSelected(val) {
-        this.warehouseList = null
+        this.warehouse = null
         this.warehouse_id = null
         this.dataTable = []
         if (val) {
-          this.warehouseList = val
+          this.warehouse = val
           this.warehouse_id = val.value
         }
-        this.renderData()
+        this.renderData('')
       },
     },
   }

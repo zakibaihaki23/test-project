@@ -162,7 +162,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn
-                  style="margin-left: 130px; bottom: 30px; font-size: 16px"
+                  style="margin-left: 25%;bottom: 40px; margin-top: 15px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
                   @click="save"
                   :loading="loading"
                 >
@@ -228,7 +228,7 @@
                   <v-list-item
                     link
                     style="width: 150px; "
-                    @click="unpackable(props.item.id)"
+                    @click="popupDialog(props.item.id)"
                   >
                     <div>
                       Delete
@@ -240,6 +240,41 @@
           </tr>
         </template>
       </v-data-table>
+      <v-dialog v-model="dialog2" persistent max-width="360px">
+        <v-card style="height: 200px">
+          <v-card-title class="headline"> </v-card-title>
+          <v-card-text
+            style="font-size: 16px; margin-top: 10px"
+            class="text-center"
+            >Are you sure to change this item to<br />
+            <b>Unpackable</b> ?</v-card-text
+          >
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-row>
+              <v-col xl="5" cols="6" md="6" sm="6" lg="6">
+                <v-btn
+                  :disabled="btnDisabled"
+                  @click="dialog2 = false"
+                  style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                >
+                  No
+                </v-btn>
+              </v-col>
+              <v-col xl="5" cols="6" md="6" sm="6" lg="6">
+                <v-btn
+                  :loading="loading"
+                  text
+                  @click="unpackable(idItem)"
+                  style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+                >
+                  Yes
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </div>
 </template>
@@ -252,9 +287,11 @@
     components: { SelectWarehouse, SelectArea, AddPackableItem },
     data() {
       return {
+        btnDisabled: false,
         page: 1,
         clearItem: false,
         dialog: false,
+        dialog2: false,
         search: '',
         item: '',
         item_input: '',
@@ -287,6 +324,14 @@
         dataTable: [],
       }
     },
+    watch: {
+      search: {
+        handler: function(val) {
+          this.renderData(val)
+        },
+        deep: true,
+      },
+    },
     created() {
       this.renderData()
     },
@@ -297,35 +342,45 @@
         this.uom = null
         this.dialog = true
       },
+      popupDialog(id) {
+        this.dialog2 = true
+        this.idItem = id
+      },
       initialize() {
         this.dataTable = [this.dataTable]
       },
-      renderData() {
+      renderData(search) {
         // GET PACKABLE WHEN 0
 
-        this.$http
-          .get('/inventory/item', {
-            params: {
-              orderby: '-id',
-              embeds: 'item_uom_id',
-              page: '1',
-              conditions: 'packable:0',
-            },
-          })
-          .then((response) => {
-            this.item_input = []
-            let array = response.data.data
-            for (let i = 0; i < array.length; i++) {
-              this.item_input.push({
-                item_name: array[i].item_name,
-                uom: array[i].item_uom.item_uom_name,
-                uom_id: array[i].item_uom.id,
-                value: array[i].id,
-              })
+        // this.$http
+        //   .get('/inventory/item', {
+        //     params: {
+        //       orderby: '-id',
+        //       perpage: 10,
+        //       embeds: 'item_uom_id',
+        //       page: '1',
+        //       conditions: 'packable:0' + '|item_name.icontains:' + search,
+        //     },
+        //   })
+        //   .then((response) => {
+        //     this.item_input = []
+        //     let array = response.data.data
+        //     if (length > 0) {
+        //       for (let i = 0; i < array.length; i++) {
+        //         this.item_input.push({
+        //           item_name: array[i].item_name,
+        //           uom: array[i].item_uom.item_uom_name,
+        //           uom_id: array[i].item_uom.id,
+        //           value: array[i].id,
+        //         })
+        //         if (this.item_input === null) {
+        //           this.item_input = []
+        //         }
+        //       }
 
-              // this.itemSelected(response.data.data)
-            }
-          })
+        //       // this.itemSelected(response.data.data)
+        //     }
+        //   })
         // GET PACKABLE WHEN 1
         this.$http
           .get('/inventory/item', {
@@ -341,28 +396,38 @@
             this.item = []
 
             let array = response.data.data
-            for (let i = 0; i < array.length; i++) {
-              this.item.push({
-                item_name: array[i].item_name,
-                id: array[i].id,
-              })
+            if (length > 0) {
+              for (let i = 0; i < array.length; i++) {
+                this.item.push({
+                  item_name: array[i].item_name,
+                  id: array[i].id,
+                })
+              }
+
+              if (this.dataTable === null) {
+                this.dataTable = []
+              }
             }
             this.isLoading = false
-
-            if (this.dataTable === null) {
-              this.dataTable = []
-            }
           })
       },
       unpackable(id) {
+        this.btnDisabled = true
         this.clear = false
+        this.loading = true
         this.$http
           .put('/inventory/item/unpackable/' + id, {})
           .then((response) => {
-            this.clear = true
-            this.dialog = false
-            this.renderData()
-            this.$toast.success('Item not packable')
+            let self = this
+            setTimeout(function() {
+              self.clear = true
+              self.renderData()
+              self.$toast.success('Item not packable')
+              self.dialog2 = false
+              self.loading = false
+              self.btnDisabled = false
+              self.renderData()
+            }, 15 * 15 * 15)
           })
       },
       save() {
@@ -405,7 +470,6 @@
     font-size: 17px;
   }
   .v-btn:not(.v-btn--round).v-size--default {
-    position: absolute;
     width: 220px;
     font-weight: bold;
     height: 50px;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-autocomplete
+    <v-select
       v-model="warehouse"
       label="Warehouse"
       single-line
@@ -8,14 +8,15 @@
       :items="items"
       item-text="name"
       item-value="value"
+      hide-no-data
       hide-selected
       return-object
+      :search-input.sync="search"
       @change="selected"
       :disabled="disabled"
       style="border-radius: 12px"
-      clearable
     >
-    </v-autocomplete>
+    </v-select>
   </div>
 </template>
 
@@ -24,26 +25,28 @@
     name: 'SelectFormWarehouseArea',
     data() {
       return {
-        search: null,
+        search: '',
         warehouse: null,
         items: [],
         warehouseFilter: null,
       }
     },
     props: ['clear', 'warehouse', 'disabled', 'areaId'],
-    created() {
-      this.renderData('', this.areaId)
-    },
+
     mounted() {
       this.renderData('', this.areaId)
     },
     watch: {
+      // warehouse: {
+      //   handler: function(val) {
+      //     if (val && val.length == 0) {
+      //       this.renderData()
+      //     }
+      //   },
+      // },
       clear: {
         handler: function(val) {
-          this.renderData('')
-          if (val == true) {
-            this.warehouse = ''
-          }
+          this.renderData()
         },
         deep: true,
       },
@@ -57,7 +60,7 @@
       },
     },
     methods: {
-      renderData(areaId) {
+      renderData(search, areaId) {
         if (areaId) {
           areaId = 'is_archived:0|city_id.e:' + areaId
         } else {
@@ -67,7 +70,7 @@
         this.$http
           .get('/warehouse', {
             params: {
-              perpage: 10,
+              embeds: 'city',
               conditions: areaId,
             },
           })
