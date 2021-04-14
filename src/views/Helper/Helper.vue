@@ -176,6 +176,7 @@
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
                   v-if="statusUser == 1"
+                  :loading="loadingBtn"
                   text
                   @click="archive(idUser)"
                   style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
@@ -183,6 +184,7 @@
                   Yes
                 </v-btn>
                 <v-btn
+                  :loading="loadingBtn"
                   v-if="statusUser == 0"
                   text
                   @click="unarchive(idUser)"
@@ -209,8 +211,8 @@
       return {
         page: 1,
         dialog: false,
-        dialog2: false,
         search: '',
+        loadingBtn: false,
         isLoading: true,
 
         table: [
@@ -332,6 +334,7 @@
 
       //fungsi untuk unarchive
       archive(id) {
+        this.loadingBtn = true
         this.$http
           .put('/helper/' + id + '/archive', {})
           .then((response) => {
@@ -340,7 +343,8 @@
               self.$toast.success('User Not Active')
               self.dialog = false
               self.renderData()
-            }, 1)
+              self.loadingBtn = false
+            }, 15 * 15 * 15)
           })
           .catch((error) => {
             this.$toast.error(error.response.data.errors.id)
@@ -349,6 +353,7 @@
 
       //fungsi untuk archive
       unarchive(id) {
+        this.loadingBtn = true
         this.$http
           .put('/helper/' + id + '/unarchive', {})
           .then((response) => {
@@ -357,7 +362,8 @@
               self.$toast.success('User Active')
               self.dialog = false
               self.renderData()
-            }, 1)
+              self.loadingBtn = false
+            }, 15 * 15 * 15)
           })
           .catch((error) => {
             console.log(error)

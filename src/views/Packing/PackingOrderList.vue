@@ -225,7 +225,7 @@
             <v-row>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
-                  text
+                  :disabled="btnDisabled"
                   @click="dialog = false"
                   style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
@@ -234,6 +234,7 @@
               </v-col>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
+                  :loading="loadingBtn"
                   v-if="text == 'Cancel'"
                   text
                   @click="cancel(idUser)"
@@ -242,6 +243,7 @@
                   Yes
                 </v-btn>
                 <v-btn
+                  :loading="loadingBtn"
                   v-if="text == 'Finish'"
                   text
                   @click="finish(idUser)"
@@ -269,6 +271,7 @@
       return {
         dates: '',
         dialog: false,
+        btnDisabled: false,
         page: 1,
         warehouseList: '',
         warehouse: null,
@@ -284,6 +287,7 @@
         warehouseDisabled: true,
         areaId: null,
         isLoading: true,
+        loadingBtn: false,
         area: '',
         search: '',
         table: [
@@ -495,24 +499,37 @@
         this.renderData('')
       },
       cancel(id) {
+        this.btnDisabled = true
+        this.loadingBtn = true
         this.$http
           .put('/packing/' + id + '/cancel', {})
           .then((response) => {
-            this.$toast.success('Packing order cancelled')
-            this.dialog = false
-            this.renderData()
+            let self = this
+            setTimeout(function() {
+              self.$toast.success('Packing order cancelled')
+              self.dialog = false
+              self.renderData()
+              self.loadingBtn = false
+            }, 15 * 15 * 15)
           })
           .catch((error) => {
             console.log(error)
           })
       },
       finish(id) {
+        this.btnDisabled = true
+        this.loadingBtn = true
         this.$http
           .put('/packing/' + id + '/finish', {})
           .then((response) => {
-            this.$toast.success('Packing order finished')
-            this.dialog = false
-            this.renderData()
+            let self = this
+            setTimeout(function() {
+              self.$toast.success('Packing order finished')
+              self.dialog = false
+              self.renderData()
+              self.loadingBtn = false
+              self.btnDisabled = false
+            }, 15 * 15 * 15)
           })
           .catch((error) => {
             console.log(error)

@@ -13,7 +13,7 @@ import './vee-validate'
 import VueTelInputVuetify from 'vue-tel-input-vuetify/lib'
 import vueXlsxTable from 'vue-xlsx-table'
 
-Vue.use(vueXlsxTable, {rABS: false})
+Vue.use(vueXlsxTable, { rABS: false })
 Vue.use(VueTelInputVuetify, {
   vuetify,
 })
