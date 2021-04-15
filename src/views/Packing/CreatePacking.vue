@@ -312,7 +312,7 @@
       },
 
       renderData() {
-        let updatedate = this.$moment(this.date)
+        let updatedate = this.$moment(this.delivery_date)
           .add(7)
           .format('YYYY-MM-DD')
 
@@ -322,7 +322,9 @@
             params: {
               // embeds: 'item_uom_id', 'item_quantity',
               conditions:
-                'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00',
+                'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00|purchaseorder.outlet.city.id.e:' + this.area + '|item.packable:1',
+
+                // purchaseorder.deliverydate:2021-04-16T07:00:00+07:00|purchaseorder.outlet.city.id.e:131072|item.packable:1
             },
           })
           .then((response) => {
