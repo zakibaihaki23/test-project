@@ -231,11 +231,11 @@
             >
             <v-spacer></v-spacer>
             <v-btn
-              style="margin-left:10px; margin-top: 5px; background: #6C757D"
-              dark
+              style="margin-left:10px; margin-top: 5px; background: #6C757D; color: white"
               fab
               small
               @click="dialog2 = false"
+              :disabled="btnDisable"
             >
               <v-icon>
                 mdi-close
@@ -281,6 +281,7 @@
                     append-icon=""
                     return-object
                     @change="addPacker"
+                    hide-selected
                     multiple
                   >
                     <template slot="item" slot-scope="data">
@@ -304,7 +305,7 @@
               <v-col xl="12" cols="12" md="12" sm="12" lg="12">
                 <v-btn
                   style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
-                  :loading="loading"
+                  :loading="btnLoading"
                   @click="savePacker"
                 >
                   Save
@@ -352,6 +353,8 @@
         selectedFile: null,
         isLoading: true,
         isSelecting: false,
+        btnLoading: false,
+        btnDisable: false,
         download: '',
         dialog: false,
         dialog2: false,
@@ -420,18 +423,27 @@
 
     methods: {
       savePacker() {
-        // let arr = []
-        // if (val) {
-        //   this.addPacker = val
-        //   for (let i = 0; i < val.length; i++) {
-        //     arr.push(val[i].id)
-        //   }
-        // }
-        // this.packer = arr
-        this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
-          helper: this.packerName,
-        })
-        console.log(this.packerName, 'MASUKKKKKKK')
+        this.btnDisable = true
+        this.btnLoading = true
+        this.$http
+          .put('/packing/' + this.idItem + '/items-assign', {
+            helper: this.packerName,
+          })
+          .then((response) => {
+            let self = this
+            setTimeout(function() {
+              self.dialog2 = false
+              self.btnLoading = false
+              self.$toast.success('Assign Packer Success')
+              self.btnDisable = false
+              self.renderData()
+            }, 15 * 15 * 15)
+          })
+          .catch((error) => {
+            this.btnLoading = false
+            this.dialog2 = false
+            this.btnDisable = false
+          })
       },
 
       addPacker(val) {
@@ -443,7 +455,6 @@
           }
           this.packerName = arr
         }
-        console.log(arr)
       },
       openDialog(id, item_name, packer) {
         this.dialog2 = true
