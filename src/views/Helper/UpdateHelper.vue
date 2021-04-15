@@ -322,7 +322,6 @@
             password: this.helper.password,
             confirm_password: this.helper.confirm_password,
           })
-
           .then((response) => {
             this.$router.push('/helper')
             this.$toast.success('Data has been update successfully')

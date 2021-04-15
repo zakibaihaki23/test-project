@@ -204,13 +204,12 @@
         saveDisabled: true,
         cancelDisable: false,
         loading: false,
-        name: '',
         rules: {
           required: (value) => !!value || 'Required',
           counter: (value) => value.length <= 12 || 'Max 30 Characters',
         },
         helper: {
-          name: null,
+          name: '',
           address: '',
           phone_number: '',
           password: '',
@@ -274,12 +273,12 @@
         this.loading = true
         this.$http
           .post('/helper', {
-            warehouse_id: this.warehouse_id,
             name: this.helper.name,
             type_id: this.type_id,
-            username: this.helper.username,
             phone_number: this.helper.phone_number,
+            warehouse_id: this.warehouse_id.value,
             address: this.helper.address,
+            username: this.helper.username,
             password: this.helper.password,
             confirm_password: this.helper.confirm_password,
           })
