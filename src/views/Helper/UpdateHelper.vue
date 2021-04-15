@@ -99,9 +99,9 @@
             <div class="form-right">
               <p>Address</p>
               <v-textarea
-                :counter="20"
+                :counter="250"
                 :rules="rules"
-                :max-length="20"
+                maxlength="250"
                 label="Address"
                 v-model="helper.address"
                 outlined
@@ -221,7 +221,7 @@
       return {
         edit: '',
         search: null,
-        rules: [(v) => v.length <= 20 || 'Max 20 characters'],
+        rules: [(v) => v.length <= 20 || 'Max 250 characters'],
         value: String,
         val_confirm: String,
         editedIndex: -1,
