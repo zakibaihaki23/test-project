@@ -13,6 +13,7 @@
       @change="selected"
       v-model="packerName"
       append-icon=""
+      search-input.sync="search"
       multiple
     >
       <template slot="item" slot-scope="data">
@@ -33,6 +34,14 @@
         packer: [],
       }
     },
+    search: {
+      handler: function(val) {
+        if (val) {
+          this.renderData(val)
+        }
+      },
+      deep: true,
+    },
     created() {
       this.renderData()
     },
@@ -41,7 +50,8 @@
         this.$http
           .get('/helper', {
             params: {
-              conditions: 'user_id.is_active:1',
+              perpage: 10,
+              conditions: 'user_id.is_active:1' + '|name.icontains:' + search,
             },
           })
 

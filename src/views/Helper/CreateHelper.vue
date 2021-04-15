@@ -115,7 +115,7 @@
                   single-line
                   class="form"
                   v-model="helper.username"
-                  :error-messages="errors"
+                  :error-messages="error.email || errors"
                 >
                 </v-text-field>
               </ValidationProvider>
@@ -173,6 +173,7 @@
                 color="#E6E9ED"
                 style="margin: 10px; color: #768F9C"
                 class="cancel"
+                :disabled="cancelDisable"
                 >Cancel</v-btn
               >
             </v-col>
@@ -201,6 +202,7 @@
       return {
         search: null,
         saveDisabled: true,
+        cancelDisable: false,
         loading: false,
         rules: {
           required: (value) => !!value || 'Required',
@@ -267,15 +269,16 @@
       },
       //untuk menyimpan data registrasi ke dalam API
       save() {
+        this.cancelDisable = true
         this.loading = true
         this.$http
           .post('/helper', {
-            warehouse_id: this.warehouse_id,
-            type_id: this.type_id,
             name: this.helper.name,
-            username: this.helper.username,
+            type_id: this.type_id,
             phone_number: this.helper.phone_number,
+            warehouse_id: this.warehouse_id.value,
             address: this.helper.address,
+            username: this.helper.username,
             password: this.helper.password,
             confirm_password: this.helper.confirm_password,
           })
@@ -283,9 +286,11 @@
           .then((response) => {
             this.$router.push('/helper')
             this.$toast.success('Data has been saved successfully')
+            this.cancelDisable = false
           })
           .catch((error) => {
             this.loading = false
+            this.cancelDisable = false
             this.error = error.response.data.errors
           })
       },

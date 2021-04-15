@@ -14,6 +14,7 @@
       append-icon=""
       clearable
       return-object
+      label="Item"
     >
     </v-autocomplete>
   </div>
