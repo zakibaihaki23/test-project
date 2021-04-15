@@ -99,19 +99,22 @@
                             @change="onFileChanged"
                           /> -->
 
-                          <v-btn
-                            style="margin-left: 30px;
-                                  margin-top: 0px;"
-                          >
+                          
                             <vue-xlsx-table
+                              class="xlsx-button"
                               @on-select-file="handleSelectedFile"
                               :readAsBS="true"
+                              style="
+                                    margin-left: 30px;
+                                    marign-top: 50px;
+                                    "
+                              
                             >
                               Choose File
                             </vue-xlsx-table>
-                          </v-btn>
+                      
                         </v-col>
-                        <v-col style="padding-top: 60px">
+                        <v-col style="padding-top: 30px">
                           <span style="margin-left:121px;">Or</span></v-col
                         >
                         <v-col style="padding-top: 5px">
@@ -125,6 +128,16 @@
                   <br />
                 </v-container>
               </v-card-text>
+              <v-btn 
+                @click="kirimfiledata()"
+                style="
+                      width: 340px;
+                      margin-left: 50px;
+                      margin-top: -20px;" 
+                color="primary"
+                >
+                Send File
+              </v-btn>
             </v-card>
           </v-dialog>
         </v-col>
@@ -479,8 +492,7 @@
             total_kg: parseFloat(item.Total_Kg),
             helper_id: item.Packer_Id,
           })
-        })
-        let send = {
+           let send = {
           packings: data,
         }
         console.log(send)
@@ -493,8 +505,15 @@
             //     message: 'Data has been saved successfully',
             //     type: 'success',
             // });
-            window.location.reload()
+         
           })
+        })
+        
+      },
+
+      kirimfiledata(){
+       window.location.reload()
+       console.log("TERKIRIM YEEE >.<")
       },
 
       renderData() {
@@ -602,6 +621,10 @@
 </script>
 
 <style scoped>
+  .xlsx-button {
+    border-radius: 30%;
+    width: 200px;
+  }  
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

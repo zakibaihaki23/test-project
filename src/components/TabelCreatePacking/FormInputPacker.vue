@@ -7,7 +7,6 @@
     v-model="values"
     :items="packer"
     outlined
-    dense
     height="50px"
     chips
     small-chips
