@@ -345,6 +345,12 @@
         },
         deep: true,
       },
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
     },
     computed: {
       format_delivery_date() {
@@ -516,7 +522,7 @@
               self.dialog = false
               self.renderData()
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.dialog = false
@@ -534,7 +540,7 @@
               self.dialog = false
               self.renderData()
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.dialog = false

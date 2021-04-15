@@ -290,6 +290,14 @@
     //     deep: true,
     //   },
     // },
+    watch: {
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
+    },
 
     methods: {
       openDialog(status, id) {
@@ -354,7 +362,7 @@
               self.renderData()
               self.loadingBtn = false
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.$toast.error(error.response.data.errors.id)
@@ -378,7 +386,7 @@
               self.renderData()
               self.loadingBtn = false
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.dialog = false
