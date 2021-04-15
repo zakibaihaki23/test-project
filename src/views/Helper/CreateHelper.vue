@@ -115,7 +115,7 @@
                   single-line
                   class="form"
                   v-model="helper.username"
-                  :error-messages="errors"
+                  :error-messages="error.email || errors"
                 >
                 </v-text-field>
               </ValidationProvider>
@@ -165,6 +165,15 @@
         <br /><br />
 
         <v-divider></v-divider>
+        <div class="text-center">
+          <v-overlay :value="overlay">
+            <v-progress-circular
+              color="primary"
+              indeterminate
+              :size="20"
+            ></v-progress-circular>
+          </v-overlay>
+        </div>
         <div class="btn">
           <v-row>
             <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
@@ -181,7 +190,7 @@
               <v-btn
                 style="margin: 10px;"
                 class="save"
-                @click="save"
+                @click="save, (overlay = !overlay)"
                 :loading="loading"
                 :disabled="invalid || !validated"
                 >Save</v-btn
@@ -201,6 +210,7 @@
     data() {
       return {
         search: null,
+        overlay: false,
         saveDisabled: true,
         cancelDisable: false,
         loading: false,
@@ -269,6 +279,7 @@
       },
       //untuk menyimpan data registrasi ke dalam API
       save() {
+        this.overlay = true
         this.cancelDisable = true
         this.loading = true
         this.$http
@@ -284,11 +295,13 @@
           })
 
           .then((response) => {
+            this.overlay = false
             this.$router.push('/helper')
             this.$toast.success('Data has been saved successfully')
             this.cancelDisable = false
           })
           .catch((error) => {
+            this.overlay = false
             this.loading = false
             this.cancelDisable = false
             this.error = error.response.data.errors

@@ -212,6 +212,15 @@
         </template>
       </v-data-table>
       <v-dialog v-model="dialog" persistent max-width="360px">
+        <div class="text-center">
+          <v-overlay :value="overlay">
+            <v-progress-circular
+              color="primary"
+              indeterminate
+              :size="20"
+            ></v-progress-circular>
+          </v-overlay>
+        </div>
         <v-card style="height: 200px">
           <v-card-title class="headline"> </v-card-title>
           <v-card-text
@@ -225,7 +234,6 @@
             <v-row>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
-                  :disabled="btnDisabled"
                   @click="dialog = false"
                   style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
@@ -234,19 +242,17 @@
               </v-col>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
-                  :loading="loadingBtn"
                   v-if="text == 'Cancel'"
                   text
-                  @click="cancel(idUser)"
+                  @click="cancel(idUser, (overlay = !overlay))"
                   style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
                   Yes
                 </v-btn>
                 <v-btn
-                  :loading="loadingBtn"
                   v-if="text == 'Finish'"
                   text
-                  @click="finish(idUser)"
+                  @click="finish(idUser, (overlay = !overlay))"
                   style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
                   Yes
@@ -270,8 +276,8 @@
     data() {
       return {
         dates: '',
+        overlay: false,
         dialog: false,
-        btnDisabled: false,
         page: 1,
         warehouseList: '',
         warehouse: null,
@@ -388,6 +394,7 @@
         this.dialog = true
         this.idUser = id
         this.statusUser = status
+
         if (action == 'cancel') {
           this.text = 'Cancel'
         } else if (action == 'finish') {
@@ -499,8 +506,7 @@
         this.renderData('')
       },
       cancel(id) {
-        this.btnDisabled = true
-        this.loadingBtn = true
+        this.overlay = true
         this.$http
           .put('/packing/' + id + '/cancel', {})
           .then((response) => {
@@ -509,16 +515,16 @@
               self.$toast.success('Packing order cancelled')
               self.dialog = false
               self.renderData()
-              self.loadingBtn = false
+              self.overlay = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
-            console.log(error)
+            this.dialog = false
+            this.overlay = false
           })
       },
       finish(id) {
-        this.btnDisabled = true
-        this.loadingBtn = true
+        this.overlay = true
         this.$http
           .put('/packing/' + id + '/finish', {})
           .then((response) => {
@@ -527,12 +533,12 @@
               self.$toast.success('Packing order finished')
               self.dialog = false
               self.renderData()
-              self.loadingBtn = false
-              self.btnDisabled = false
+              self.overlay = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
-            console.log(error)
+            this.dialog = false
+            this.overlay = false
           })
       },
     },

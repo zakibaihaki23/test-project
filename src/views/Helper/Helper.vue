@@ -2,6 +2,7 @@
   <div class="helper">
     <h1>HELPER LIST</h1>
     <!-- FOR ALL DEVICE -->
+
     <v-container>
       <v-row>
         <v-col cols="3" sm="6" md="6" lg="7">
@@ -153,6 +154,15 @@
         </template>
       </v-data-table>
       <v-dialog v-model="dialog" persistent max-width="360px">
+        <div class="text-center">
+          <v-overlay :value="overlay">
+            <v-progress-circular
+              color="primary"
+              indeterminate
+              :size="20"
+            ></v-progress-circular>
+          </v-overlay>
+        </div>
         <v-card style="height: 200px">
           <v-card-title class="headline"> </v-card-title>
           <v-card-text
@@ -166,7 +176,6 @@
             <v-row>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
-                  :disabled="btnDisabled"
                   @click="dialog = false"
                   style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
@@ -176,18 +185,16 @@
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
                   v-if="statusUser == 1"
-                  :loading="loadingBtn"
                   text
-                  @click="archive(idUser)"
+                  @click="archive(idUser, (overlay = !overlay))"
                   style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
                   Yes
                 </v-btn>
                 <v-btn
-                  :loading="loadingBtn"
                   v-if="statusUser == 0"
                   text
-                  @click="unarchive(idUser)"
+                  @click="unarchive(idUser, (overlay = !overlay))"
                   style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
                   Yes
@@ -210,12 +217,12 @@
     data() {
       return {
         page: 1,
-        btnDisabled: false,
         dialog: false,
         search: '',
         loadingBtn: false,
         isLoading: true,
-
+        loading: false,
+        overlay: false,
         table: [
           {
             text: 'Helper Code',
@@ -335,7 +342,7 @@
 
       //fungsi untuk unarchive
       archive(id) {
-        this.btnDisabled = true
+        this.overlay = true
         this.loadingBtn = true
         this.$http
           .put('/helper/' + id + '/archive', {})
@@ -346,20 +353,20 @@
               self.dialog = false
               self.renderData()
               self.loadingBtn = false
-              self.btnDisabled = false
+              self.overlay = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
             this.$toast.error(error.response.data.errors.id)
             this.loadingBtn = false
             this.dialog = false
-            this.btnDisabled = false
+            this.overlay = false
           })
       },
 
       //fungsi untuk archive
       unarchive(id) {
-        this.btnDisabled = true
+        this.overlay = true
         this.loadingBtn = true
         this.$http
           .put('/helper/' + id + '/unarchive', {})
@@ -370,11 +377,12 @@
               self.dialog = false
               self.renderData()
               self.loadingBtn = false
-              self.btnDisabled = false
+              self.overlay = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
-            self.btnDisabled = false
+            this.dialog = false
+            this.overlay = false
           })
       },
 

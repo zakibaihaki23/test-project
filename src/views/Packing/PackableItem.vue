@@ -107,6 +107,15 @@
             </div>
           </template>
           <v-dialog v-model="dialog" persistent max-width="491px">
+            <div class="text-center">
+              <v-overlay :value="overlay">
+                <v-progress-circular
+                  color="primary"
+                  indeterminate
+                  :size="70"
+                ></v-progress-circular>
+              </v-overlay>
+            </div>
             <v-card style="border-radius: 20px;width: 491px; height: 500px;">
               <v-card-title>
                 <br />
@@ -167,8 +176,7 @@
                   <v-col>
                     <v-btn
                       style="bottom: 30px; margin-top: 5px; background: #4662d4; color: white; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 220px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
-                      @click="save"
-                      :loading="loading"
+                      @click="save((overlay = !overlay))"
                     >
                       Save
                     </v-btn>
@@ -254,6 +262,15 @@
         </template>
       </v-data-table>
       <v-dialog v-model="dialog2" persistent max-width="360px">
+        <div class="text-center">
+          <v-overlay :value="overlay">
+            <v-progress-circular
+              color="primary"
+              indeterminate
+              :size="20"
+            ></v-progress-circular>
+          </v-overlay>
+        </div>
         <v-card style="height: 200px">
           <v-card-title class="headline"> </v-card-title>
           <v-card-text
@@ -267,7 +284,6 @@
             <v-row>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
-                  :disabled="btnDisabled"
                   @click="dialog2 = false"
                   style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
@@ -276,9 +292,8 @@
               </v-col>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
-                  :loading="loading"
                   text
-                  @click="unpackable(idItem)"
+                  @click="unpackable(idItem, (overlay = !overlay))"
                   style="margin-bottom: 10px; margin-top: 5px; background: white; color: #4662d4; border-style: solid; border-color: #4662d4;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
                   Yes
@@ -300,7 +315,6 @@
     components: { SelectWarehouse, SelectArea, AddPackableItem },
     data() {
       return {
-        btnDisabled: false,
         page: 1,
         clearItem: false,
         dialog: false,
@@ -312,7 +326,7 @@
         uom: '',
         clear: '',
         isLoading: true,
-        loading: false,
+        overlay: false,
         headers: [
           {
             text: 'Item Code',
@@ -425,14 +439,14 @@
           })
       },
       unpackable(id) {
-        this.btnDisabled = true
+        this.overlay = true
         this.clear = false
-        this.loading = true
         this.$http
           .put('/inventory/item/unpackable/' + id, {})
           .then((response) => {
             let self = this
             setTimeout(function() {
+              self.overlay = false
               self.clear = true
               self.renderData()
               self.$toast.success('Item not packable')
@@ -444,11 +458,12 @@
           })
       },
       save() {
-        this.loading = true
+        this.overlay = true
         this.clear = false
         this.$http
           .put('/inventory/item/packable/' + this.packable_item, {})
           .then((response) => {
+            this.overlay = false
             this.loading = false
             this.dialog = false
             this.renderData()
