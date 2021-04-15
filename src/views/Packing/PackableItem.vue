@@ -155,6 +155,7 @@
                         v-model="uom"
                         required
                         append-icon=""
+                        label="UOM"
                       ></v-text-field>
                     </v-col>
                   </v-row>

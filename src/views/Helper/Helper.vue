@@ -218,7 +218,7 @@
 
         table: [
           {
-            text: 'Helper ID',
+            text: 'Helper Code',
             value: 'code',
             class: 'black--text title',
           },

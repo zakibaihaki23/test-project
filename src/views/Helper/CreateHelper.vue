@@ -173,6 +173,7 @@
                 color="#E6E9ED"
                 style="margin: 10px; color: #768F9C"
                 class="cancel"
+                :disabled="cancelDisable"
                 >Cancel</v-btn
               >
             </v-col>
@@ -201,13 +202,15 @@
       return {
         search: null,
         saveDisabled: true,
+        cancelDisable: false,
         loading: false,
+        name: '',
         rules: {
           required: (value) => !!value || 'Required',
           counter: (value) => value.length <= 12 || 'Max 30 Characters',
         },
         helper: {
-          name: '',
+          name: null,
           address: '',
           phone_number: '',
           password: '',
@@ -267,12 +270,13 @@
       },
       //untuk menyimpan data registrasi ke dalam API
       save() {
+        this.cancelDisable = true
         this.loading = true
         this.$http
           .post('/helper', {
             warehouse_id: this.warehouse_id,
-            type_id: this.type_id,
             name: this.helper.name,
+            type_id: this.type_id,
             username: this.helper.username,
             phone_number: this.helper.phone_number,
             address: this.helper.address,
@@ -283,9 +287,11 @@
           .then((response) => {
             this.$router.push('/helper')
             this.$toast.success('Data has been saved successfully')
+            this.cancelDisable = false
           })
           .catch((error) => {
             this.loading = false
+            this.cancelDisable = false
             this.error = error.response.data.errors
           })
       },
