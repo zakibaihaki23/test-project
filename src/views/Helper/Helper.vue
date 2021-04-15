@@ -166,7 +166,7 @@
             <v-row>
               <v-col xl="5" cols="6" md="6" sm="6" lg="6">
                 <v-btn
-                  text
+                  :disabled="btnDisabled"
                   @click="dialog = false"
                   style="margin-bottom: 20px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
                 >
@@ -210,6 +210,7 @@
     data() {
       return {
         page: 1,
+        btnDisabled: false,
         dialog: false,
         search: '',
         loadingBtn: false,
@@ -334,6 +335,7 @@
 
       //fungsi untuk unarchive
       archive(id) {
+        this.btnDisabled = true
         this.loadingBtn = true
         this.$http
           .put('/helper/' + id + '/archive', {})
@@ -344,15 +346,20 @@
               self.dialog = false
               self.renderData()
               self.loadingBtn = false
+              self.btnDisabled = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
             this.$toast.error(error.response.data.errors.id)
+            this.loadingBtn = false
+            this.dialog = false
+            this.btnDisabled = false
           })
       },
 
       //fungsi untuk archive
       unarchive(id) {
+        this.btnDisabled = true
         this.loadingBtn = true
         this.$http
           .put('/helper/' + id + '/unarchive', {})
@@ -363,10 +370,11 @@
               self.dialog = false
               self.renderData()
               self.loadingBtn = false
+              self.btnDisabled = false
             }, 15 * 15 * 15)
           })
           .catch((error) => {
-            console.log(error)
+            self.btnDisabled = false
           })
       },
 

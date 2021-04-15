@@ -1,32 +1,19 @@
 <template>
   <div class="helper">
     <h1>REPORT PACKING</h1>
-    <v-container>
-      <v-row>
-        <v-col cols="3" sm="6" md="6" lg="7">
-          <div class="d-flex d-none d-sm-block">
-            <v-btn
-              style="margin-top: 50px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
-              v-model="download"
-              :disabled="downloadDisabled"
-              >Download</v-btn
-            >
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
+
     <p
       class="d-flex d-none d-sm-block"
-      style="font-size: 20px; margin-top: 40px"
+      style="font-size: 20px; margin-top: 20px; margin-bottom: 30px"
     >
-      Filter
+      Find your document below
     </p>
     <v-divider
       class="d-flex d-none d-sm-block"
       style="margin-right: 40px;"
     ></v-divider>
     <v-col md="12"> </v-col>
-    <v-row style="margin-top: 1px">
+    <v-row class="mb-6" style="margin-top: 1px">
       <v-col cols="10" md="4" lg="3" xl="2" sm="6">
         <v-menu
           ref="menu"
@@ -90,34 +77,26 @@
         >
         </SelectWarehouse>
       </v-col>
+      <v-col cols="2" sm="6" md="6" lg="7" xl="2"> </v-col>
+      <v-col cols="2" sm="6" md="6" lg="7" xl="2"> </v-col>
+      <v-col cols="12" sm="1" md="6" lg="7" xl="2">
+        <div>
+          <v-btn
+            style="bottom: 5px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
+            v-model="download"
+            :disabled="downloadDisabled"
+            >Download</v-btn
+          >
+        </div>
+      </v-col>
     </v-row>
-    <v-flex
-      pb-3
-      class=" pb-8 text-center"
-      style="margin-top: 300px;"
-      v-show="!downloadDisabled"
-    >
+    <v-flex pb-3 class=" pb-8 text-center" style="margin-top: 300px;">
       <div class="text-center pb-4">
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download.png"> </v-img>
         </v-layout>
         <h1 style="margin-top: 160px;">
           Please download to view data
-        </h1>
-      </div>
-    </v-flex>
-    <v-flex
-      shrink
-      class=" pb-8 text-center"
-      style="margin-top: 300px;"
-      v-show="downloadDisabled"
-    >
-      <div class="text-center pb-4">
-        <v-layout justify-center>
-          <v-img class="gbr" src="@/assets/download1.png"> </v-img>
-        </v-layout>
-        <h1 style="margin-top: 160px;">
-          Please download to display
         </h1>
       </div>
     </v-flex>
@@ -137,7 +116,10 @@
         delivery_date_model: '',
         date: '',
         delivery_date_model: '',
-        delivery_date: '',
+        delivery_date: [
+          new Date(Date.now() - 3600 * 1000 * 720).toISOString().substr(0, 10),
+          new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
+        ],
         warehouse_id: null,
         warehouseDisabled: true,
         downloadDisabled: true,
