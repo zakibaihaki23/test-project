@@ -130,7 +130,7 @@
               </v-card-text>
               <v-btn 
                 @click="kirimfiledata()"
-                :disabled = true
+                :disabled = false
                 style="
                       width: 340px;
                       margin-left: 50px;

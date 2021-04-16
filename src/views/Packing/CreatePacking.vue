@@ -377,7 +377,7 @@
             this.error = error.response.data.errors
             this.$toast.error(error.response.data.errors.area_id)
             this.$toast.error(error.response.data.errors.warehouse_id)
-           
+            this.$toast.error(error.response.data.errors.delivery_date)
             
           })
           
