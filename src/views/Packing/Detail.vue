@@ -375,6 +375,7 @@
         uom: '',
         packer: [],
         helper: [],
+        packings:[],
         search: '',
         file: 0,
         packing_code: '',
@@ -475,36 +476,40 @@
   
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
-      handleSelectedFile(convertedData) {
+      handleSelectedFile (convertedData) {
         console.log(convertedData)
-        this.disable = false
-        let that = this
-        let data = []
-        convertedData.body.forEach((item) => {
-          data.push({
-            packing_item_id: item.Packing_Item_Id,
-            total_pack: parseFloat(item.Total_Pack),
-            total_kg: parseFloat(item.Total_Kg),
-            helper_id: item.Packer_Id,
-          })
-           let send = {
-          packings: data,
-        }
-        console.log(data)
-        this.sendFile = send
-        this.$http
-          .put('/packing/' + this.$route.params.id, send)
-          .then((response) => {
-            // Vue.$toast.open({
-            //     position: 'top-right',
-            //     message: 'Data has been saved successfully',
-            //     type: 'success',
-            // });
-         
-          })
-        })
-        
+           console.log(convertedData)
+           this.disable = false
+                let that = this
+                    let data = [];
+                    convertedData.body.forEach((item) => {
+                    data.push(
+                      {
+                        "packing_item_id":item.Packing_Item_Id,
+                        "total_pack": parseFloat (item.Total_Pack),
+                        "total_kg" : parseFloat (item.Total_Kg),
+                        "helper_id":item.Packer_Id,
+                      }
+                    )
+                }); 
+                let send = {
+                  "packings" : data
+                }
+                  console.log(send)
+                  this.sendFile = send
+                this.$http
+                .put('/packing/' + this.$route.params.id, send)
+                .then(response => {
+                    // Vue.$toast.open({
+                    //     position: 'top-right',
+                    //     message: 'Data has been saved successfully',
+                    //     type: 'success',
+                    // });
+              
+                })
+                
       },
+
 
       kirimfiledata(){
        window.location.reload()
@@ -572,7 +577,7 @@
           .get('/packing/' + this.$route.params.id + '/template?export=1')
 
           .then((response) => {
-            window.open(response.data.file)
+             window.location.href = response.data.file
             console.log(response.data.file)
           })
       },
