@@ -81,6 +81,7 @@
             style="bottom: 5px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
             :disabled="downloadDisabled"
             @click="downloadFile()"
+            :loading="btnLoading"
             >Download</v-btn
           >
         </div>
@@ -115,7 +116,7 @@
         delivery_date: '',
         warehouse_id: null,
         warehouseDisabled: true,
-        downloadDisabled: true,
+        btnLoading: false,
         dateDisabled: true,
         areaId: null,
         area: '',
@@ -192,6 +193,8 @@
         this.renderData('')
       },
       downloadFile() {
+        this.btnLoading = true
+
         let updatedate = this.$moment(this.delivery_date)
           .add(7)
           .format('YYYY-MM-DD')
@@ -211,7 +214,14 @@
             },
           })
           .then((response) => {
-            window.open(response.data.file)
+            let self = this
+            setTimeout(function() {
+              self.btnLoading = false
+              window.location.href = response.data.file
+            }, 1000)
+          })
+          .catch((error) => {
+            this.btnLoading = false
           })
       },
     },

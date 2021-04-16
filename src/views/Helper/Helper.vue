@@ -2,7 +2,6 @@
   <div class="helper">
     <h1>HELPER LIST</h1>
     <!-- FOR ALL DEVICE -->
-
     <v-container>
       <v-row>
         <v-col cols="3" sm="6" md="6" lg="7">
@@ -298,7 +297,6 @@
           }, 1000)
       },
     },
-
     methods: {
       openDialog(status, id) {
         this.dialog = true
