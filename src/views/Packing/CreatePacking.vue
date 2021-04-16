@@ -23,10 +23,11 @@
                   readonly
                   outlined
                   single-line
-                  clearable
+                
                   @click:clear="delivery_date = ''"
                   :value="format_delivery_date"
                   class="rounded-form"
+                  append-icon=""
                 >
                   <template v-slot:label>
                     Delivery Date
@@ -47,7 +48,7 @@
                 text
                 style="margin-left: 10px"
                 color="primary"
-                @click="delivery_date_model = false"
+                @click="deliveryDateSelected"
               >
                 OK
               </v-btn>
@@ -96,7 +97,11 @@
           </v-dialog> -->
 
           <p>Area <span style="color: red">*</span></p>
-          <SelectFormArea v-model="area" @selected="areaSelected">
+          <SelectFormArea 
+            v-model="area" 
+            @selected="areaSelected"
+            :disabled="areaDisabled"
+            >
           </SelectFormArea>
         </div>
       </v-col>
@@ -142,13 +147,14 @@
     <!-- BAGIAN TABEL -->
     <div>
       <v-data-table
-        loading-text="Please Wait...."
+        loading-text="Please wait....."
         :headers="table"
         :items="dataTable"
         :page.sync="page"
         :items-per-page="itemsPerPage"
         :search="search"
         @page-count="pageCount = $event"
+        :loading="isLoading"
       >
         <template v-slot:item="props">
           <tr>
@@ -219,6 +225,7 @@
         areaId: null,
         packer: '',
         warehouseDisabled: true,
+        areaDisabled: true,
         total_order: '',
         delivery_date: '',
         delivery_date_model: '',
@@ -226,6 +233,7 @@
         idx: '',
         items: [],
         loading: false,
+        isLoading: true,
 
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
@@ -328,6 +336,7 @@
             },
           })
           .then((response) => {
+            this.isLoading = false
             this.dataTable = response.data.data
 
             if (this.dataTable === null) {
@@ -359,18 +368,19 @@
           })
 
           .then((response) => {
+            this.loading = false
             this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
           })
           .catch((error) => {
+            this.loading = false
             this.error = error.response.data.errors
             this.$toast.error(error.response.data.errors.area_id)
             this.$toast.error(error.response.data.errors.warehouse_id)
-            if (error.response.data.errors.id)
-              this.$toast.error(error.response.data.errors.id)
-            this.loading = false
-            console.log(this.error)
+           
+            
           })
+          
       },
       areaSelected(area) {
         this.area = null
@@ -398,6 +408,19 @@
         }
         this.renderData('')
       },
+
+      deliveryDateSelected() {
+        this.delivery_date_model = false
+        if(this.delivery_date) {
+          this.areaDisabled = false
+        }
+        
+        // this.area = null
+        // if (area) {
+        //   this.areaDisabled = true
+        // }
+        
+      }
     },
   }
 </script>

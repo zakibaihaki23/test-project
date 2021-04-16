@@ -16,7 +16,9 @@
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn @click="DownloadFile()">
+            <v-btn 
+              @click="DownloadFile()"
+              :loading="btnLoading">
               Download
             </v-btn>
           </div>
@@ -114,14 +116,12 @@
                             </vue-xlsx-table>
                       
                         </v-col>
-                        <v-col style="padding-top: 30px">
+                        <!-- <v-col style="padding-top: 30px">
                           <span style="margin-left:121px;">Or</span></v-col
                         >
                         <v-col style="padding-top: 5px">
-                          <span style="margin-left:85px;"
-                            >Drop File Here</span
-                          ></v-col
-                        >
+                          </v-col
+                        > -->
                       </div>
                     </div>
                   </v-row>
@@ -130,6 +130,7 @@
               </v-card-text>
               <v-btn 
                 @click="kirimfiledata()"
+                :disabled = true
                 style="
                       width: 340px;
                       margin-left: 50px;
@@ -172,7 +173,7 @@
         :items="data"
         :search="search"
         :page.sync="page"
-        :items-per-page="20"
+        :items-per-page="5"
         @page-count="pageCount = $event"
         :loading="isLoading"
         loading-text="Please Wait....."
@@ -377,6 +378,7 @@
         uom: '',
         packer: [],
         helper: [],
+        packings:[],
         search: '',
         file: 0,
         packing_code: '',
@@ -417,7 +419,6 @@
             sortable: false,
           },
         ],
-        data: [],
         status: [],
       }
     },
@@ -475,45 +476,47 @@
         this.itemName = item_name
         this.packerName = packer
       },
-      handleSelectedFile(convertedData) {
-        console.log(convertedData)
-      },
+  
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
-      handleSelectedFile(convertedData) {
+      handleSelectedFile (convertedData) {
         console.log(convertedData)
-        this.disable = false
-        let that = this
-        let data = []
-        convertedData.body.forEach((item) => {
-          data.push({
-            packing_item_id: item.Packing_Item_Id,
-            total_pack: parseFloat(item.Total_Pack),
-            total_kg: parseFloat(item.Total_Kg),
-            helper_id: item.Packer_Id,
-          })
-           let send = {
-          packings: data,
-        }
-        console.log(send)
-        this.sendFile = send
-        this.$http
-          .put('/packing/' + this.$route.params.id, send)
-          .then((response) => {
-            // Vue.$toast.open({
-            //     position: 'top-right',
-            //     message: 'Data has been saved successfully',
-            //     type: 'success',
-            // });
-         
-          })
-        })
-        
+           console.log(convertedData)
+           this.disable = false
+                let that = this
+                    let data = [];
+                    convertedData.body.forEach((item) => {
+                    data.push(
+                      {
+                        "packing_item_id":item.Packing_Item_Id,
+                        "total_pack": parseFloat (item.Total_Pack),
+                        "total_kg" : parseFloat (item.Total_Kg),
+                        "helper_id":item.Packer_Id,
+                      }
+                    )
+                }); 
+                let send = {
+                  "packings" : data
+                }
+                  console.log(send)
+                  this.sendFile = send
+                this.$http
+                .put('/packing/' + this.$route.params.id, send)
+                .then(response => {
+                    // Vue.$toast.open({
+                    //     position: 'top-right',
+                    //     message: 'Data has been saved successfully',
+                    //     type: 'success',
+                    // });
+              
+                })
+                
       },
+
 
       kirimfiledata(){
        window.location.reload()
-       console.log("TERKIRIM YEEE >.<")
+     
       },
 
       renderData() {
@@ -573,12 +576,17 @@
 
       // DOWNLOAD FILE FROM
       DownloadFile() {
+        this.btnLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id + '/template?export=1')
 
           .then((response) => {
-            window.open(response.data.file)
-            console.log(response.data.file)
+             window.location.href = response.data.file
+             this.btnLoading = false
+          })
+
+          .catch((error) => {
+            this.btnLoading = false
           })
       },
 

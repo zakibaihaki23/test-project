@@ -13,6 +13,7 @@
       return-object
       :search-input.sync="search"
       @change="selected"
+      :disabled="disabled"
       style="border-radius: 12px"
     >
     </v-select>
@@ -29,7 +30,7 @@
         search: '',
       }
     },
-    props: ['clear', 'city'],
+    props: ['clear', 'city', 'disabled',],
     mounted() {
       this.renderData('', true)
     },
