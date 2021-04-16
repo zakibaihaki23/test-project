@@ -147,7 +147,7 @@
     <!-- BAGIAN TABEL -->
     <div>
       <v-data-table
-        loading-text="Please Select Date, Area & Warehouse"
+        loading-text="Please wait....."
         :headers="table"
         :items="dataTable"
         :page.sync="page"

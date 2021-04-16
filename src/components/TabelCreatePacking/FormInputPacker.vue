@@ -62,7 +62,7 @@
           .get('/helper',
               {
                   params: {
-                      conditions: 'user_id.is_active:1|warehouse_id.e:'+this.warehouse_id,
+                      conditions: 'user_id.is_active:1|warehouse_id.e:'+this.warehouse_id,   perpage: 10,
                   },
               })
 
