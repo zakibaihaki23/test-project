@@ -159,14 +159,13 @@
         <template v-slot:item="props">
           <tr>
             <td>
-              <pre>{{ props.item.item_name }}</pre>
+             {{ props.item.item_name }}
             </td>
             <td>
-              <pre>{{ props.item.uom_name }}</pre>
+             {{ props.item.uom_name }}
             </td>
-            <!-- <td>{{ props.item.delivery_date | moment('DD/MM/YYYY') }}</td> -->
             <td>
-              <pre>{{ props.item.total_order }}</pre>
+             {{ props.item.total_order }}
             </td>
             <td>
               <FormInputPacker
@@ -217,23 +216,23 @@
 
     data() {
       return {
-        warehouse: null,
-        warehouseList: null,
-        note: '',
-        warehouse_id: null,
-        area: '',
-        areaId: null,
-        packer: '',
-        warehouseDisabled: true,
-        areaDisabled: true,
-        total_order: '',
-        delivery_date: '',
-        delivery_date_model: '',
-        dataTable: [],
-        idx: '',
-        items: [],
-        loading: false,
-        isLoading: true,
+        idx                 : '',
+        note                : '',
+        packer              : '',
+        area                : '',
+        total_order         : '',
+        delivery_date       : '',
+        delivery_date_model : '',
+        areaId              : null,
+        areaDisabled        : true,
+        loading             : false,
+        isLoading           : true,
+        warehouse           : null,
+        warehouse_id        : null,
+        warehouseList       : null,
+        warehouseDisabled   : true,
+        items               : [],
+        dataTable           : [],
 
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
@@ -328,13 +327,11 @@
         this.$http
           .get('/packing/item-recap', {
             params: {
-              // embeds: 'item_uom_id', 'item_quantity',
               conditions:
                 'purchaseorder.deliverydate:' + updatedate + 'T07:00:00+07:00|purchaseorder.outlet.city.id.e:' + this.area + '|item.packable:1',
-
-                // purchaseorder.deliverydate:2021-04-16T07:00:00+07:00|purchaseorder.outlet.city.id.e:131072|item.packable:1
             },
           })
+
           .then((response) => {
             this.isLoading = false
             this.dataTable = response.data.data
@@ -343,10 +340,12 @@
               this.dataTable = []
             }
           })
+
           .catch((error) => {
             console.log(error)
           })
-      },
+
+      }, // CLOSE RENDER DATA
 
       //untuk menyimpan data Penambahan ke dalam API
       save() {
@@ -394,8 +393,6 @@
           this.warehouse = null
           this.warehouse_id = null
         }
-        //
-        // this.renderData()
       },
 
       warehouseSelected(val) {
@@ -421,7 +418,7 @@
         // }
         
       }
-    },
+    }, // CLOSE METHODS
   }
 </script>
 
@@ -440,16 +437,6 @@
   .name {
     border-radius: 15px;
   }
-  /* .cancel {
-    margin-top: 50px;
-    background: #4662d4;
-    color: white;
-    box-sizing: content-box;
-    border-radius: 25px;
-    width: 111px;
-    height: 45px;
-  } */
-
   .btn {
     margin-top: 30px;
     padding-left: 1100px;

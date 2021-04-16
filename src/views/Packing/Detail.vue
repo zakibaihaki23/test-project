@@ -101,7 +101,7 @@
                             @change="onFileChanged"
                           /> -->
 
-                          
+                            <!-- TOMBOL UPLOAD -->
                             <vue-xlsx-table
                               class="xlsx-button"
                               @on-select-file="handleSelectedFile"
@@ -363,27 +363,26 @@
 
     data() {
       return {
-        sendFile: '',
-        selectedFile: null,
-        isLoading: true,
-        isSelecting: false,
+        file      : 0,
+        packing_code: '',
+        sendFile  : '',
+        index     : '',
+        uom       : '',
+        search    : '',
+        download  : '',
+        send      : '',
+        isLoading : true,
         btnLoading: false,
         btnDisable: false,
-        download: '',
-        dialog: false,
-        dialog2: false,
-        item: null,
-        warehouse: [],
-        index: '',
-        uom: '',
-        packer: [],
-        helper: [],
-        packings:[],
-        search: '',
-        file: 0,
-        packing_code: '',
-        data: [],
-        headers: [
+        dialog    : false,
+        dialog2   : false,
+        item      : null,    
+        warehouse : [],
+        packer    : [],
+        helper    : [],
+        packings  : [],
+        data      : [],
+        headers   : [
           {
             text: 'Item',
             value: 'item.item_name',
@@ -423,14 +422,6 @@
       }
     },
 
-    computed: {
-      buttonText() {
-        return this.selectedFile
-          ? this.selectedFile.name
-          : this.defaultButtonText
-      },
-    },
-
     created() {
       this.renderData()
     },
@@ -458,7 +449,7 @@
             this.dialog2 = false
             this.btnDisable = false
           })
-      },
+      }, //CLOSE savePacker
 
       addPacker(val) {
         let arr = []
@@ -470,6 +461,7 @@
           this.packerName = arr
         }
       },
+
       openDialog(id, item_name, packer) {
         this.dialog2 = true
         this.idItem = id
@@ -481,41 +473,39 @@
       // BAGIAN UPLOAD FILE XLXS TO JSON
       handleSelectedFile (convertedData) {
         console.log(convertedData)
-           console.log(convertedData)
-           this.disable = false
-                let that = this
-                    let data = [];
-                    convertedData.body.forEach((item) => {
-                    data.push(
-                      {
-                        "packing_item_id":item.Packing_Item_Id,
-                        "total_pack": parseFloat (item.Total_Pack),
-                        "total_kg" : parseFloat (item.Total_Kg),
-                        "helper_id":item.Packer_Id,
-                      }
-                    )
-                }); 
-                let send = {
-                  "packings" : data
-                }
-                  console.log(send)
-                  this.sendFile = send
-                this.$http
-                .put('/packing/' + this.$route.params.id, send)
-                .then(response => {
-                    // Vue.$toast.open({
-                    //     position: 'top-right',
-                    //     message: 'Data has been saved successfully',
-                    //     type: 'success',
-                    // });
-              
-                })
-                
-      },
+        this.disable = false
+        let that = this
+        let data = [];
+        convertedData.body.forEach((item) => {
+          data.push(
+            {
+              "packing_item_id":item.Packing_Item_Id,
+              "total_pack": parseFloat (item.Total_Pack),
+              "total_kg" : parseFloat (item.Total_Kg),
+              "helper_id":item.Packer_Id,
+            }
+          )
+        }); 
+            
+        this.sendFile = {"packings" : data}
+        console.log(send)
+        
+      }, // CLOSE handleSelectedFile
 
 
       kirimfiledata(){
+        console.log(this.sendFile)
+        this.$http
+          .put('/packing/' + this.$route.params.id, this.sendFile)
+          .then(response => {
+            // Vue.$toast.open({
+            //     position: 'top-right',
+            //     message: 'Data has been saved successfully',
+            //     type: 'success',
+            // });
+          })           
        window.location.reload()
+        console.log("MASUKKKKK")
      
       },
 
@@ -566,7 +556,9 @@
         //   .catch((error) => {
         //     console.log(error)
         //   })
-      },
+
+      }, // CLOSE RENDER DATA
+
       // addPacker() {
       //   // this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
       //   //   helper: this.packer,
@@ -590,27 +582,7 @@
           })
       },
 
-      onButtonClick() {
-        this.isSelecting = true
-        window.addEventListener(
-          'focus',
-          () => {
-            this.isSelecting = false
-          },
-          { once: true }
-        )
-
-        this.$refs.uploader.click()
-      },
-
-      onFileChanged(e) {
-        this.selectedFile = e.target.files[0]
-
-        console.log(this.selectedFile)
-
-        // do something
-      },
-
+    
       save() {
         this.$http
           .get('/v1/packing/' + this.$route.params.id)
@@ -624,7 +596,8 @@
             console.log(this.error)
           })
       },
-    },
+
+    }, // CLOSE METHODS
   }
 </script>
 
