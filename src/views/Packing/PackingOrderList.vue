@@ -47,14 +47,14 @@
     ></v-divider>
     <v-col md="12"> </v-col>
     <v-row style="margin-top: 1px">
-      <v-col cols="10" md="4" lg="3" xl="2" sm="6">
+      <v-col cols="12" sm="6" md="3">
         <v-menu
           ref="menu"
           v-model="delivery_date_model"
           :close-on-content-click="false"
           transition="scale-transition"
           offset-y
-          min-width="auto"
+          min-width="300px"
         >
           <template v-slot:activator="{ on }">
             <div v-on="on">

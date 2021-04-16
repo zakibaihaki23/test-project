@@ -445,6 +445,9 @@
             this.clear = true
             this.$toast.success('Add packable ' + response.data.status)
           })
+          .catch((error) => {
+            this.$toast.error('Please Fill Item')
+          })
       },
       itemSelected(d) {
         this.uom_id = ''
