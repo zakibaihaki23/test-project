@@ -16,7 +16,9 @@
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn @click="DownloadFile()">
+            <v-btn 
+              @click="DownloadFile()"
+              :loading="btnLoading">
               Download
             </v-btn>
           </div>
@@ -128,6 +130,7 @@
               </v-card-text>
               <v-btn 
                 @click="kirimfiledata()"
+                :disabled = true
                 style="
                       width: 340px;
                       margin-left: 50px;
@@ -573,12 +576,17 @@
 
       // DOWNLOAD FILE FROM
       DownloadFile() {
+        this.btnLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id + '/template?export=1')
 
           .then((response) => {
              window.location.href = response.data.file
-            console.log(response.data.file)
+             this.btnLoading = false
+          })
+
+          .catch((error) => {
+            this.btnLoading = false
           })
       },
 
