@@ -82,7 +82,7 @@
               </v-tooltip>
             </div>
           </template>
-          <v-date-picker scrollable no-title range v-model="delivery_date">
+          <v-date-picker no-title range v-model="delivery_date">
             <v-spacer></v-spacer>
             <v-btn
               text
