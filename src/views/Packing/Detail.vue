@@ -114,14 +114,12 @@
                             </vue-xlsx-table>
                       
                         </v-col>
-                        <v-col style="padding-top: 30px">
+                        <!-- <v-col style="padding-top: 30px">
                           <span style="margin-left:121px;">Or</span></v-col
                         >
                         <v-col style="padding-top: 5px">
-                          <span style="margin-left:85px;"
-                            >Drop File Here</span
-                          ></v-col
-                        >
+                          </v-col
+                        > -->
                       </div>
                     </div>
                   </v-row>
@@ -172,7 +170,7 @@
         :items="data"
         :search="search"
         :page.sync="page"
-        :items-per-page="20"
+        :items-per-page="5"
         @page-count="pageCount = $event"
         :loading="isLoading"
         loading-text="Please Wait....."
@@ -417,7 +415,6 @@
             sortable: false,
           },
         ],
-        data: [],
         status: [],
       }
     },
@@ -475,9 +472,7 @@
         this.itemName = item_name
         this.packerName = packer
       },
-      handleSelectedFile(convertedData) {
-        console.log(convertedData)
-      },
+  
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
       handleSelectedFile(convertedData) {
@@ -495,7 +490,7 @@
            let send = {
           packings: data,
         }
-        console.log(send)
+        console.log(data)
         this.sendFile = send
         this.$http
           .put('/packing/' + this.$route.params.id, send)
@@ -513,7 +508,7 @@
 
       kirimfiledata(){
        window.location.reload()
-       console.log("TERKIRIM YEEE >.<")
+     
       },
 
       renderData() {
