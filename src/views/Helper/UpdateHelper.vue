@@ -41,24 +41,6 @@
           <v-col cols="12" sm="6" md="6" lg="6">
             <div class="form-right">
               <ValidationProvider rules="required">
-                <p>Type <span style="color: red">*</span></p>
-                <v-select
-                  v-model="type_id"
-                  :items="type"
-                  item-text="type_name"
-                  item-value="id"
-                  @selected="typeSelected"
-                  outlined
-                  single-line
-                  class="form"
-                >
-                </v-select>
-              </ValidationProvider>
-            </div>
-          </v-col>
-          <v-col cols="12" sm="6" md="6" lg="6">
-            <div class="form-right">
-              <ValidationProvider rules="required">
                 <p>Phone Number <span style="color: red">*</span></p>
                 <v-text-field
                   maxlength="12"
@@ -71,6 +53,24 @@
                   :error-messages="error.phone_number"
                 >
                 </v-text-field>
+              </ValidationProvider>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="6" md="6" lg="6">
+            <div class="form-right">
+              <ValidationProvider rules="required">
+                <p>Type <span style="color: red">*</span></p>
+                <v-select
+                  v-model="type_id"
+                  :items="type"
+                  item-text="type_name"
+                  item-value="id"
+                  @selected="typeSelected"
+                  outlined
+                  single-line
+                  class="form"
+                >
+                </v-select>
               </ValidationProvider>
             </div>
           </v-col>
@@ -99,9 +99,9 @@
             <div class="form-right">
               <p>Address</p>
               <v-textarea
-                :counter="20"
+                :counter="250"
                 :rules="rules"
-                :max-length="20"
+                maxlength="250"
                 label="Address"
                 v-model="helper.address"
                 outlined
@@ -221,7 +221,7 @@
       return {
         edit: '',
         search: null,
-        rules: [(v) => v.length <= 20 || 'Max 20 characters'],
+        rules: [(v) => v.length <= 20 || 'Max 250 characters'],
         value: String,
         val_confirm: String,
         editedIndex: -1,
@@ -264,7 +264,7 @@
         this.$http
           .get('/helper/' + this.$route.params.id, {
             params: {
-              embeds: 'helper_type_id,warehouse_id',
+              embeds: 'user_id,helper_type_id,warehouse_id',
             },
           })
           .then((response) => {
@@ -318,7 +318,7 @@
             type_id: this.type_id,
             address: this.helper.address,
             phone_number: this.helper.phone_number,
-            warehouse_id: this.warehouse_id,
+            warehouse_id: this.warehouse_list.id,
             password: this.helper.password,
             confirm_password: this.helper.confirm_password,
           })

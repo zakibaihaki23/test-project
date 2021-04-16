@@ -173,7 +173,6 @@
                 color="#E6E9ED"
                 style="margin: 10px; color: #768F9C"
                 class="cancel"
-                :disabled="cancelDisable"
                 >Cancel</v-btn
               >
             </v-col>
@@ -181,7 +180,7 @@
               <v-btn
                 style="margin: 10px;"
                 class="save"
-                @click="save"
+                @click="openDialog"
                 :loading="loading"
                 :disabled="invalid || !validated"
                 >Save</v-btn
@@ -191,6 +190,17 @@
         </div>
       </v-form>
     </ValidationObserver>
+    <v-dialog v-model="dialog" persistent max-width="1px">
+      <div class="text-center">
+        <v-overlay :value="overlay">
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            :size="20"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
+    </v-dialog>
   </div>
 </template>
 
@@ -201,8 +211,8 @@
     data() {
       return {
         search: null,
+        dialog: false,
         saveDisabled: true,
-        cancelDisable: false,
         loading: false,
         rules: {
           required: (value) => !!value || 'Required',
@@ -225,6 +235,7 @@
         error: {},
       }
     },
+
     created() {
       this.renderData('')
     },
@@ -235,9 +246,20 @@
         },
         deep: true,
       },
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
     },
 
     methods: {
+      openDialog() {
+        this.dialog = true
+        this.overlay = true
+        this.save()
+      },
       //untuk mendapatkan list warehouse dari API
       renderData(search) {
         if (search) {
@@ -269,8 +291,6 @@
       },
       //untuk menyimpan data registrasi ke dalam API
       save() {
-        this.cancelDisable = true
-        this.loading = true
         this.$http
           .post('/helper', {
             name: this.helper.name,
@@ -284,13 +304,12 @@
           })
 
           .then((response) => {
+            this.dialog = false
             this.$router.push('/helper')
             this.$toast.success('Data has been saved successfully')
-            this.cancelDisable = false
           })
           .catch((error) => {
-            this.loading = false
-            this.cancelDisable = false
+            this.dialog = false
             this.error = error.response.data.errors
           })
       },

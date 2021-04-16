@@ -37,7 +37,7 @@
                     single-line
                     clearable
                     dense
-                    @click:clear=";(delivery_date = []), renderData(search)"
+                    @click:clear="delivery_date = ''"
                     :value="format_delivery_date"
                   >
                     <template v-slot:label>
@@ -49,13 +49,9 @@
               </v-tooltip>
             </div>
           </template>
-          <v-date-picker scrollable no-title range v-model="delivery_date">
+          <v-date-picker no-title v-model="delivery_date">
             <v-spacer></v-spacer>
-            <v-btn
-              text
-              color="primary"
-              @click=";(delivery_date_model = false), renderData(search)"
-            >
+            <v-btn text color="primary" @click="delivery_date_model = false">
               OK
             </v-btn>
           </v-date-picker>
@@ -83,8 +79,9 @@
         <div>
           <v-btn
             style="bottom: 5px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
-            v-model="download"
             :disabled="downloadDisabled"
+            @click="downloadFile()"
+            :loading="btnLoading"
             >Download</v-btn
           >
         </div>
@@ -95,7 +92,7 @@
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download.png"> </v-img>
         </v-layout>
-        <h1 style="margin-top: 160px;">
+        <h1 style="margin-top: 200px;">
           Please download to view data
         </h1>
       </div>
@@ -116,18 +113,14 @@
         delivery_date_model: '',
         date: '',
         delivery_date_model: '',
-        delivery_date: [
-          new Date(Date.now() - 3600 * 1000 * 720).toISOString().substr(0, 10),
-          new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
-        ],
+        delivery_date: '',
         warehouse_id: null,
         warehouseDisabled: true,
-        downloadDisabled: true,
+        btnLoading: false,
         dateDisabled: true,
         areaId: null,
         area: '',
         search: '',
-        downloadFile: [],
         group_id: '',
         archived: null,
       }
@@ -147,28 +140,8 @@
     },
     computed: {
       format_delivery_date() {
-        if (this.delivery_date.length > 0) {
-          let ret = ''
-          if (this.delivery_date.length == 1) {
-            let date = this.delivery_date[0]
-            ret = this.$moment(date).format('DD/MM/YYYY')
-          } else {
-            let date = this.delivery_date[0]
-            let date2 = this.delivery_date[1]
-            if (date > date2) {
-              ret =
-                this.$moment(date2).format('DD/MM/YYYY') +
-                '-' +
-                this.$moment(date).format('DD/MM/YYYY')
-            } else {
-              ret =
-                this.$moment(date).format('DD/MM/YYYY') +
-                '-' +
-                this.$moment(date2).format('DD/MM/YYYY')
-            }
-          }
-          return ret
-        }
+        if (this.delivery_date)
+          return this.$moment(this.delivery_date).format('DD/MM/YYYY')
       },
     },
     methods: {
@@ -193,36 +166,6 @@
             },
           })
           .then((response) => {})
-
-        // let warehouseId = ''
-        // if (this.warehouse_id) {
-        //   warehouseId = 'warehouse_id.e:' + this.warehouse_id
-        // } else {
-        //   warehouseId = ''
-        // }
-
-        // let groupId = ''
-        // if (this.warehouse_id) {
-        //   groupId = '|group_id.e:' + this.warehouse_id
-        // } else {
-        //   groupId = ''
-        // }
-
-        // this.$http
-        //   .get('/report/group-log', {
-        //     params: {
-        //       export: '1',
-        //       date,
-        //       conditions: warehouseId + groupId,
-        //     },
-        //   })
-        //   .then((response) => {
-        //     this.downloadFile = response.data.file
-
-        //     if (this.downloadFile === null) {
-        //       this.downloadFile = []
-        //     }
-        //   })
       },
       areaSelected(area) {
         this.area = null
@@ -248,6 +191,38 @@
           this.downloadDisabled = true
         }
         this.renderData('')
+      },
+      downloadFile() {
+        this.btnLoading = true
+
+        let updatedate = this.$moment(this.delivery_date)
+          .add(7)
+          .format('YYYY-MM-DD')
+
+        this.$http
+          .get('/packing/packing-report', {
+            params: {
+              export: 1,
+              conditions:
+                'delivery_date:' +
+                updatedate +
+                'T00:00:00+07:00' +
+                '|warehouse_id.e:' +
+                this.warehouse_id +
+                '|area_id.e:' +
+                this.area,
+            },
+          })
+          .then((response) => {
+            let self = this
+            setTimeout(function() {
+              self.btnLoading = false
+              window.location.href = response.data.file
+            }, 1000)
+          })
+          .catch((error) => {
+            this.btnLoading = false
+          })
       },
     },
   }

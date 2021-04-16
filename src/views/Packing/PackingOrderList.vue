@@ -163,7 +163,7 @@
                         <v-list-item-title>Detail</v-list-item-title>
                       </div>
                     </v-list-item>
-                    <v-divider
+                    <!-- <v-divider
                       style="margin-left: 10px;margin-right: 10px"
                       v-if="props.item.status == 1"
                     ></v-divider>
@@ -176,7 +176,7 @@
                       <div>
                         <v-list-item-title>Update</v-list-item-title>
                       </div>
-                    </v-list-item>
+                    </v-list-item> -->
                   </template>
                   <v-divider
                     style="margin-left: 10px;margin-right: 10px"
@@ -344,6 +344,12 @@
           that.renderData(val)
         },
         deep: true,
+      },
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
       },
     },
     computed: {
@@ -516,7 +522,7 @@
               self.dialog = false
               self.renderData()
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.dialog = false
@@ -534,7 +540,7 @@
               self.dialog = false
               self.renderData()
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.dialog = false
@@ -582,7 +588,7 @@
     outline-style: inherit;
     outline-color: white;
     box-shadow: none;
-
+    width: 150px;
     outline-color: #e8eff2;
   }
   .v-sheet.v-list {

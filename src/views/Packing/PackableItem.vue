@@ -358,6 +358,12 @@
         },
         deep: true,
       },
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
     },
     created() {
       this.renderData()
@@ -377,37 +383,6 @@
         this.dataTable = [this.dataTable]
       },
       renderData(search) {
-        // GET PACKABLE WHEN 0
-
-        // this.$http
-        //   .get('/inventory/item', {
-        //     params: {
-        //       orderby: '-id',
-        //       perpage: 10,
-        //       embeds: 'item_uom_id',
-        //       page: '1',
-        //       conditions: 'packable:0' + '|item_name.icontains:' + search,
-        //     },
-        //   })
-        //   .then((response) => {
-        //     this.item_input = []
-        //     let array = response.data.data
-        //     if (length > 0) {
-        //       for (let i = 0; i < array.length; i++) {
-        //         this.item_input.push({
-        //           item_name: array[i].item_name,
-        //           uom: array[i].item_uom.item_uom_name,
-        //           uom_id: array[i].item_uom.id,
-        //           value: array[i].id,
-        //         })
-        //         if (this.item_input === null) {
-        //           this.item_input = []
-        //         }
-        //       }
-
-        //       // this.itemSelected(response.data.data)
-        //     }
-        //   })
         // GET PACKABLE WHEN 1
         this.$http
           .get('/inventory/item', {
@@ -454,7 +429,7 @@
               self.loading = false
               self.btnDisabled = false
               self.renderData()
-            }, 15 * 15 * 15)
+            }, 1000)
           })
       },
       save() {

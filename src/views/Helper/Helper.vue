@@ -2,7 +2,6 @@
   <div class="helper">
     <h1>HELPER LIST</h1>
     <!-- FOR ALL DEVICE -->
-
     <v-container>
       <v-row>
         <v-col cols="3" sm="6" md="6" lg="7">
@@ -290,7 +289,14 @@
     //     deep: true,
     //   },
     // },
-
+    watch: {
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
+    },
     methods: {
       openDialog(status, id) {
         this.dialog = true
@@ -354,7 +360,7 @@
               self.renderData()
               self.loadingBtn = false
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.$toast.error(error.response.data.errors.id)
@@ -378,7 +384,7 @@
               self.renderData()
               self.loadingBtn = false
               self.overlay = false
-            }, 15 * 15 * 15)
+            }, 1000)
           })
           .catch((error) => {
             this.dialog = false
