@@ -370,6 +370,7 @@
         uom       : '',
         search    : '',
         download  : '',
+        send      : '',
         isLoading : true,
         btnLoading: false,
         btnDisable: false,
@@ -486,11 +487,16 @@
           )
         }); 
             
-        let send = {"packings" : data}
+        this.sendFile = {"packings" : data}
         console.log(send)
-        this.sendFile = send
+        
+      }, // CLOSE handleSelectedFile
+
+
+      kirimfiledata(){
+        console.log(this.sendFile)
         this.$http
-          .put('/packing/' + this.$route.params.id, send)
+          .put('/packing/' + this.$route.params.id, this.sendFile)
           .then(response => {
             // Vue.$toast.open({
             //     position: 'top-right',
@@ -498,11 +504,8 @@
             //     type: 'success',
             // });
           })           
-      }, // CLOSE handleSelectedFile
-
-
-      kirimfiledata(){
        window.location.reload()
+        console.log("MASUKKKKK")
      
       },
 
