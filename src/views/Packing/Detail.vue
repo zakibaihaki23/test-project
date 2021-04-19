@@ -488,7 +488,6 @@
         }); 
             
         this.sendFile = {"packings" : data}
-        console.log(send)
         
       }, // CLOSE handleSelectedFile
 
@@ -504,9 +503,8 @@
             //     type: 'success',
             // });
           })           
-       window.location.reload()
+      //  window.location.reload()
         console.log("MASUKKKKK")
-     
       },
 
       renderData() {
