@@ -505,7 +505,7 @@
           .get('/packing', {
             params: {
               orderby: '-id,warehouse_id',
-              conditions: delivery_date + filterArea + warehouseId + isActive,
+              conditions: delivery_date + filterArea + warehouseId,
             },
           })
           .then((response) => {
@@ -547,15 +547,15 @@
         }
         this.renderData('')
       },
-      statusSelected(status) {
-        this.status = ''
-        this.filterActive = null
-        if (status) {
-          this.status = status
-          this.filterActive = status.value
-        }
-        this.renderData()
-      },
+      // statusSelected(status) {
+      //   this.status = ''
+      //   this.filterActive = null
+      //   if (status) {
+      //     this.status = status
+      //     this.filterActive = status.value
+      //   }
+      //   this.renderData()
+      // },
       cancel(id) {
         this.overlay = true
         this.$http
