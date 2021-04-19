@@ -35,8 +35,13 @@
                 </v-text-field>
               </div>
             </template>
-            <v-date-picker no-title v-model="delivery_date" @input="renderData('')">
-              <v-btn
+            <v-date-picker 
+              no-title 
+              v-model="delivery_date" 
+              @input="renderData('')"
+              @change="deliveryDateSelected">
+
+              <!-- <v-btn
                 text
                 color="primary"
                 style="margin-left: 130px"
@@ -51,7 +56,7 @@
                 @click="deliveryDateSelected"
               >
                 OK
-              </v-btn>
+              </v-btn> -->
             </v-date-picker>
           </v-menu>
           <!-- <v-dialog
@@ -373,11 +378,20 @@
           })
           .catch((error) => {
             this.loading = false
-            this.error = error.response.data.errors
-            this.$toast.error(error.response.data.errors.area_id)
-            this.$toast.error(error.response.data.errors.warehouse_id)
-            this.$toast.error(error.response.data.errors.delivery_date)
-            
+
+            if(error.response.data.errors.area_id)(
+              this.$toast.error(error.response.data.errors.area_id)
+            )
+            if(error.response.data.errors.warehouse_id)(
+              this.$toast.error(error.response.data.errors.warehouse_id)
+            )
+            if(error.response.data.errors.area_id)(
+              this.$toast.error(error.response.data.errors.area_id)
+            )
+            if(error.response.data.errors.delivery_date)(
+              this.$toast.error(error.response.data.errors.delivery_date)
+            )
+            this.loading = false
           })
           
       },
