@@ -47,14 +47,14 @@
     ></v-divider>
     <v-col md="12"> </v-col>
     <v-row style="margin-top: 1px">
-      <v-col cols="12" sm="6" md="3">
+      <v-col cols="12" sm="6" md="2">
         <v-menu
           ref="menu"
           v-model="delivery_date_model"
           :close-on-content-click="false"
           transition="scale-transition"
           offset-y
-          min-width="300px"
+          min-width="290px"
         >
           <template v-slot:activator="{ on }">
             <div v-on="on">
@@ -109,6 +109,15 @@
           :disabled="warehouseDisabled"
         >
         </SelectWarehouse>
+      </v-col>
+      <v-col cols="12" md="4" lg="3" xl="2" sm="10">
+        <!-- <SelectStatus
+          v-bind="attrs"
+          v-on="on"
+          v-model="status"
+          @selected="statusSelected"
+        >
+        </SelectStatus> -->
       </v-col>
     </v-row>
     <br />
@@ -270,9 +279,10 @@
   import moment from 'moment'
   import SelectWarehouse from '../../components/SelectWarehouse'
   import SelectArea from '../../components/SelectArea'
+  import SelectStatus from '../../components/SelectStatusOrder'
 
   export default {
-    components: { SelectWarehouse, SelectArea },
+    components: { SelectWarehouse, SelectArea, SelectStatus },
     data() {
       return {
         dates: '',
@@ -282,6 +292,7 @@
         warehouseList: '',
         warehouse: null,
         delivery_date_model: '',
+        filterActive: null,
         delivery_date: [
           new Date(Date.now() - 3600 * 1000 * 720).toISOString().substr(0, 10),
           new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
@@ -296,6 +307,7 @@
         loadingBtn: false,
         area: '',
         search: '',
+        status: null,
         table: [
           {
             text: 'Packing Order Code',
@@ -441,6 +453,30 @@
             }
           }
         }
+        //FILTER AKTIF CANCEL FINISHED
+        // let isActive = ''
+        // if (this.filterActive) {
+        //   if (this.delivery_date_mo) {
+        //     isActive = 'status:' + this.filterActive
+        //   }
+        //   if (this.delivery_date == '') {
+        //     isActive = '|status:' + this.filterActive
+        //   }
+        //   if (this.area) {
+        //     isActive = '|status:' + this.filterActive
+        //   }
+        //   if (this.area == '') {
+        //     isActive = 'status:' + this.filterActive
+        //   }
+        //   if (this.warehouse_id) {
+        //     isActive = '|status:' + this.filterActive
+        //   }
+        //   if (this.warehouse_id == '') {
+        //     isActive = 'status:' + this.filterActive
+        //   }
+        // } else {
+        //   isActive = ''
+        // }
 
         this.$http
           .get('/warehouse', {
@@ -469,7 +505,7 @@
           .get('/packing', {
             params: {
               orderby: '-id,warehouse_id',
-              conditions: delivery_date + filterArea + warehouseId,
+              conditions: delivery_date + filterArea + warehouseId + isActive,
             },
           })
           .then((response) => {
@@ -510,6 +546,15 @@
           this.warehouse_id = val.value
         }
         this.renderData('')
+      },
+      statusSelected(status) {
+        this.status = ''
+        this.filterActive = null
+        if (status) {
+          this.status = status
+          this.filterActive = status.value
+        }
+        this.renderData()
       },
       cancel(id) {
         this.overlay = true
