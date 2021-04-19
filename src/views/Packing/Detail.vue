@@ -503,7 +503,7 @@
           .then(response => {
             this.$toast.success('Data has been uploaded successfully')
           })
-        // window.location.reload()
+        window.location.reload()
       },
 
       renderData() {
