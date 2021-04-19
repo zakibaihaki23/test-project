@@ -24,7 +24,7 @@
                   outlined
                   single-line
                 
-                  @click:clear="delivery_date = ''"
+                  @click:clear="delivery_date = '', renderData('')"
                   :value="format_delivery_date"
                   class="rounded-form"
                   append-icon=""
@@ -35,7 +35,7 @@
                 </v-text-field>
               </div>
             </template>
-            <v-date-picker no-title v-model="delivery_date">
+            <v-date-picker no-title v-model="delivery_date" @input="renderData('')">
               <v-btn
                 text
                 color="primary"
