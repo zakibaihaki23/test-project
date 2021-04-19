@@ -136,40 +136,36 @@
           <v-col cols="12" sm="6" md="6" lg="6"> </v-col>
           <v-col cols="12" sm="6" md="6" lg="6">
             <div class="form-right">
-              <ValidationProvider rules="required">
-                <p>Password <span style="color: red;">*</span></p>
-                <v-text-field
-                  label="Password *"
-                  outlined
-                  single-line
-                  class="form"
-                  v-model="helper.password"
-                  :type="value ? 'password' : 'text'"
-                  :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="() => (value = !value)"
-                  :error-messages="error.password"
-                >
-                </v-text-field>
-              </ValidationProvider>
+              <p>Password</p>
+              <v-text-field
+                label="Password"
+                outlined
+                single-line
+                class="form"
+                v-model="helper.password"
+                :type="value ? 'password' : 'text'"
+                :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="() => (value = !value)"
+                :error-messages="error.password"
+              >
+              </v-text-field>
             </div>
           </v-col>
           <v-col cols="12" sm="6" md="6" lg="6">
             <div class="form-right">
-              <ValidationProvider rules="required">
-                <p>Confirm Password <span style="color: red">*</span></p>
-                <v-text-field
-                  label="Confirm Password *"
-                  outlined
-                  single-line
-                  class="form"
-                  v-model="helper.confirm_password"
-                  :type="val_confirm ? 'password' : 'text'"
-                  :append-icon="val_confirm ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="() => (val_confirm = !val_confirm)"
-                  :error-messages="error.confirm_password"
-                >
-                </v-text-field>
-              </ValidationProvider>
+              <p>Confirm Password</p>
+              <v-text-field
+                label="Confirm Password"
+                outlined
+                single-line
+                class="form"
+                v-model="helper.confirm_password"
+                :type="val_confirm ? 'password' : 'text'"
+                :append-icon="val_confirm ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="() => (val_confirm = !val_confirm)"
+                :error-messages="error.confirm_password"
+              >
+              </v-text-field>
             </div>
           </v-col>
         </v-row>
@@ -273,8 +269,8 @@
             this.helper.phone_number = response.data.data.phone_number
             this.helper.name = response.data.data.name
             this.helper.address = response.data.data.address
-            this.helper.password = response.data.data.user.password
-            this.helper.confirm_password = response.data.data.user.password
+            // this.helper.password = response.data.data.user.password
+            // this.helper.confirm_password = response.data.data.user.password
             this.update = true
             this.typeSelected(response.data.data.helper_type)
 

@@ -30,7 +30,7 @@
     <template v-slot:label style="padding: 10px"> Packer</template>
   </v-autocomplete>
     </v-row>
-    </v-container>
+</v-container>
 </template>
 
 <script>
@@ -60,10 +60,8 @@
       renderData() {
         this.$http
           .get('/helper',
-              {
-                  params: {
-                      conditions: 'user_id.is_active:1|warehouse_id.e:'+this.warehouse_id,   perpage: 10,
-                  },
+              { params: 
+                { conditions: 'user_id.is_active:1|warehouse_id.e:'+this.warehouse_id, perpage: 10, },
               })
 
           .then((response) => {
@@ -76,7 +74,9 @@
           .catch((error) => {
             console.log(error)
           })
-      },
+
+      }, // CLOSE RENDER DATA
+
       selected(event) {
         this.$emit('selected', event)
       },
