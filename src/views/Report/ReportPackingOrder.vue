@@ -118,6 +118,7 @@
         warehouseDisabled: true,
         btnLoading: false,
         dateDisabled: true,
+        downloadDisabled: true,
         areaId: null,
         area: '',
         search: '',

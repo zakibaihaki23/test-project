@@ -23,7 +23,7 @@
                   readonly
                   outlined
                   single-line
-                  :error-messages="error.delivery_date"
+                
                   @click:clear="delivery_date = '', renderData('')"
                   :value="format_delivery_date"
                   class="rounded-form"
@@ -119,7 +119,6 @@
             :areaId="area"
             :warehouse="warehouse"
             :disabled="warehouseDisabled"
-            
           >
           </SelectFormWarehouseArea>
         </div>
@@ -234,7 +233,6 @@
         warehouseDisabled   : true,
         items               : [],
         dataTable           : [],
-        //error               : {},
 
         date: new Date(Date.now() + 3600 * 1000 * 24)
           .toISOString()
@@ -376,13 +374,10 @@
           .catch((error) => {
             this.loading = false
             this.error = error.response.data.errors
-            // this.$toast.error(error.response.data.errors.area_id)
-            // this.$toast.error(error.response.data.errors.warehouse_id)
-            //   if(error.response.data.errors.delivery_date)(
-            //     this.$toast.error(error.response.data.errors.delivery_date)
-            //     )
-            //     this.loading = false
-            //     console.log(this.error)
+            this.$toast.error(error.response.data.errors.area_id)
+            this.$toast.error(error.response.data.errors.warehouse_id)
+            this.$toast.error(error.response.data.errors.delivery_date)
+            
           })
           
       },
@@ -416,8 +411,12 @@
         if(this.delivery_date) {
           this.areaDisabled = false
         }
-        if (delivery_date){
-        }
+        
+        // this.area = null
+        // if (area) {
+        //   this.areaDisabled = true
+        // }
+        
       }
     }, // CLOSE METHODS
   }
