@@ -111,14 +111,15 @@
       submit() {
         this.loading = true
         this.signIn(this.form)
-          .then(() => {
+          .then((response) => {
+            this.loading = false
             window.location.reload()
             this.$router.push('/helper')
-          }, this.$toast.success('Login success'))
+            this.$toast.success('Login Success')
+          })
 
           .catch((error) => {
             this.error = error.response.data.errors
-
             this.$toast.error(error.response.data.errors.email)
             this.loading = false
           })
