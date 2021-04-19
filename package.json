@@ -20,7 +20,6 @@
     "vue-json-excel": "^0.3.0",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.5.1",
-    "vue-tel-input-vuetify": "^1.2.16",
     "vue-toasted": "^1.1.28",
     "vue-toastification": "^1.7.11",
     "vue-xlsx-table": "^1.2.8",

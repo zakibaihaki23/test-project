@@ -31,12 +31,7 @@
       >
         <v-container class="login-container" fluid>
           <ValidationObserver ref="obs" v-slot="{ invalid, validated }">
-            <v-form
-              @submit.prevent="submit"
-              ref="form"
-              v-model="valid"
-              lazy-validation
-            >
+            <v-form @submit.prevent="submit" ref="form" v-model="valid">
               <ValidationProvider rules="required">
                 <v-text-field
                   prepend-inner-icon="mdi-account"
@@ -73,8 +68,6 @@
               <v-btn
                 style="height: 50px; width: 300px; margin-left: 35px"
                 elevation="1"
-                depressed
-                type="submit"
                 @click="submit"
                 :loading="loading"
                 :disabled="invalid || !validated"
@@ -107,12 +100,6 @@
         value: String,
         valid: true,
         loading: false,
-
-        // emailRules: [(v) => !!v || 'E-mail is required'],
-        // passwordRules: [
-        //   (v) => !!v || 'Password is required',
-        //   (v) => (v && v.length >= 5) || 'Password must 5 characters',
-        // ],
       }
     },
 
@@ -127,10 +114,12 @@
           .then(() => {
             window.location.reload()
             this.$router.push('/helper')
-          })
+          }, this.$toast.success('Login success'))
+
           .catch((error) => {
             this.error = error.response.data.errors
-            this.$toast.error('Something wrong with your input')
+
+            this.$toast.error(error.response.data.errors.email)
             this.loading = false
           })
       },
