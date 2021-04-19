@@ -111,13 +111,13 @@
         </SelectWarehouse>
       </v-col>
       <v-col cols="12" md="4" lg="3" xl="2" sm="10">
-        <!-- <SelectStatus
+        <SelectStatus
           v-bind="attrs"
           v-on="on"
           v-model="status"
           @selected="statusSelected"
         >
-        </SelectStatus> -->
+        </SelectStatus>
       </v-col>
     </v-row>
     <br />
@@ -454,28 +454,15 @@
           }
         }
         //FILTER AKTIF CANCEL FINISHED
-        // let isActive = ''
-        // if (this.filterActive) {
-        //   if (this.delivery_date_mo) {
-        //     isActive = 'status:' + this.filterActive
-        //   }
-        //   if (this.delivery_date == '') {
-        //     isActive = '|status:' + this.filterActive
-        //   }
-        //   if (this.area) {
-        //     isActive = '|status:' + this.filterActive
-        //   }
-        //   if (this.area == '') {
-        //     isActive = 'status:' + this.filterActive
-        //   }
-        //   if (this.warehouse_id) {
-        //     isActive = '|status:' + this.filterActive
-        //   }
-        //   if (this.warehouse_id == '') {
-        //     isActive = 'status:' + this.filterActive
-        //   }
-        // } else {
-        //   isActive = ''
+        let isActive = ''
+        if (this.filterActive) {
+          isActive = '|status:' + this.filterActive
+        }
+        if (this.filterActive && this.delivery_date == '') {
+          isActive = 'status:' + this.filterActive
+        }
+        // if (this.filterActive && this.areaId == '') {
+        //   isActive = 'status:' + this.filterActive
         // }
 
         this.$http
@@ -505,7 +492,7 @@
           .get('/packing', {
             params: {
               orderby: '-id,warehouse_id',
-              conditions: delivery_date + filterArea + warehouseId,
+              conditions: delivery_date + filterArea + warehouseId + isActive,
             },
           })
           .then((response) => {
@@ -547,15 +534,15 @@
         }
         this.renderData('')
       },
-      // statusSelected(status) {
-      //   this.status = ''
-      //   this.filterActive = null
-      //   if (status) {
-      //     this.status = status
-      //     this.filterActive = status.value
-      //   }
-      //   this.renderData()
-      // },
+      statusSelected(status) {
+        this.status = ''
+        this.filterActive = null
+        if (status) {
+          this.status = status
+          this.filterActive = status.value
+        }
+        this.renderData()
+      },
       cancel(id) {
         this.overlay = true
         this.$http
