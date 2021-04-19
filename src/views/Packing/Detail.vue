@@ -315,8 +315,7 @@
               <v-col xl="12" cols="12" md="12" sm="12" lg="12">
                 <v-btn
                   style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
-                  :loading="btnLoading"
-                  @click="savePacker"
+                  @click="openDialog2"
                 >
                   Save
                 </v-btn>
@@ -326,6 +325,17 @@
         </v-card>
       </v-dialog>
     </div>
+    <v-dialog v-model="dialog3" persistent max-width="1px">
+      <div class="text-center">
+        <v-overlay :value="overlay">
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            :size="20"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
+    </v-dialog>
     <br />
     <br />
     <br />
@@ -374,6 +384,7 @@
         btnDisable: false,
         dialog: false,
         dialog2: false,
+        dialog3: false,
         item: null,
         warehouse: [],
         packer: [],
@@ -426,6 +437,7 @@
 
     methods: {
       savePacker() {
+        this.dialog3 = true
         this.btnDisable = true
         this.btnLoading = true
         this.$http
@@ -439,6 +451,7 @@
               self.btnLoading = false
               self.$toast.success('Assign Packer Success')
               self.btnDisable = false
+              self.dialog3 = false
               self.renderData()
             }, 15 * 15 * 15)
           })
@@ -465,6 +478,11 @@
         this.idItem = id
         this.itemName = item_name
         this.packerName = packer
+      },
+      openDialog2() {
+        this.dialog3 = true
+        this.overlay = true
+        this.savePacker()
       },
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
@@ -498,6 +516,7 @@
       },
 
       renderData() {
+        this.isLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id)
 
