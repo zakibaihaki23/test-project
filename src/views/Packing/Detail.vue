@@ -18,7 +18,7 @@
           <div class="d-flex d-none d-sm-block">
             <v-btn 
               @click="DownloadFile()"
-              :loading="btnLoading">
+              :loading="dwnLoading">
               Download
             </v-btn>
           </div>
@@ -130,7 +130,7 @@
               </v-card-text>
               <v-btn 
                 @click="kirimfiledata()"
-                :disabled = false
+                :disabled = disabledBtnSend
                 style="
                       width: 340px;
                       margin-left: 50px;
@@ -371,7 +371,9 @@
         search    : '',
         download  : '',
         send      : '',
+        disabledBtnSend  : true,
         isLoading : true,
+        dwnLoading: false,
         btnLoading: false,
         btnDisable: false,
         dialog    : false,
@@ -473,7 +475,6 @@
       // BAGIAN UPLOAD FILE XLXS TO JSON
       handleSelectedFile (convertedData) {
         console.log(convertedData)
-        this.disable = false
         let that = this
         let data = [];
         convertedData.body.forEach((item) => {
@@ -488,6 +489,9 @@
         }); 
             
         this.sendFile = {"packings" : data}
+        if (this.sendFile){
+          this.disabledBtnSend = false
+        }
         
       }, // CLOSE handleSelectedFile
 
@@ -497,14 +501,9 @@
         this.$http
           .put('/packing/' + this.$route.params.id, this.sendFile)
           .then(response => {
-            // Vue.$toast.open({
-            //     position: 'top-right',
-            //     message: 'Data has been saved successfully',
-            //     type: 'success',
-            // });
-          })           
-      //  window.location.reload()
-        console.log("MASUKKKKK")
+            this.$toast.success('Data has been uploaded successfully')
+          })
+        // window.location.reload()
       },
 
       renderData() {
