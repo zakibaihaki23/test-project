@@ -138,6 +138,8 @@
           style="border-radius: 12px"
           v-model="note"
           single-line
+          :counter="250"
+          maxlength="250"
         >
         </v-textarea>
       </v-col>

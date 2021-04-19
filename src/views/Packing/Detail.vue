@@ -16,9 +16,7 @@
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn 
-              @click="DownloadFile()"
-              :loading="dwnLoading">
+            <v-btn @click="DownloadFile()" :loading="dwnLoading">
               Download
             </v-btn>
           </div>
@@ -101,20 +99,18 @@
                             @change="onFileChanged"
                           /> -->
 
-                            <!-- TOMBOL UPLOAD -->
-                            <vue-xlsx-table
-                              class="xlsx-button"
-                              @on-select-file="handleSelectedFile"
-                              :readAsBS="true"
-                              style="
+                          <!-- TOMBOL UPLOAD -->
+                          <vue-xlsx-table
+                            class="xlsx-button"
+                            @on-select-file="handleSelectedFile"
+                            :readAsBS="true"
+                            style="
                                     margin-left: 30px;
                                     marign-top: 50px;
                                     "
-                              
-                            >
-                              Choose File
-                            </vue-xlsx-table>
-                      
+                          >
+                            Choose File
+                          </vue-xlsx-table>
                         </v-col>
                         <!-- <v-col style="padding-top: 30px">
                           <span style="margin-left:121px;">Or</span></v-col
@@ -128,15 +124,15 @@
                   <br />
                 </v-container>
               </v-card-text>
-              <v-btn 
+              <v-btn
                 @click="kirimfiledata()"
-                :disabled = disabledBtnSend
+                :disabled="disabledBtnSend"
                 style="
                       width: 340px;
                       margin-left: 50px;
-                      margin-top: -20px;" 
+                      margin-top: -20px;"
                 color="primary"
-                >
+              >
                 Send File
               </v-btn>
             </v-card>
@@ -363,28 +359,28 @@
 
     data() {
       return {
-        file      : 0,
+        file: 0,
         packing_code: '',
-        sendFile  : '',
-        index     : '',
-        uom       : '',
-        search    : '',
-        download  : '',
-        send      : '',
-        disabledBtnSend  : true,
-        isLoading : true,
+        sendFile: '',
+        index: '',
+        uom: '',
+        search: '',
+        download: '',
+        send: '',
+        disabledBtnSend: true,
+        isLoading: true,
         dwnLoading: false,
         btnLoading: false,
         btnDisable: false,
-        dialog    : false,
-        dialog2   : false,
-        item      : null,    
-        warehouse : [],
-        packer    : [],
-        helper    : [],
-        packings  : [],
-        data      : [],
-        headers   : [
+        dialog: false,
+        dialog2: false,
+        item: null,
+        warehouse: [],
+        packer: [],
+        helper: [],
+        packings: [],
+        data: [],
+        headers: [
           {
             text: 'Item',
             value: 'item.item_name',
@@ -470,40 +466,35 @@
         this.itemName = item_name
         this.packerName = packer
       },
-  
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
-      handleSelectedFile (convertedData) {
+      handleSelectedFile(convertedData) {
         console.log(convertedData)
         let that = this
-        let data = [];
+        let data = []
         convertedData.body.forEach((item) => {
-          data.push(
-            {
-              "packing_item_id":item.Packing_Item_Id,
-              "total_pack": parseFloat (item.Total_Pack),
-              "total_kg" : parseFloat (item.Total_Kg),
-              "helper_id":item.Packer_Id,
-            }
-          )
-        }); 
-            
-        this.sendFile = {"packings" : data}
-        if (this.sendFile){
+          data.push({
+            packing_item_id: item.Packing_Item_Id,
+            total_pack: parseFloat(item.Total_Pack),
+            total_kg: parseFloat(item.Total_Kg),
+            helper_id: item.Packer_Id,
+          })
+        })
+
+        this.sendFile = { packings: data }
+        if (this.sendFile) {
           this.disabledBtnSend = false
         }
-        
       }, // CLOSE handleSelectedFile
 
-
-      kirimfiledata(){
+      kirimfiledata() {
         console.log(this.sendFile)
         this.$http
           .put('/packing/' + this.$route.params.id, this.sendFile)
-          .then(response => {
+          .then((response) => {
             this.$toast.success('Data has been uploaded successfully')
           })
-        window.location.reload()
+        // window.location.reload()
       },
 
       renderData() {
@@ -553,7 +544,6 @@
         //   .catch((error) => {
         //     console.log(error)
         //   })
-
       }, // CLOSE RENDER DATA
 
       // addPacker() {
@@ -570,8 +560,8 @@
           .get('/packing/' + this.$route.params.id + '/template?export=1')
 
           .then((response) => {
-             window.location.href = response.data.file
-             this.btnLoading = false
+            window.location.href = response.data.file
+            this.btnLoading = false
           })
 
           .catch((error) => {
@@ -579,7 +569,6 @@
           })
       },
 
-    
       save() {
         this.$http
           .get('/v1/packing/' + this.$route.params.id)
@@ -593,7 +582,6 @@
             console.log(this.error)
           })
       },
-
     }, // CLOSE METHODS
   }
 </script>
@@ -602,7 +590,7 @@
   .xlsx-button {
     border-radius: 30%;
     width: 200px;
-  }  
+  }
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
