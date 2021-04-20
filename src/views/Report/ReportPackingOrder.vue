@@ -32,13 +32,13 @@
                     v-on="on"
                     style="border-radius: 10px; font-size: 13px"
                     prepend-inner-icon="mdi-calendar"
-                    readonly
                     outlined
                     single-line
                     clearable
                     dense
                     @click:clear="delivery_date = ''"
-                    :value="format_delivery_date"
+                    v-model="dateFormatted"
+                    @blur="date = parseDate(dateFormatted)"
                   >
                     <template v-slot:label>
                       Delivery Date
@@ -51,7 +51,7 @@
           </template>
           <v-date-picker
             no-title
-            v-model="delivery_date"
+            v-model="date"
             @input="delivery_date_model = false"
           >
           </v-date-picker>
@@ -122,7 +122,8 @@
         warehouseList: '',
         warehouse: null,
         delivery_date_model: '',
-        date: '',
+        date: new Date().toISOString().substr(0, 10),
+        dateFormatted: '',
         delivery_date_model: '',
         delivery_date: '',
         warehouse_id: null,
@@ -155,6 +156,9 @@
             this.overlay = false
           }, 1000)
       },
+      date(val) {
+        this.dateFormatted = this.formatDate(this.date)
+      },
     },
     computed: {
       format_delivery_date() {
@@ -163,6 +167,18 @@
       },
     },
     methods: {
+      formatDate(date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+      },
+      parseDate(date) {
+        if (!date) return null
+
+        const [day, month, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      },
       openDialog() {
         this.dialog = true
         this.overlay = true
@@ -216,7 +232,7 @@
         this.renderData('')
       },
       downloadFile() {
-        let updatedate = this.$moment(this.delivery_date)
+        let updatedate = this.$moment(this.date)
           .add(7)
           .format('YYYY-MM-DD')
 
