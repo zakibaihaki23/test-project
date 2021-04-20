@@ -112,7 +112,14 @@
 
     <!-- BAGIAN TABEL -->
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table-tbody"
+        :types="{ 'table-row': 'table-cell@5' }"
+      ></v-skeleton-loader>
       <v-data-table
+      v-show="!firstLoad"
         loading-text="Please wait....."
         :headers="table"
         :items="dataTable"
@@ -204,6 +211,7 @@
         areaDisabled        : true,
         loading             : false,
         isLoading           : true,
+        firstLoad           : true,
         warehouse           : null,
         warehouse_id        : null,
         warehouseList       : null,
@@ -303,6 +311,8 @@
       },
 
       renderData() {
+        this.firstLoad = true
+        this.isLoading = true
         let updatedate = this.$moment(this.delivery_date)
           .add(7)
           .format('YYYY-MM-DD')
@@ -317,6 +327,7 @@
           })
 
           .then((response) => {
+            this.firstLoad = false
             this.isLoading = false
             this.dataTable = response.data.data
 

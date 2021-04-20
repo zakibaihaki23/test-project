@@ -172,7 +172,14 @@
     <br />
     <br />
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table-tbody"
+        :types="{ 'table-row': 'table-cell@6' }"
+      ></v-skeleton-loader>
       <v-data-table
+      v-show="!firstLoad"
         :headers="headers"
         :items="data"
         :search="search"
@@ -401,6 +408,7 @@
         download: '',
         send: '',
         disabledBtnSend: true,
+        firstLoad: true,
         isLoading: true,
         dwnLoading: false,
         uploadLoading : false,
@@ -472,6 +480,7 @@
 
     methods: {
       savePacker() {
+        this.firstLoad = true
         this.dialog3 = true
         this.btnDisable = true
         this.btnLoading = true
@@ -482,6 +491,7 @@
           .then((response) => {
             let self = this
             setTimeout(function() {
+              self.firstLoad = false
               self.dialog3 = false
               self.dialogPacker = false
               self.btnLoading = false
@@ -491,6 +501,7 @@
             }, 15 * 15 * 15)
           })
           .catch((error) => {
+            this.firstLoad = false
             this.dialogPacker = false
             this.btnLoading = false
             this.dialog3 = false
@@ -586,11 +597,13 @@
       },
 
       renderData() {
+        this.firstLoad = true
         this.isLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
+            this.firstLoad = false
             this.isLoading = false
             this.status = response.data.data
             this.warehouse = response.data.data.warehouse.id
@@ -617,6 +630,10 @@
                 console.log(error)
               })
           })
+           setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       }, // CLOSE RENDER DATA
 
       save() {
