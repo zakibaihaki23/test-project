@@ -65,7 +65,6 @@
                     v-on="on"
                     style="border-radius: 10px; font-size: 13px"
                     prepend-inner-icon="mdi-calendar"
-                    readonly
                     outlined
                     single-line
                     clearable
