@@ -121,9 +121,15 @@
     </v-row>
     <br />
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table"
+      ></v-skeleton-loader>
       <v-data-table
         loading-text="Please Wait...."
         :headers="table"
+        v-show="!firstLoad"
         :items="dataTable"
         :page.sync="page"
         :items-per-page="20"
@@ -289,6 +295,7 @@
         dialog: false,
         page: 1,
         warehouseList: '',
+        firstLoad: true,
         warehouse: null,
         delivery_date_model: '',
         filterActive: null,
@@ -403,6 +410,8 @@
       },
 
       renderData(search) {
+        this.isLoading = true
+        this.firstLoad = true
         let areaId = ''
         if (this.area) {
           areaId = 'city_id.e:' + this.area
@@ -486,6 +495,10 @@
           .catch((error) => {
             console.log(error)
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
       areaSelected(area) {
         this.area = null
@@ -521,6 +534,8 @@
         this.renderData()
       },
       cancel(id) {
+        this.firstLoad = true
+        this.isLoading = true
         this.overlay = true
         this.$http
           .put('/packing/' + id + '/cancel', {})
@@ -537,8 +552,14 @@
             this.dialog = false
             this.overlay = false
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
       finish(id) {
+        this.isLoading = true
+        this.firstLoad = true
         this.overlay = true
         this.$http
           .put('/packing/' + id + '/finish', {})
@@ -555,6 +576,10 @@
             this.dialog = false
             this.overlay = false
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
     },
   }
