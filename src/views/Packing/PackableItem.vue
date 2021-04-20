@@ -221,8 +221,14 @@
     <br />
 
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table"
+      ></v-skeleton-loader>
       <v-data-table
         loading-text="Please Wait...."
+        v-show="!firstLoad"
         :headers="headers"
         :items="dataTable"
         :page.sync="page"
@@ -325,6 +331,7 @@
         packable_item: null,
         uom: '',
         clear: '',
+        firstLoad: true,
         isLoading: true,
         overlay: false,
         headers: [
@@ -362,7 +369,7 @@
         val &&
           setTimeout(() => {
             this.overlay = false
-          }, 1000)
+          }, 2000)
       },
     },
     created() {
@@ -383,6 +390,7 @@
         this.dataTable = [this.dataTable]
       },
       renderData(search) {
+        this.isLoading = true
         // GET PACKABLE WHEN 1
         this.$http
           .get('/inventory/item', {
@@ -412,8 +420,13 @@
             }
             this.isLoading = false
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
       unpackable(id) {
+        this.firstLoad = true
         this.overlay = true
         this.clear = false
         this.$http
@@ -431,8 +444,13 @@
               self.renderData()
             }, 1000)
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
       save() {
+        this.firstLoad = true
         this.overlay = true
         this.clear = false
         this.$http
@@ -448,6 +466,10 @@
           .catch((error) => {
             this.$toast.error('Please Fill Item')
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
       itemSelected(d) {
         this.uom_id = ''

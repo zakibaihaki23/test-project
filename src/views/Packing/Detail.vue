@@ -27,7 +27,7 @@
           <div class="d-flex d-none d-sm-block">
             <v-btn
               :loading="dwnLoading"
-              @click="DownloadFile()" 
+              @click="openDialogDwn()"
               >
               Download
             </v-btn>
@@ -132,7 +132,8 @@
                 </v-container>
               </v-card-text>
               <v-btn
-                @click="kirimfiledata()"
+                :loading="uploadLoading"
+                @click="openDialogUpload()"
                 :disabled="disabledBtnSend"
                 style="
                       width: 340px;
@@ -364,17 +365,17 @@
     </div>
 
     <!-- BLOCK UI -->
-    <v-dialog v-model="dialog" persistent max-width="1px">
-        <div class="text-center">
-          <v-overlay :value="overlay">
-            <v-progress-circular
-              color="primary"
-              indeterminate
-              :size="20"
-            ></v-progress-circular>
-          </v-overlay>
-        </div>
-      </v-dialog>
+    <v-dialog v-model="dialogblock" persistent max-width="1px">
+      <div class="text-center">
+        <v-overlay :value="overlay">
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            :size="20"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
+    </v-dialog>
   </div>
 </template>
 
@@ -402,6 +403,7 @@
         disabledBtnSend: true,
         isLoading: true,
         dwnLoading: false,
+        uploadLoading : false,
         btnLoading: false,
         btnDisable: false,
         dialog: false,
@@ -470,7 +472,7 @@
 
     methods: {
       savePacker() {
-        this.dialog3 = true
+        this.dialog2 = true
         this.btnDisable = true
         this.btnLoading = true
         this.$http
@@ -484,7 +486,6 @@
               self.btnLoading = false
               self.$toast.success('Assign Packer Success')
               self.btnDisable = false
-              self.dialog3 = false
               self.renderData()
             }, 15 * 15 * 15)
           })
@@ -506,6 +507,18 @@
         }
       },
 
+      openDialogDwn() {
+        this.dialogblock = true
+        this.overlay = true
+        this.DownloadFile()
+      },
+
+       openDialogUpload() {
+        this.dialogblock = true
+        this.overlay = true
+        this.kirimfiledata()
+      },
+
       openDialog(id, item_name, packer) {
         this.dialog2 = true
         this.idItem = id
@@ -518,6 +531,24 @@
         this.savePacker()
       },
 
+      // DOWNLOAD FILE FROM
+      DownloadFile() {
+        this.dwnLoading = true
+        this.$http
+          .get('/packing/' + this.$route.params.id + '/template?export=1')
+
+          .then((response) => {
+            window.location.href = response.data.file
+            this.dwnLoading = false
+            this.dialogblock = false
+          })
+
+          .catch((error) => {
+            this.dwnLoading = false
+            this.dialogblock = false
+          })
+      },
+
       // BAGIAN UPLOAD FILE XLXS TO JSON
       handleSelectedFile(convertedData) {
         console.log(convertedData)
@@ -525,13 +556,12 @@
         let data = []
         convertedData.body.forEach((item) => {
           data.push({
-            packing_item_id: item.Packing_Item_Id,
-            total_pack: parseFloat(item.Total_Pack),
-            total_kg: parseFloat(item.Total_Kg),
-            helper_id: item.Packer_Id,
+            'packing_item_id': item.Packing_Item_Id,
+            'total_pack': parseFloat(item.Total_Pack),
+            'total_kg': parseFloat(item.Total_Kg),
+            'helper_id': item.Packer_Id,
           })
         })
-
         this.sendFile = { packings: data }
         if (this.sendFile) {
           this.disabledBtnSend = false
@@ -540,9 +570,13 @@
 
       kirimfiledata() {
         console.log(this.sendFile)
+         this.uploadLoading = true
+        this.dialogblock = true
         this.$http
           .put('/packing/' + this.$route.params.id, this.sendFile)
           .then((response) => {
+             this.uploadLoading = false
+            this.dialogblock = false
             this.$toast.success('Data has been uploaded successfully')
           })
         // window.location.reload()
@@ -581,23 +615,6 @@
               })
           })
       }, // CLOSE RENDER DATA
-
-     
-      // DOWNLOAD FILE FROM
-      DownloadFile() {
-        this.dwnLoading = true
-        this.$http
-          .get('/packing/' + this.$route.params.id + '/template?export=1')
-
-          .then((response) => {
-            window.location.href = response.data.file
-            this.dwnLoading = false
-          })
-
-          .catch((error) => {
-            this.dwnLoading = false
-          })
-      },
 
       save() {
         this.$http
