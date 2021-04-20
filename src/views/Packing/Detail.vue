@@ -238,7 +238,7 @@
           </tr>
         </template>
       </v-data-table>
-      <v-dialog v-model="dialog2" persistent max-width="491px">
+      <v-dialog v-model="dialogPacker" persistent max-width="491px">
         <v-card style="border-radius: 20px;width: 491px; height: 500px;">
           <v-card-title>
             <br />
@@ -251,7 +251,7 @@
               style="margin-left:10px; margin-top: 5px; background: #6C757D; color: white"
               fab
               small
-              @click="dialog2 = false"
+              @click="dialogPacker = false"
               :disabled="btnDisable"
             >
               <v-icon>
@@ -322,7 +322,7 @@
               <v-col xl="12" cols="12" md="12" sm="12" lg="12">
                 <v-btn
                   style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
-                  @click="openDialog2"
+                  @click="opendialogPacker"
                 >
                   Save
                 </v-btn>
@@ -407,7 +407,7 @@
         btnLoading: false,
         btnDisable: false,
         dialog: false,
-        dialog2: false,
+        dialogPacker: false,
         dialog3: false,
         item: null,
         warehouse: [],
@@ -472,7 +472,7 @@
 
     methods: {
       savePacker() {
-        this.dialog2 = true
+        this.dialog3 = true
         this.btnDisable = true
         this.btnLoading = true
         this.$http
@@ -482,7 +482,8 @@
           .then((response) => {
             let self = this
             setTimeout(function() {
-              self.dialog2 = false
+              self.dialog3 = false
+              self.dialogPacker = false
               self.btnLoading = false
               self.$toast.success('Assign Packer Success')
               self.btnDisable = false
@@ -490,9 +491,11 @@
             }, 15 * 15 * 15)
           })
           .catch((error) => {
+            this.dialogPacker = false
             this.btnLoading = false
-            this.dialog2 = false
+            this.dialog3 = false
             this.btnDisable = false
+            // this.$toast.error('Packer has assigned')
           })
       }, //CLOSE savePacker
 
@@ -520,12 +523,12 @@
       },
 
       openDialog(id, item_name, packer) {
-        this.dialog2 = true
+        this.dialogPacker = true
         this.idItem = id
         this.itemName = item_name
         this.packerName = packer
       },
-      openDialog2() {
+      opendialogPacker() {
         this.dialog3 = true
         this.overlay = true
         this.savePacker()
