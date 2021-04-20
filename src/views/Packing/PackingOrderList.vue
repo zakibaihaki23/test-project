@@ -464,6 +464,7 @@
         // if (this.filterActive && this.areaId == '') {
         //   isActive = 'status:' + this.filterActive
         // }
+        //
 
         this.$http
           .get('/warehouse', {
