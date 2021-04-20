@@ -1,16 +1,23 @@
 <template>
   <div class="helper">
-    <h1>PACKING ORDER DETAIL</h1>
-
+    
     <v-row>
-      <v-col md="12" style="margin-top: 1px" v-model="packing_code">
+      <v-cols md="12" style="margin-left: 12px">
+        <h1>PACKING ORDER DETAIL</h1>
+      </v-cols>
+    </v-row>
+   
+    <v-row>
+      <v-col md="12" style="margin-top: 1px">
         <h2>Packing Order Code : {{ this.packing_code }}</h2>
-        <!-- <v-list-item-title 
-          >Packing Order Code :
-          <span class="ml-4">{{ this.packing_code }}</span></v-list-item-title
-        > -->
+        <h3>Delivery Date   : {{ this.delivery_date | moment("dddd, MMMM Do YYYY") }} </h3>
+        <td>
+          <h3> Status : {{this.status }}</h3>
+        </td>
       </v-col>
     </v-row>
+    
+
     <v-container>
       <v-row no-gutters style="margin-top: 15px; ">
         <!-- FUNGSI DOWNLOAD EXEL -->
@@ -112,12 +119,7 @@
                             Choose File
                           </vue-xlsx-table>
                         </v-col>
-                        <!-- <v-col style="padding-top: 30px">
-                          <span style="margin-left:121px;">Or</span></v-col
-                        >
-                        <v-col style="padding-top: 5px">
-                          </v-col
-                        > -->
+                       
                       </div>
                     </div>
                   </v-row>
@@ -186,7 +188,6 @@
             <td>{{ props.item.total_order }}</td>
             <td>{{ props.item.total_pack }}</td>
             <td>{{ props.item.total_kg }}</td>
-            <!-- <pre>{{ helper }}</pre> -->
             <td>
               <div v-if="props.item.helper">
                 <div
@@ -370,7 +371,9 @@
     data() {
       return {
         file: 0,
+        status: '',
         packing_code: '',
+        delivery_date: '',
         sendFile: '',
         index: '',
         uom: '',
@@ -522,10 +525,12 @@
 
           .then((response) => {
             this.isLoading = false
+            this.status = response.data.data
             this.warehouse = response.data.data.warehouse.id
             this.packing_code = response.data.data.document_code
             this.data = response.data.data.packing_items
             this.status = response.data.data.status
+            this.delivery_date = response.data.data.delivery_date
             this.$http
               .get('/helper', {
                 params: {
