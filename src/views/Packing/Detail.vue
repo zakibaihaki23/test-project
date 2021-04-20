@@ -25,7 +25,10 @@
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn @click="DownloadFile()" :loading="dwnLoading">
+            <v-btn
+              :loading="dwnLoading"
+              @click="DownloadFile()" 
+              >
               Download
             </v-btn>
           </div>
@@ -359,6 +362,19 @@
         </v-col>
       </v-row>
     </div>
+
+    <!-- BLOCK UI -->
+    <v-dialog v-model="dialog" persistent max-width="1px">
+        <div class="text-center">
+          <v-overlay :value="overlay">
+            <v-progress-circular
+              color="primary"
+              indeterminate
+              :size="20"
+            ></v-progress-circular>
+          </v-overlay>
+        </div>
+      </v-dialog>
   </div>
 </template>
 
@@ -439,6 +455,17 @@
 
     created() {
       this.renderData()
+    },
+
+    watch: {
+
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
+
     },
 
     methods: {
@@ -553,46 +580,22 @@
                 console.log(error)
               })
           })
-
-        // this.$http
-        //   .get('/helper', {
-        //     params: {
-        //       conditions: 'user_id.is_active:1',
-        //     },
-        //   })
-
-        //   .then((response) => {
-        //     this.packer = response.data.data
-
-        //     if (this.packer === null) {
-        //       this.packer = []
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     console.log(error)
-        //   })
       }, // CLOSE RENDER DATA
 
-      // addPacker() {
-      //   // this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
-      //   //   helper: this.packer,
-      //   // })
-      //   // console.log(this.packer[index].id)
-      // },
-
+     
       // DOWNLOAD FILE FROM
       DownloadFile() {
-        this.btnLoading = true
+        this.dwnLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id + '/template?export=1')
 
           .then((response) => {
             window.location.href = response.data.file
-            this.btnLoading = false
+            this.dwnLoading = false
           })
 
           .catch((error) => {
-            this.btnLoading = false
+            this.dwnLoading = false
           })
       },
 

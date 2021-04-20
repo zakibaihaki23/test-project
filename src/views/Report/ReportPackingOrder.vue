@@ -49,11 +49,11 @@
               </v-tooltip>
             </div>
           </template>
-          <v-date-picker no-title v-model="delivery_date">
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="delivery_date_model = false">
-              OK
-            </v-btn>
+          <v-date-picker
+            no-title
+            v-model="delivery_date"
+            @input="delivery_date_model = false"
+          >
           </v-date-picker>
         </v-menu>
       </v-col>
@@ -77,11 +77,21 @@
       <v-col cols="2" sm="6" md="6" lg="7" xl="2"> </v-col>
       <v-col cols="12" sm="1" md="6" lg="7" xl="2">
         <div>
+          <v-dialog v-model="dialog" persistent max-width="1px">
+            <div class="text-center">
+              <v-overlay :value="overlay">
+                <v-progress-circular
+                  color="primary"
+                  indeterminate
+                  :size="20"
+                ></v-progress-circular>
+              </v-overlay>
+            </div>
+          </v-dialog>
           <v-btn
             style="bottom: 5px; background: #4662d4; color: white;  border-radius: 30px; width: 250px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;"
             :disabled="downloadDisabled"
-            @click="downloadFile()"
-            :loading="btnLoading"
+            @click="openDialog"
             >Download</v-btn
           >
         </div>
@@ -107,6 +117,7 @@
     components: { SelectWarehouse, SelectArea },
     data() {
       return {
+        dialog: false,
         page: 1,
         warehouseList: '',
         warehouse: null,
@@ -138,6 +149,12 @@
         },
         deep: true,
       },
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
     },
     computed: {
       format_delivery_date() {
@@ -146,6 +163,11 @@
       },
     },
     methods: {
+      openDialog() {
+        this.dialog = true
+        this.overlay = true
+        this.downloadFile()
+      },
       formatDate(val) {
         return this.$moment(val).format('DD/MM/YYYY')
       },
@@ -194,8 +216,6 @@
         this.renderData('')
       },
       downloadFile() {
-        this.btnLoading = true
-
         let updatedate = this.$moment(this.delivery_date)
           .add(7)
           .format('YYYY-MM-DD')
@@ -217,12 +237,12 @@
           .then((response) => {
             let self = this
             setTimeout(function() {
-              self.btnLoading = false
+              self.dialog = false
               window.location.href = response.data.file
             }, 1000)
           })
           .catch((error) => {
-            this.btnLoading = false
+            this.dialog = false
           })
       },
     },
