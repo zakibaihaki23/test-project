@@ -65,7 +65,6 @@
                     v-on="on"
                     style="border-radius: 10px; font-size: 13px"
                     prepend-inner-icon="mdi-calendar"
-                    readonly
                     outlined
                     single-line
                     clearable
@@ -111,20 +110,27 @@
         </SelectWarehouse>
       </v-col>
       <v-col cols="12" md="4" lg="3" xl="2" sm="10">
-        <!-- <SelectStatus
+        <SelectStatus
           v-bind="attrs"
           v-on="on"
           v-model="status"
           @selected="statusSelected"
         >
-        </SelectStatus> -->
+        </SelectStatus>
       </v-col>
     </v-row>
     <br />
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table-tbody"
+        :types="{ 'table-row': 'table-cell@6' }"
+      ></v-skeleton-loader>
       <v-data-table
         loading-text="Please Wait...."
         :headers="table"
+        v-show="!firstLoad"
         :items="dataTable"
         :page.sync="page"
         :items-per-page="20"
@@ -290,6 +296,7 @@
         dialog: false,
         page: 1,
         warehouseList: '',
+        firstLoad: true,
         warehouse: null,
         delivery_date_model: '',
         filterActive: null,
@@ -297,9 +304,6 @@
           new Date(Date.now() - 3600 * 1000 * 720).toISOString().substr(0, 10),
           new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
         ],
-        // delivery_date2: [
-        //   new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
-        // ],
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
@@ -366,23 +370,6 @@
     },
     computed: {
       format_delivery_date() {
-        // if (this.delivery_date) {
-        //   if (this.delivery_date[0] > this.delivery_date[1]) {
-        //     var date = this.delivery_date[1]
-        //     var date2 = this.delivery_date[0]
-        //     this.delivery_date[0] = date
-        //     this.delivery_date[1] = date2
-        //   } else {
-        //     var date = this.delivery_date[0]
-        //     var date2 = this.delivery_date[1]
-        //   }
-        //   let ret =
-        //     this.$moment(date).format('DD/MM/YYYY') +
-        //     ' - ' +
-        //     this.$moment(date2).format('DD/MM/YYYY')
-        //   return ret
-        // }
-
         if (this.delivery_date.length > 0) {
           let ret = ''
           if (this.delivery_date.length == 1) {
@@ -424,6 +411,8 @@
       },
 
       renderData(search) {
+        this.isLoading = true
+        this.firstLoad = true
         let areaId = ''
         if (this.area) {
           areaId = 'city_id.e:' + this.area
@@ -454,29 +443,14 @@
           }
         }
         //FILTER AKTIF CANCEL FINISHED
-        // let isActive = ''
-        // if (this.filterActive) {
-        //   if (this.delivery_date_mo) {
-        //     isActive = 'status:' + this.filterActive
-        //   }
-        //   if (this.delivery_date == '') {
-        //     isActive = '|status:' + this.filterActive
-        //   }
-        //   if (this.area) {
-        //     isActive = '|status:' + this.filterActive
-        //   }
-        //   if (this.area == '') {
-        //     isActive = 'status:' + this.filterActive
-        //   }
-        //   if (this.warehouse_id) {
-        //     isActive = '|status:' + this.filterActive
-        //   }
-        //   if (this.warehouse_id == '') {
-        //     isActive = 'status:' + this.filterActive
-        //   }
-        // } else {
-        //   isActive = ''
-        // }
+        let isActive = ''
+        if (this.filterActive) {
+          if (delivery_date || filterArea || warehouseId) {
+            isActive = '|status:' + this.filterActive
+          } else {
+            isActive = 'status:' + this.filterActive
+          }
+        }
 
         this.$http
           .get('/warehouse', {
@@ -505,7 +479,7 @@
           .get('/packing', {
             params: {
               orderby: '-id,warehouse_id',
-              conditions: delivery_date + filterArea + warehouseId,
+              conditions: delivery_date + filterArea + warehouseId + isActive,
             },
           })
           .then((response) => {
@@ -522,6 +496,10 @@
           .catch((error) => {
             console.log(error)
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
       areaSelected(area) {
         this.area = null
@@ -547,16 +525,18 @@
         }
         this.renderData('')
       },
-      // statusSelected(status) {
-      //   this.status = ''
-      //   this.filterActive = null
-      //   if (status) {
-      //     this.status = status
-      //     this.filterActive = status.value
-      //   }
-      //   this.renderData()
-      // },
+      statusSelected(status) {
+        this.status = ''
+        this.filterActive = ''
+        if (status) {
+          this.status = status
+          this.filterActive = status.value
+        }
+        this.renderData()
+      },
       cancel(id) {
+        this.firstLoad = true
+        this.isLoading = true
         this.overlay = true
         this.$http
           .put('/packing/' + id + '/cancel', {})
@@ -573,8 +553,14 @@
             this.dialog = false
             this.overlay = false
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
       finish(id) {
+        this.isLoading = true
+        this.firstLoad = true
         this.overlay = true
         this.$http
           .put('/packing/' + id + '/finish', {})
@@ -591,6 +577,10 @@
             this.dialog = false
             this.overlay = false
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       },
     },
   }

@@ -41,7 +41,7 @@
                   class="form"
                   flat
                   solo
-                  :error-messages="error.email"
+                  :error-messages="error.email || error.id"
                   style="margin-top: 50px; width: 300px; margin-left: 35px"
                 >
                 </v-text-field>
@@ -70,7 +70,7 @@
                 elevation="1"
                 @click="submit"
                 :loading="loading"
-                :disabled="invalid || !validated"
+                :disabled="!validated || invalid"
               >
                 <!----><!----><span>Login</span>
               </v-btn>
@@ -102,7 +102,15 @@
         loading: false,
       }
     },
-
+    // computed: {
+    //   validation() {
+    //     if (this.form.email.length > 0 && this.form.password.length > 0) {
+    //       return false
+    //     } else {
+    //       return true
+    //     }
+    //   },
+    // },
     methods: {
       ...mapActions({
         signIn: 'auth/signIn',
@@ -111,16 +119,18 @@
       submit() {
         this.loading = true
         this.signIn(this.form)
-          .then(() => {
+          .then((response) => {
+            this.loading = false
             window.location.reload()
             this.$router.push('/helper')
-          }, this.$toast.success('Login success'))
+          })
 
           .catch((error) => {
-            this.error = error.response.data.errors
-
-            this.$toast.error(error.response.data.errors.email)
             this.loading = false
+            this.$toast.error(
+              error.response.data.errors.id || error.response.data.errors.email
+            )
+            this.error = error.response.data.errors
           })
       },
     },

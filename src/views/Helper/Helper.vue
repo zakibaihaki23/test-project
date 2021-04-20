@@ -64,8 +64,15 @@
     </v-row>
     <br />
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table-tbody"
+        :types="{ 'table-row': 'table-cell@8' }"
+      ></v-skeleton-loader>
       <v-data-table
         loading-text="Please Wait...."
+        v-show="!firstLoad"
         :headers="table"
         :items="dataTable"
         :page.sync="page"
@@ -217,6 +224,7 @@
       return {
         page: 1,
         dialog: false,
+        firstLoad: true,
         search: '',
         loadingBtn: false,
         isLoading: true,
@@ -310,6 +318,8 @@
       },
       //get data user dari API
       renderData() {
+        this.isLoading = true
+        this.firstLoad = true
         let isActive = ''
         if (this.filterActive || this.filterActive == 0) {
           isActive = 'user.is_active:' + this.filterActive
@@ -344,12 +354,17 @@
               this.dataTable = []
             }
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 1000)
       },
 
       //fungsi untuk unarchive
       archive(id) {
+        this.firstLoad = true
         this.overlay = true
-        this.loadingBtn = true
+        this.isLoading = true
         this.$http
           .put('/helper/' + id + '/archive', {})
           .then((response) => {
@@ -368,12 +383,17 @@
             this.dialog = false
             this.overlay = false
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 1000)
       },
 
       //fungsi untuk archive
       unarchive(id) {
+        this.firstLoad = true
         this.overlay = true
-        this.loadingBtn = true
+        this.isLoading = true
         this.$http
           .put('/helper/' + id + '/unarchive', {})
           .then((response) => {
@@ -390,6 +410,10 @@
             this.dialog = false
             this.overlay = false
           })
+        setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 1000)
       },
 
       warehouseSelected(warehouse) {

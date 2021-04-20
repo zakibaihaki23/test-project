@@ -59,48 +59,7 @@
               </v-btn> -->
             </v-date-picker>
           </v-menu>
-          <!-- <v-dialog
-            ref="dialog"
-            v-model="modal"
-            :return-value.sync="date"
-            :close-on-content-click="false"
-            persistent
-            width="290px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                outlined
-                v-model="dateFormatted"
-                style="border-radius: 12px;"
-                label="Delivery Date *"
-                prepend-inner-icon="mdi-calendar"
-                v-on="on"
-                v-bind="attrs"
-                readonly
-                single-line
-              >
-              </v-text-field>
-            </template>
-            <v-date-picker v-model="date" scrollable>
-              <v-btn
-                text
-                color="primary"
-                style="margin-left: 130px"
-                @click="modal = false"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                style="margin-left: 10px"
-                color="primary"
-                @click="$refs.dialog.save(date)"
-              >
-                OK
-              </v-btn>
-            </v-date-picker>
-          </v-dialog> -->
-
+        
           <p>Area <span style="color: red">*</span></p>
           <SelectFormArea 
             v-model="area" 
@@ -138,6 +97,8 @@
           style="border-radius: 12px"
           v-model="note"
           single-line
+          :counter="250"
+          maxlength="250"
         >
         </v-textarea>
       </v-col>
@@ -151,7 +112,14 @@
 
     <!-- BAGIAN TABEL -->
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table-tbody"
+        :types="{ 'table-row': 'table-cell@5' }"
+      ></v-skeleton-loader>
       <v-data-table
+      v-show="!firstLoad"
         loading-text="Please wait....."
         :headers="table"
         :items="dataTable"
@@ -203,11 +171,22 @@
       <v-btn
         style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
         class="save"
-        @click="save"
+        @click="openDialog"
         :loading="loading"
         >Save</v-btn
       >
     </div>
+  <v-dialog v-model="dialog" persistent max-width="1px">
+      <div class="text-center">
+        <v-overlay :value="overlay">
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            :size="20"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
+    </v-dialog>
   </div>
 </template>
 
@@ -232,6 +211,7 @@
         areaDisabled        : true,
         loading             : false,
         isLoading           : true,
+        firstLoad           : true,
         warehouse           : null,
         warehouse_id        : null,
         warehouseList       : null,
@@ -297,6 +277,13 @@
       date(val) {
         this.dateFormatted = this.formatDate(this.date)
       },
+
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
     },
 
     methods: {
@@ -324,6 +311,8 @@
       },
 
       renderData() {
+        this.firstLoad = true
+        this.isLoading = true
         let updatedate = this.$moment(this.delivery_date)
           .add(7)
           .format('YYYY-MM-DD')
@@ -338,6 +327,7 @@
           })
 
           .then((response) => {
+            this.firstLoad = false
             this.isLoading = false
             this.dataTable = response.data.data
 
@@ -351,6 +341,12 @@
           })
 
       }, // CLOSE RENDER DATA
+
+      openDialog() {
+        this.dialog = true
+        this.overlay = true
+        this.save()
+      },
 
       //untuk menyimpan data Penambahan ke dalam API
       save() {
@@ -372,12 +368,14 @@
           })
 
           .then((response) => {
+            this.dialog = false
             this.loading = false
             this.$router.push('/packing-order')
             this.$toast.success('Data has been saved successfully')
           })
           .catch((error) => {
             this.loading = false
+            this.dialog = false
 
             if(error.response.data.errors.area_id)(
               this.$toast.error(error.response.data.errors.area_id)

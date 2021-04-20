@@ -1,24 +1,34 @@
 <template>
   <div class="helper">
-    <h1>PACKING ORDER DETAIL</h1>
-
+    
     <v-row>
-      <v-col md="12" style="margin-top: 1px" v-model="packing_code">
+      <v-cols md="12" style="margin-left: 12px">
+        <h1>PACKING ORDER DETAIL</h1>
+      </v-cols>
+    </v-row>
+   
+    <v-row>
+      <v-col md="12" style="margin-top: 1px">
         <h2>Packing Order Code : {{ this.packing_code }}</h2>
-        <!-- <v-list-item-title 
-          >Packing Order Code :
-          <span class="ml-4">{{ this.packing_code }}</span></v-list-item-title
-        > -->
+        <h3>Delivery Date   : {{ this.delivery_date | moment("dddd, MMMM Do YYYY") }} </h3>
+        <td>
+         <div v-if="status == 1 "><h3> Status : {{'Active'}} </h3> </div>
+         <div v-if="status == 2 "><h3> Status : {{'Finished'}} </h3> </div>
+         <div v-if="status == 3 "><h3> Status : {{'Cancelled'}} </h3> </div>
+        </td>
       </v-col>
     </v-row>
+    
+
     <v-container>
       <v-row no-gutters style="margin-top: 15px; ">
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn 
-              @click="DownloadFile()"
-              :loading="dwnLoading">
+            <v-btn
+              :loading="dwnLoading"
+              @click="openDialogDwn()"
+              >
               Download
             </v-btn>
           </div>
@@ -101,42 +111,36 @@
                             @change="onFileChanged"
                           /> -->
 
-                            <!-- TOMBOL UPLOAD -->
-                            <vue-xlsx-table
-                              class="xlsx-button"
-                              @on-select-file="handleSelectedFile"
-                              :readAsBS="true"
-                              style="
+                          <!-- TOMBOL UPLOAD -->
+                          <vue-xlsx-table
+                            class="xlsx-button"
+                            @on-select-file="handleSelectedFile"
+                            :readAsBS="true"
+                            style="
                                     margin-left: 30px;
                                     marign-top: 50px;
                                     "
-                              
-                            >
-                              Choose File
-                            </vue-xlsx-table>
-                      
+                          >
+                            Choose File
+                          </vue-xlsx-table>
                         </v-col>
-                        <!-- <v-col style="padding-top: 30px">
-                          <span style="margin-left:121px;">Or</span></v-col
-                        >
-                        <v-col style="padding-top: 5px">
-                          </v-col
-                        > -->
+                       
                       </div>
                     </div>
                   </v-row>
                   <br />
                 </v-container>
               </v-card-text>
-              <v-btn 
-                @click="kirimfiledata()"
-                :disabled = disabledBtnSend
+              <v-btn
+                :loading="uploadLoading"
+                @click="openDialogUpload()"
+                :disabled="disabledBtnSend"
                 style="
                       width: 340px;
                       margin-left: 50px;
-                      margin-top: -20px;" 
+                      margin-top: -20px;"
                 color="primary"
-                >
+              >
                 Send File
               </v-btn>
             </v-card>
@@ -168,7 +172,14 @@
     <br />
     <br />
     <div>
+      <v-skeleton-loader
+        v-if="firstLoad"
+        :loading="isLoading"
+        type="table-tbody"
+        :types="{ 'table-row': 'table-cell@6' }"
+      ></v-skeleton-loader>
       <v-data-table
+      v-show="!firstLoad"
         :headers="headers"
         :items="data"
         :search="search"
@@ -190,7 +201,6 @@
             <td>{{ props.item.total_order }}</td>
             <td>{{ props.item.total_pack }}</td>
             <td>{{ props.item.total_kg }}</td>
-            <!-- <pre>{{ helper }}</pre> -->
             <td>
               <div v-if="props.item.helper">
                 <div
@@ -235,7 +245,7 @@
           </tr>
         </template>
       </v-data-table>
-      <v-dialog v-model="dialog2" persistent max-width="491px">
+      <v-dialog v-model="dialogPacker" persistent max-width="491px">
         <v-card style="border-radius: 20px;width: 491px; height: 500px;">
           <v-card-title>
             <br />
@@ -248,7 +258,7 @@
               style="margin-left:10px; margin-top: 5px; background: #6C757D; color: white"
               fab
               small
-              @click="dialog2 = false"
+              @click="dialogPacker = false"
               :disabled="btnDisable"
             >
               <v-icon>
@@ -319,8 +329,7 @@
               <v-col xl="12" cols="12" md="12" sm="12" lg="12">
                 <v-btn
                   style="margin-left: 25%;bottom: 40px; margin-top: 5px; background: #4662d4; color: white;  border-radius: 100px; width: 96px;font-weight: bold; height: 50px; padding: 4px; font-size: 16px; text-transform: capitalize;width: 220px;"
-                  :loading="btnLoading"
-                  @click="savePacker"
+                  @click="opendialogPacker"
                 >
                   Save
                 </v-btn>
@@ -330,6 +339,17 @@
         </v-card>
       </v-dialog>
     </div>
+    <v-dialog v-model="dialog3" persistent max-width="1px">
+      <div class="text-center">
+        <v-overlay :value="overlay">
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            :size="20"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
+    </v-dialog>
     <br />
     <br />
     <br />
@@ -350,6 +370,19 @@
         </v-col>
       </v-row>
     </div>
+
+    <!-- BLOCK UI -->
+    <v-dialog v-model="dialogblock" persistent max-width="1px">
+      <div class="text-center">
+        <v-overlay :value="overlay">
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            :size="20"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
+    </v-dialog>
   </div>
 </template>
 
@@ -363,28 +396,34 @@
 
     data() {
       return {
-        file      : 0,
+        status: '',
+        file: 0,
+        status: '',
         packing_code: '',
-        sendFile  : '',
-        index     : '',
-        uom       : '',
-        search    : '',
-        download  : '',
-        send      : '',
-        disabledBtnSend  : true,
-        isLoading : true,
+        delivery_date: '',
+        sendFile: '',
+        index: '',
+        uom: '',
+        search: '',
+        download: '',
+        send: '',
+        disabledBtnSend: true,
+        firstLoad: true,
+        isLoading: true,
         dwnLoading: false,
+        uploadLoading : false,
         btnLoading: false,
         btnDisable: false,
-        dialog    : false,
-        dialog2   : false,
-        item      : null,    
-        warehouse : [],
-        packer    : [],
-        helper    : [],
-        packings  : [],
-        data      : [],
-        headers   : [
+        dialog: false,
+        dialogPacker: false,
+        dialog3: false,
+        item: null,
+        warehouse: [],
+        packer: [],
+        helper: [],
+        packings: [],
+        data: [],
+        headers: [
           {
             text: 'Item',
             value: 'item.item_name',
@@ -428,8 +467,21 @@
       this.renderData()
     },
 
+    watch: {
+
+      overlay(val) {
+        val &&
+          setTimeout(() => {
+            this.overlay = false
+          }, 1000)
+      },
+
+    },
+
     methods: {
       savePacker() {
+        this.firstLoad = true
+        this.dialog3 = true
         this.btnDisable = true
         this.btnLoading = true
         this.$http
@@ -439,7 +491,9 @@
           .then((response) => {
             let self = this
             setTimeout(function() {
-              self.dialog2 = false
+              self.firstLoad = false
+              self.dialog3 = false
+              self.dialogPacker = false
               self.btnLoading = false
               self.$toast.success('Assign Packer Success')
               self.btnDisable = false
@@ -447,9 +501,12 @@
             }, 15 * 15 * 15)
           })
           .catch((error) => {
+            this.firstLoad = false
+            this.dialogPacker = false
             this.btnLoading = false
-            this.dialog2 = false
+            this.dialog3 = false
             this.btnDisable = false
+            // this.$toast.error('Packer has assigned')
           })
       }, //CLOSE savePacker
 
@@ -464,58 +521,96 @@
         }
       },
 
+      openDialogDwn() {
+        this.dialogblock = true
+        this.overlay = true
+        this.DownloadFile()
+      },
+
+       openDialogUpload() {
+        this.dialogblock = true
+        this.overlay = true
+        this.kirimfiledata()
+      },
+
       openDialog(id, item_name, packer) {
-        this.dialog2 = true
+        this.dialogPacker = true
         this.idItem = id
         this.itemName = item_name
         this.packerName = packer
       },
-  
+      opendialogPacker() {
+        this.dialog3 = true
+        this.overlay = true
+        this.savePacker()
+      },
+
+      // DOWNLOAD FILE FROM
+      DownloadFile() {
+        this.dwnLoading = true
+        this.$http
+          .get('/packing/' + this.$route.params.id + '/template?export=1')
+
+          .then((response) => {
+            window.location.href = response.data.file
+            this.dwnLoading = false
+            this.dialogblock = false
+          })
+
+          .catch((error) => {
+            this.dwnLoading = false
+            this.dialogblock = false
+          })
+      },
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
-      handleSelectedFile (convertedData) {
+      handleSelectedFile(convertedData) {
         console.log(convertedData)
         let that = this
-        let data = [];
+        let data = []
         convertedData.body.forEach((item) => {
-          data.push(
-            {
-              "packing_item_id":item.Packing_Item_Id,
-              "total_pack": parseFloat (item.Total_Pack),
-              "total_kg" : parseFloat (item.Total_Kg),
-              "helper_id":item.Packer_Id,
-            }
-          )
-        }); 
-            
-        this.sendFile = {"packings" : data}
-        if (this.sendFile){
+          data.push({
+            'packing_item_id': item.Packing_Item_Id,
+            'total_pack': parseFloat(item.Total_Pack),
+            'total_kg': parseFloat(item.Total_Kg),
+            'helper_id': item.Packer_Id,
+          })
+        })
+        this.sendFile = { packings: data }
+        if (this.sendFile) {
           this.disabledBtnSend = false
         }
-        
       }, // CLOSE handleSelectedFile
 
-
-      kirimfiledata(){
+      kirimfiledata() {
         console.log(this.sendFile)
+         this.uploadLoading = true
+        this.dialogblock = true
         this.$http
           .put('/packing/' + this.$route.params.id, this.sendFile)
-          .then(response => {
+          .then((response) => {
+             this.uploadLoading = false
+            this.dialogblock = false
             this.$toast.success('Data has been uploaded successfully')
           })
-        window.location.reload()
+        // window.location.reload()
       },
 
       renderData() {
+        this.firstLoad = true
+        this.isLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
+            this.firstLoad = false
             this.isLoading = false
+            this.status = response.data.data
             this.warehouse = response.data.data.warehouse.id
             this.packing_code = response.data.data.document_code
             this.data = response.data.data.packing_items
             this.status = response.data.data.status
+            this.delivery_date = response.data.data.delivery_date
             this.$http
               .get('/helper', {
                 params: {
@@ -535,51 +630,12 @@
                 console.log(error)
               })
           })
-
-        // this.$http
-        //   .get('/helper', {
-        //     params: {
-        //       conditions: 'user_id.is_active:1',
-        //     },
-        //   })
-
-        //   .then((response) => {
-        //     this.packer = response.data.data
-
-        //     if (this.packer === null) {
-        //       this.packer = []
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     console.log(error)
-        //   })
-
+           setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 2000)
       }, // CLOSE RENDER DATA
 
-      // addPacker() {
-      //   // this.$http.put('/packing/' + this.$route.params.id + '/items-assign', {
-      //   //   helper: this.packer,
-      //   // })
-      //   // console.log(this.packer[index].id)
-      // },
-
-      // DOWNLOAD FILE FROM
-      DownloadFile() {
-        this.btnLoading = true
-        this.$http
-          .get('/packing/' + this.$route.params.id + '/template?export=1')
-
-          .then((response) => {
-             window.location.href = response.data.file
-             this.btnLoading = false
-          })
-
-          .catch((error) => {
-            this.btnLoading = false
-          })
-      },
-
-    
       save() {
         this.$http
           .get('/v1/packing/' + this.$route.params.id)
@@ -593,7 +649,6 @@
             console.log(this.error)
           })
       },
-
     }, // CLOSE METHODS
   }
 </script>
@@ -602,7 +657,7 @@
   .xlsx-button {
     border-radius: 30%;
     width: 200px;
-  }  
+  }
   .helper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
