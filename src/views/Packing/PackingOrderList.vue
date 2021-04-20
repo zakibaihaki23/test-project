@@ -124,7 +124,8 @@
       <v-skeleton-loader
         v-if="firstLoad"
         :loading="isLoading"
-        type="table"
+        type="table-tbody"
+        :types="{ 'table-row': 'table-cell@6' }"
       ></v-skeleton-loader>
       <v-data-table
         loading-text="Please Wait...."
