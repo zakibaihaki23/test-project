@@ -297,9 +297,6 @@
           new Date(Date.now() - 3600 * 1000 * 720).toISOString().substr(0, 10),
           new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
         ],
-        // delivery_date2: [
-        //   new Date(Date.now() + 3600 * 1000 * 24).toISOString().substr(0, 10),
-        // ],
         warehouse_id: null,
         warehouseDisabled: true,
         areaId: null,
@@ -366,23 +363,6 @@
     },
     computed: {
       format_delivery_date() {
-        // if (this.delivery_date) {
-        //   if (this.delivery_date[0] > this.delivery_date[1]) {
-        //     var date = this.delivery_date[1]
-        //     var date2 = this.delivery_date[0]
-        //     this.delivery_date[0] = date
-        //     this.delivery_date[1] = date2
-        //   } else {
-        //     var date = this.delivery_date[0]
-        //     var date2 = this.delivery_date[1]
-        //   }
-        //   let ret =
-        //     this.$moment(date).format('DD/MM/YYYY') +
-        //     ' - ' +
-        //     this.$moment(date2).format('DD/MM/YYYY')
-        //   return ret
-        // }
-
         if (this.delivery_date.length > 0) {
           let ret = ''
           if (this.delivery_date.length == 1) {
@@ -456,15 +436,12 @@
         //FILTER AKTIF CANCEL FINISHED
         let isActive = ''
         if (this.filterActive) {
-          isActive = '|status:' + this.filterActive
+          if (delivery_date || filterArea || warehouseId) {
+            isActive = '|status:' + this.filterActive
+          } else {
+            isActive = 'status:' + this.filterActive
+          }
         }
-        if (this.filterActive && this.delivery_date == '') {
-          isActive = 'status:' + this.filterActive
-        }
-        // if (this.filterActive && this.areaId == '') {
-        //   isActive = 'status:' + this.filterActive
-        // }
-        //
 
         this.$http
           .get('/warehouse', {
@@ -537,7 +514,7 @@
       },
       statusSelected(status) {
         this.status = ''
-        this.filterActive = null
+        this.filterActive = ''
         if (status) {
           this.status = status
           this.filterActive = status.value
