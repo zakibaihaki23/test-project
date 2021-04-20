@@ -23,7 +23,7 @@
     <v-container>
       <v-row no-gutters style="margin-top: 15px; ">
         <!-- FUNGSI DOWNLOAD EXEL -->
-        <v-col cols="3" sm="6" md="6" lg="7">
+        <v-col v-show="status == 1"  cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
             <v-btn
               :loading="dwnLoading"
@@ -32,9 +32,11 @@
               Download
             </v-btn>
           </div>
+        </v-col>
 
+        <v-col v-show="status == 1" cols="3" sm="6" md="6" lg="7">
           <!-- V-DIALOG BUAT TOMBOL UPLOAD MASUK KE DIALOG -->
-          <v-dialog v-model="dialog" persistent max-width="430px">
+          <v-dialog v-show="status == 1" v-model="dialog" persistent max-width="430px">
             <template v-slot:activator="{ on, attrs }">
               <div style="padding-left: 250px">
                 <v-btn v-bind="attrs" v-on="on">
@@ -145,6 +147,8 @@
               </v-btn>
             </v-card>
           </v-dialog>
+        </v-col>
+        <v-col v-show="status != 1" cols="3" sm="6" md="6" lg="7">
         </v-col>
         <v-col>
           <div>
