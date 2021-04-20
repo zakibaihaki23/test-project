@@ -12,7 +12,9 @@
         <h2>Packing Order Code : {{ this.packing_code }}</h2>
         <h3>Delivery Date   : {{ this.delivery_date | moment("dddd, MMMM Do YYYY") }} </h3>
         <td>
-          <h3> Status : {{this.status }}</h3>
+         <div v-if="status == 1 "><h3> Status : {{'Active'}} </h3> </div>
+         <div v-if="status == 2 "><h3> Status : {{'Finished'}} </h3> </div>
+         <div v-if="status == 3 "><h3> Status : {{'Cancelled'}} </h3> </div>
         </td>
       </v-col>
     </v-row>
@@ -370,6 +372,7 @@
 
     data() {
       return {
+        status: '',
         file: 0,
         status: '',
         packing_code: '',
