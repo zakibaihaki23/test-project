@@ -35,6 +35,8 @@
                     outlined
                     single-line
                     clearable
+                    hint="Format 20/12/2021"
+                    persistent-hint
                     dense
                     @click:clear="dateFormatted = ''"
                     v-model="dateFormatted"

@@ -1,34 +1,35 @@
 <template>
   <div class="helper">
-    
     <v-row>
       <v-cols md="12" style="margin-left: 12px">
         <h1>PACKING ORDER DETAIL</h1>
       </v-cols>
     </v-row>
-   
+
     <v-row>
       <v-col md="12" style="margin-top: 1px">
         <h2>Packing Order Code : {{ this.packing_code }}</h2>
-        <h3>Delivery Date   : {{ this.delivery_date | moment("DD/MM/YYYY") }} </h3>
+        <h3>Delivery Date : {{ this.delivery_date | moment('DD/MM/YYYY') }}</h3>
         <td>
-         <div v-if="status == 1 "><h3> Status : {{'Active'}} </h3> </div>
-         <div v-if="status == 2 "><h3> Status : {{'Finished'}} </h3> </div>
-         <div v-if="status == 3 "><h3> Status : {{'Cancelled'}} </h3> </div>
+          <div v-if="status == 1">
+            <h3>Status : {{ 'Active' }}</h3>
+          </div>
+          <div v-if="status == 2">
+            <h3>Status : {{ 'Finished' }}</h3>
+          </div>
+          <div v-if="status == 3">
+            <h3>Status : {{ 'Cancelled' }}</h3>
+          </div>
         </td>
       </v-col>
     </v-row>
-    
 
     <v-container>
       <v-row no-gutters style="margin-top: 15px; ">
         <!-- FUNGSI DOWNLOAD EXEL -->
-        <v-col v-show="status == 1"  cols="3" sm="6" md="6" lg="7">
+        <v-col v-show="status == 1" cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
-            <v-btn
-              :loading="dwnLoading"
-              @click="openDialogDwn()"
-              >
+            <v-btn :loading="dwnLoading" @click="openDialogDwn()">
               Download
             </v-btn>
           </div>
@@ -36,10 +37,28 @@
 
         <v-col v-show="status == 1" cols="3" sm="6" md="6" lg="7">
           <!-- V-DIALOG BUAT TOMBOL UPLOAD MASUK KE DIALOG -->
-          <v-dialog v-show="status == 1" v-model="dialog" persistent max-width="430px">
+          <v-dialog
+            v-show="status == 1"
+            v-model="dialog"
+            persistent
+            max-width="430px"
+          >
             <template v-slot:activator="{ on, attrs }">
               <div style="padding-left: 250px">
-                <v-btn v-bind="attrs" v-on="on">
+                <v-btn
+                  class="d-none d-sm-none d-sm-flex"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Upload
+                </v-btn>
+              </div>
+              <div style="margin-top: 90px;    margin-right: 150px;">
+                <v-btn
+                  class="d-sm-none d-md-none d-lg-none d-xl-none"
+                  v-bind="attrs"
+                  v-on="on"
+                >
                   Upload
                 </v-btn>
               </div>
@@ -126,7 +145,6 @@
                             Choose File
                           </vue-xlsx-table>
                         </v-col>
-                       
                       </div>
                     </div>
                   </v-row>
@@ -148,8 +166,7 @@
             </v-card>
           </v-dialog>
         </v-col>
-        <v-col v-show="status != 1" cols="3" sm="6" md="6" lg="7">
-        </v-col>
+        <v-col v-show="status != 1" cols="3" sm="6" md="6" lg="7"> </v-col>
         <v-col>
           <div>
             <v-tooltip bottom>
@@ -163,11 +180,30 @@
                   label="Search...."
                   solo
                   hide-details
-                  class="search d-flex d-none d-sm-block"
+                  class="search d-none d-sm-none d-sm-flex"
                 >
                 </v-text-field>
               </template>
               <span>Search by item name</span>
+            </v-tooltip>
+          </div>
+          <div>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  hide-details
+                  class="search2 d-sm-none d-md-none d-lg-none d-xl-none"
+                >
+                </v-text-field>
+              </template>
+              <span>search by helper code, name, or phone number</span>
             </v-tooltip>
           </div>
         </v-col>
@@ -183,7 +219,7 @@
         :types="{ 'table-row': 'table-cell@6' }"
       ></v-skeleton-loader>
       <v-data-table
-      v-show="!firstLoad"
+        v-show="!firstLoad"
         :headers="headers"
         :items="data"
         :search="search"
@@ -415,7 +451,7 @@
         firstLoad: true,
         isLoading: true,
         dwnLoading: false,
-        uploadLoading : false,
+        uploadLoading: false,
         btnLoading: false,
         btnDisable: false,
         dialog: false,
@@ -472,14 +508,12 @@
     },
 
     watch: {
-
       overlay(val) {
         val &&
           setTimeout(() => {
             this.overlay = false
           }, 1000)
       },
-
     },
 
     methods: {
@@ -531,7 +565,7 @@
         this.DownloadFile()
       },
 
-       openDialogUpload() {
+      openDialogUpload() {
         this.dialogblock = true
         this.overlay = true
         this.kirimfiledata()
@@ -574,10 +608,10 @@
         let data = []
         convertedData.body.forEach((item) => {
           data.push({
-            'packing_item_id': item.Packing_Item_Id,
-            'total_pack': parseFloat(item.Total_Pack),
-            'total_kg': parseFloat(item.Total_Kg),
-            'helper_id': item.Packer_Id,
+            packing_item_id: item.Packing_Item_Id,
+            total_pack: parseFloat(item.Total_Pack),
+            total_kg: parseFloat(item.Total_Kg),
+            helper_id: item.Packer_Id,
           })
         })
         this.sendFile = { packings: data }
@@ -588,12 +622,12 @@
 
       kirimfiledata() {
         console.log(this.sendFile)
-         this.uploadLoading = true
+        this.uploadLoading = true
         this.dialogblock = true
         this.$http
           .put('/packing/' + this.$route.params.id, this.sendFile)
           .then((response) => {
-             this.uploadLoading = false
+            this.uploadLoading = false
             this.dialogblock = false
             this.$toast.success('Data has been uploaded successfully')
           })
@@ -634,7 +668,7 @@
                 console.log(error)
               })
           })
-           setTimeout(() => {
+        setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
           this.isLoading = false
         }, 2000)
@@ -680,6 +714,11 @@
     padding-right: 50px;
     margin-top: 50px;
   }
+  .search2 {
+    margin-top: 150px;
+    margin-right: 150px;
+    box-sizing: content-box;
+  }
   thead[data-v-8056b2e8] {
     background: #f0f2f7;
     border: 1px solid #dee2e6;
@@ -700,6 +739,7 @@
     cursor: pointer;
     padding: 5px;
   }
+
   .cancel {
     margin-top: 50px;
     background: #4662d4;

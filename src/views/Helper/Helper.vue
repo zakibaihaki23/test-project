@@ -120,6 +120,7 @@
         :search="search"
         @page-count="pageCount = $event"
         :loading="isLoading"
+        mobile-breakpoint="0"
       >
         <template v-slot:item="props">
           <tr>
