@@ -8,17 +8,17 @@
 
     <v-row>
       <v-col md="12" style="margin-top: 1px">
-        <h2>Packing Order Code : {{ this.packing_code }}</h2>
-        <h3>Delivery Date : {{ this.delivery_date | moment('DD/MM/YYYY') }}</h3>
+        <h2> Packing Order Code : {{ this.packing_code }}</h2>
+        <h3> Delivery Date <span style="margin-left: 10px;"> : {{ this.delivery_date | moment('DD/MM/YYYY') }} </span></h3>
         <td>
           <div v-if="status == 1">
-            <h3>Status : {{ 'Active' }}</h3>
+            <h3> Status <span style="margin-left: 67px;"> : {{ 'Active' }} </span></h3>
           </div>
           <div v-if="status == 2">
-            <h3>Status : {{ 'Finished' }}</h3>
+            <h3> Status <span style="margin-left: 67px;"> : {{ 'Finished' }} </span></h3>
           </div>
           <div v-if="status == 3">
-            <h3>Status : {{ 'Cancelled' }}</h3>
+            <h3> Status <span style="margin-left: 67px;"> : {{ 'Cancelled' }} </span></h3>
           </div>
         </td>
       </v-col>
@@ -630,8 +630,9 @@
             this.uploadLoading = false
             this.dialogblock = false
             this.$toast.success('Data has been uploaded successfully')
+            window.location.reload()
           })
-        // window.location.reload()
+        
       },
 
       renderData() {
