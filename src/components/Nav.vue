@@ -91,15 +91,18 @@
               style="cursor: pointer"
               @click="logout"
             >
-              <v-list-item-icon>
-                <v-icon size="10" style="margin-left: 10px" small>
+              <v-list-item>
+                <v-icon size="20">
                   {{ akun.icon }}
                 </v-icon>
-              </v-list-item-icon>
+                <v-list-item-title style="margin-left: 18px;font-size: 14px">{{
+                  'Logout'
+                }}</v-list-item-title>
+              </v-list-item>
 
-              <v-list-item-content>
-                <v-list-item-title>{{ akun.name }}</v-list-item-title>
-              </v-list-item-content>
+              <!-- <v-list-item-content>
+                <v-list-item-title>{{ 'Logout' }}</v-list-item-title>
+              </v-list-item-content> -->
             </v-list-item>
           </template>
         </v-list>
