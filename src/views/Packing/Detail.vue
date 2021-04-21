@@ -6,26 +6,29 @@
       </v-cols>
     </v-row>
 
+    <br>
+    <br>
+
     <v-row>
       <v-col md="12" style="margin-top: 1px">
-        <h2>Packing Order Code : {{ this.packing_code }}</h2>
-        <h3>Delivery Date : {{ this.delivery_date | moment('DD/MM/YYYY') }}</h3>
+        <h2> Packing Order Code : {{ this.packing_code }}</h2>
+        <h3> Delivery Date <span style="margin-left: 10px;"> : {{ this.delivery_date | moment('DD/MM/YYYY') }} </span></h3>
         <td>
           <div v-if="status == 1">
-            <h3>Status : {{ 'Active' }}</h3>
+            <h3> Status <span style="margin-left: 67px;"> : {{ 'Active' }} </span></h3>
           </div>
           <div v-if="status == 2">
-            <h3>Status : {{ 'Finished' }}</h3>
+            <h3> Status <span style="margin-left: 67px;"> : {{ 'Finished' }} </span></h3>
           </div>
           <div v-if="status == 3">
-            <h3>Status : {{ 'Cancelled' }}</h3>
+            <h3> Status <span style="margin-left: 67px;"> : {{ 'Cancelled' }} </span></h3>
           </div>
         </td>
       </v-col>
     </v-row>
 
     <v-container>
-      <v-row no-gutters style="margin-top: 15px; ">
+      <v-row no-gutters style="margin-top: -3px; ">
         <!-- FUNGSI DOWNLOAD EXEL -->
         <v-col v-show="status == 1" cols="3" sm="6" md="6" lg="7">
           <div class="d-flex d-none d-sm-block">
@@ -151,6 +154,7 @@
                   <br />
                 </v-container>
               </v-card-text>
+
               <v-btn
                 :loading="uploadLoading"
                 @click="openDialogUpload()"
@@ -166,6 +170,7 @@
             </v-card>
           </v-dialog>
         </v-col>
+        
         <v-col v-show="status != 1" cols="3" sm="6" md="6" lg="7"> </v-col>
         <v-col>
           <div>
@@ -209,8 +214,10 @@
         </v-col>
       </v-row>
     </v-container>
-    <br />
-    <br />
+
+    <br>
+    <br>
+
     <div>
       <v-skeleton-loader
         v-if="firstLoad"
@@ -279,12 +286,11 @@
                   </v-list-item>
                 </v-list>
               </v-menu>
-              <!-- <AssignPacker v-model="dialog4" @selected="assignPacker">
-              </AssignPacker> -->
             </td>
           </tr>
         </template>
       </v-data-table>
+
       <v-dialog v-model="dialogPacker" persistent max-width="491px">
         <v-card style="border-radius: 20px;width: 491px; height: 500px;">
           <v-card-title>
@@ -330,7 +336,6 @@
                     Packer
                   </p>
 
-                  <!-- <AssignPacker v-model="packer"> </AssignPacker> -->
                   <v-autocomplete
                     outlined
                     :items="packer"
@@ -379,6 +384,7 @@
         </v-card>
       </v-dialog>
     </div>
+
     <v-dialog v-model="dialog3" persistent max-width="1px">
       <div class="text-center">
         <v-overlay :value="overlay">
@@ -390,13 +396,17 @@
         </v-overlay>
       </div>
     </v-dialog>
-    <br />
-    <br />
-    <br />
+
+    <br>
+    <br>
+    <br>
+    
     <v-divider></v-divider>
-    <br />
-    <br />
-    <br />
+    
+    <br>
+    <br>
+    <br>
+    
     <div class="btn">
       <v-row>
         <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
@@ -436,33 +446,32 @@
 
     data() {
       return {
-        status: '',
-        file: 0,
-        status: '',
-        packing_code: '',
-        delivery_date: '',
-        sendFile: '',
-        index: '',
-        uom: '',
-        search: '',
-        download: '',
-        send: '',
-        disabledBtnSend: true,
-        firstLoad: true,
-        isLoading: true,
-        dwnLoading: false,
-        uploadLoading: false,
-        btnLoading: false,
-        btnDisable: false,
-        dialog: false,
-        dialogPacker: false,
-        dialog3: false,
-        item: null,
-        warehouse: [],
-        packer: [],
-        helper: [],
-        packings: [],
-        data: [],
+        file            : 0,
+        status          : '',
+        packing_code    : '',
+        delivery_date   : '',
+        sendFile        : '',
+        index           : '',
+        uom             : '',
+        search          : '',
+        download        : '',
+        send            : '',
+        disabledBtnSend : true,
+        firstLoad       : true,
+        isLoading       : true,
+        dwnLoading      : false,
+        uploadLoading   : false,
+        btnLoading      : false,
+        btnDisable      : false,
+        dialog          : false,
+        dialogPacker    : false,
+        dialog3         : false,
+        item            : null,
+        warehouse       : [],
+        packer          : [],
+        helper          : [],
+        packings        : [],
+        data            : [],
         headers: [
           {
             text: 'Item',
@@ -544,7 +553,6 @@
             this.btnLoading = false
             this.dialog3 = false
             this.btnDisable = false
-            // this.$toast.error('Packer has assigned')
           })
       }, //CLOSE savePacker
 
@@ -630,8 +638,9 @@
             this.uploadLoading = false
             this.dialogblock = false
             this.$toast.success('Data has been uploaded successfully')
+            window.location.reload()
           })
-        // window.location.reload()
+        
       },
 
       renderData() {
