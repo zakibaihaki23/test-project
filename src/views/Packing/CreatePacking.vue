@@ -1,11 +1,12 @@
 <template>
   <div class="regist">
-    <h1>CREATE PACKING</h1>
 
-    <!-- BAGIAN KIRI -->
-    <v-row no-gutters>
-      <v-col md="6">
-        <div class="form-right">
+    <h1>CREATE PACKING</h1>
+    <br>
+  
+    <v-row>
+      <v-col cols="12" sm="6" lg="6" md="6">
+        <div>
           <p>Delivery Date <span style="color: red">*</span></p>
           <v-menu
             ref="menu"
@@ -13,8 +14,8 @@
             :close-on-content-click="false"
             transition="scale-transition"
             offset-y
-            min-width="auto"
-          >
+            min-width="auto">
+
             <template v-slot:activator="{ on }">
               <div v-on="on">
                 <v-text-field
@@ -27,14 +28,15 @@
                   @click:clear="delivery_date = '', renderData('')"
                   :value="format_delivery_date"
                   class="rounded-form"
-                  append-icon=""
-                >
+                  append-icon="">
+
                   <template v-slot:label>
                     Delivery Date
                   </template>
                 </v-text-field>
               </div>
             </template>
+
             <v-date-picker 
               no-title 
               v-model="delivery_date" 
@@ -59,56 +61,56 @@
               </v-btn> -->
             </v-date-picker>
           </v-menu>
-        
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col cols="12" sm="6" lg="6" md="6">
+        <div>
           <p>Area <span style="color: red">*</span></p>
           <SelectFormArea 
             v-model="area" 
             @selected="areaSelected"
-            :disabled="areaDisabled"
-            >
+            :disabled="areaDisabled">
           </SelectFormArea>
         </div>
       </v-col>
-
-      <!-- BAGIAN KANAN -->
-      <v-col md="6">
+      <v-col>
         <div class="form-left">
-          <p style="margin-top:177px;">
-            Warehouse <span style="color: red">*</span>
-          </p>
-
+          <p> Warehouse <span style="color: red">*</span></p>
           <SelectFormWarehouseArea
             v-model="warehouse"
             @selected="warehouseSelected"
             :areaId="area"
             :warehouse="warehouse"
-            :disabled="warehouseDisabled"
-          >
+            :disabled="warehouseDisabled">
           </SelectFormWarehouseArea>
         </div>
       </v-col>
-
-      <!-- BAGIAN BAWAH -->
-      <v-col md="12">
-        <p>Note <span style="color: red"></span></p>
-        <v-textarea
-          outlined
-          label="Note"
-          style="border-radius: 12px"
-          v-model="note"
-          single-line
-          :counter="250"
-          maxlength="250"
-        >
-        </v-textarea>
-      </v-col>
-
-      <!-- <pre>{{dataTable}}</pre> -->
     </v-row>
 
-    <br />
-    <br />
-    <br />
+    <!-- BAGIAN BAWAH -->
+    <v-row>
+      <v-col md="12">
+        <div>
+          <p>Note <span style="color: red"></span></p>
+          <v-textarea
+            outlined
+            label="Note"
+            style="border-radius: 12px"
+            v-model="note"
+            single-line
+            :counter="250"
+            maxlength="250">
+          </v-textarea>
+        </div>
+      </v-col>
+    </v-row>
+
+    <br>
+    <br>
+    <br>
 
     <!-- BAGIAN TABEL -->
     <div>
@@ -155,28 +157,39 @@
     </div>
 
     <!-- BAGIAN FOOTER -->
-    <pre>{{ this.packer }}</pre>
-    <br /><br />
-    <br />
+    <br>
+    <br>
+    <br>
+
     <v-divider></v-divider>
+
     <div class="btn">
-      <v-btn
-        :to="{ path: '/packing-order' }"
-        color="#E6E9ED"
-        style="margin: 10px; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px;"
-        class="cancel"
-        link
-        >Cancel</v-btn
-      >
-      <v-btn
-        style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
-        class="save"
-        @click="openDialog"
-        :loading="loading"
-        >Save</v-btn
-      >
+      <v-row>
+        <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
+          <v-btn
+            :to="{ path: '/packing-order' }"
+            color="#E6E9ED"
+            style="margin: 10px; color: #768F9C; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px;"
+            class="cancel"
+            link>
+            Cancel
+          </v-btn>
+        </v-col>
+
+        <v-col md="1" sm="2" cols="5" lg="1" class="text-right">
+          <v-btn
+            style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
+            class="save"
+            @click="openDialog"
+            :loading="loading">
+            Save
+          </v-btn>
+        </v-col>
+      </v-row>
     </div>
-  <v-dialog v-model="dialog" persistent max-width="1px">
+
+    <!-- FOR BLOCK UI -->
+    <v-dialog v-model="dialog" persistent max-width="1px">
       <div class="text-center">
         <v-overlay :value="overlay">
           <v-progress-circular
@@ -187,6 +200,7 @@
         </v-overlay>
       </div>
     </v-dialog>
+
   </div>
 </template>
 
@@ -290,11 +304,13 @@
       sendIdx(id) {
         this.idx = id
       },
+
       inputPacker(val) {
         this.dataTable[this.idx].helper = []
         if (val) {
           this.dataTable[this.idx].helper = val
         }
+
       },
       formatDate(date) {
         if (!date) return null
@@ -393,6 +409,7 @@
           })
           
       },
+
       areaSelected(area) {
         this.area = null
         this.areaId = null
@@ -422,16 +439,10 @@
         this.delivery_date_model = false
         if(this.delivery_date) {
           this.areaDisabled = false
-        }
-        
-        // this.area = null
-        // if (area) {
-        //   this.areaDisabled = true
-        // }
-        
+        }      
       }
     }, // CLOSE METHODS
-  }
+  } // CLOSE EXPORT DEFAULT
 </script>
 
 <style scoped>
@@ -451,6 +462,5 @@
   }
   .btn {
     margin-top: 30px;
-    padding-left: 1100px;
   }
 </style>

@@ -35,8 +35,10 @@
                     outlined
                     single-line
                     clearable
+                    hint="Format 20/12/2021"
+                    persistent-hint
                     dense
-                    @click:clear="delivery_date = ''"
+                    @click:clear="dateFormatted = ''"
                     v-model="dateFormatted"
                     @blur="date = parseDate(dateFormatted)"
                   >
@@ -97,14 +99,14 @@
         </div>
       </v-col>
     </v-row>
-    <v-flex pb-3 class=" pb-8 text-center" style="margin-top: 300px;">
-      <div class="text-center pb-4">
+    <v-flex pb-3 class=" pb-8 text-center" style="margin-top: 100px;">
+      <div class="text-center">
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download.png"> </v-img>
         </v-layout>
-        <h1 style="margin-top: 200px;">
+        <div style="margin-top: 400px; font-size: 20px">
           Please download to view data
-        </h1>
+        </div>
       </div>
     </v-flex>
   </div>
@@ -168,14 +170,10 @@
     },
     methods: {
       formatDate(date) {
-        if (!date) return null
-
         const [year, month, day] = date.split('-')
         return `${day}/${month}/${year}`
       },
       parseDate(date) {
-        if (!date) return null
-
         const [day, month, year] = date.split('/')
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       },
@@ -319,6 +317,6 @@
   }
   .gbr {
     position: absolute;
-    bottom: 100px;
+    bottom: 150px;
   }
 </style>

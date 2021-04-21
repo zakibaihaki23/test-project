@@ -5,55 +5,7 @@
 
       <v-spacer />
 
-      <!-- <v-menu
-        :close-on-content-click="true"
-        left
-        min-width="400"
-        offset-y
-        transition="slide-x-transition"
-      >
-      </v-menu>
-
-      <v-menu left offset-y transition="slide-x-transition">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" icon>
-            <v-badge
-              bordered
-              color="green"
-              content="6"
-              dot
-              offset-x="6"
-              offset-y="6"
-            >
-              <v-avatar color="grey" size="40">
-                <v-img
-                  src="https://www.coachcarson.com/wp-content/uploads/2018/09/Chad-Profile-pic-circle.png"
-                  size="40"
-                ></v-img>
-              </v-avatar>
-            </v-badge>
-          </v-btn>
-        </template>
-
-        <v-list dense min-width="48" nav width="140">
-          <template v-for="akun in accounts">
-            <v-divider v-if="akun.divider" :key="akun.name" link />
-
-            <v-list-item @click="logout" :key="akun.path" :to="akun.path" link>
-              <v-list-item-icon>
-                <v-icon size="10" style="margin-left: 10px" small>
-                  {{ akun.icon }}
-                </v-icon>
-              </v-list-item-icon>
-
-              <v-list-item-content>
-                <v-list-item-title>{{ akun.name }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-        </v-list>
-      </v-menu> -->
-      <v-list>
+      <v-list style="margin-right: 10px">
         <v-list-item-title style="font-weight: bold; text-transform: uppercase">
           {{ user.email }}
         </v-list-item-title>
@@ -61,15 +13,25 @@
           {{ user.usergroup.usergroup_name }}
         </v-list-item-title>
       </v-list>
-
-      <v-avatar
-        style="margin-left: 20px; margin-right: 20px"
-        color="grey"
-        size="40"
+      <v-badge
+        bordered
+        color="green"
+        content="1"
+        dot
+        offset-x="30"
+        offset-y="7"
+        class="d-none d-sm-none d-sm-flex"
       >
-        <v-img src="@/assets/Profile.png" size="40"></v-img>
-      </v-avatar>
-      <v-list>
+        <v-avatar
+          style="margin-left: 20px; margin-right: 20px"
+          color="grey"
+          size="40"
+          class="d-none d-sm-none d-sm-flex"
+        >
+          <v-img src="@/assets/Profile.png" size="40"></v-img>
+        </v-avatar>
+      </v-badge>
+      <v-list class="d-none d-sm-none d-sm-flex">
         <v-list-item-title
           v-for="akun in accounts"
           :key="akun.path"
@@ -84,7 +46,67 @@
           <v-list-item-title>Logout</v-list-item-title>
         </v-list-item-title>
       </v-list>
-      <!-- <v-btn @click="logout" text><v-icon>mdi-logout</v-icon>Logout</v-btn> -->
+
+      <v-menu
+        :close-on-content-click="true"
+        left
+        min-width="400"
+        offset-y
+        transition="slide-x-transition"
+      >
+      </v-menu>
+
+      <v-menu left offset-y transition="slide-x-transition">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            icon
+            class="d-sm-none d-md-none d-lg-none d-xl-none"
+          >
+            <v-badge
+              bordered
+              color="green"
+              content="6"
+              dot
+              offset-x="9"
+              offset-y="8"
+            >
+              <v-avatar color="grey" size="40">
+                <v-img src="@/assets/Profile.png" size="40"></v-img>
+              </v-avatar>
+            </v-badge>
+          </v-btn>
+        </template>
+
+        <v-list dense min-width="48" nav width="140">
+          <template v-for="akun in accounts">
+            <v-divider v-if="akun.divider" :key="akun.name" link />
+
+            <v-list-item
+              v-for="akun in accounts"
+              :key="akun.path"
+              :to="akun.path"
+              link
+              style="cursor: pointer"
+              @click="logout"
+            >
+              <v-list-item>
+                <v-icon size="20">
+                  {{ akun.icon }}
+                </v-icon>
+                <v-list-item-title style="margin-left: 18px;font-size: 14px">{{
+                  'Logout'
+                }}</v-list-item-title>
+              </v-list-item>
+
+              <!-- <v-list-item-content>
+                <v-list-item-title>{{ 'Logout' }}</v-list-item-title>
+              </v-list-item-content> -->
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <v-navigation-drawer
