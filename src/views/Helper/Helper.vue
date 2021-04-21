@@ -26,7 +26,26 @@
                   label="Search...."
                   solo
                   hide-details
-                  class="search d-flex d-none d-sm-block"
+                  class="search d-none d-sm-none d-sm-flex"
+                >
+                </v-text-field>
+              </template>
+              <span>search by helper code, name, or phone number</span>
+            </v-tooltip>
+          </div>
+          <div>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  hide-details
+                  class="search2 d-sm-none d-md-none d-lg-none d-xl-none"
                 >
                 </v-text-field>
               </template>
@@ -34,6 +53,27 @@
             </v-tooltip>
           </div>
         </v-col>
+        <!-- <v-col>
+          <div>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-bind="attrs"
+                  v-on="on"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  rounded
+                  label="Search...."
+                  solo
+                  hide-details
+                  class="search d-sm-none d-md-none d-lg-none d-xl-none"
+                >
+                </v-text-field>
+              </template>
+              <span>search by helper code, name, or phone number</span>
+            </v-tooltip>
+          </div>
+        </v-col> -->
       </v-row>
     </v-container>
     <p
@@ -471,7 +511,11 @@
     padding-right: 50px;
     margin-top: 50px;
   }
-
+  .search2 {
+    margin-top: 150px;
+    margin-right: 150px;
+    box-sizing: content-box;
+  }
   .v-menu__content {
     border-radius: 8px;
     border: 1px solid #c4c4c4;
