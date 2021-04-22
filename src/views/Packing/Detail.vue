@@ -6,38 +6,47 @@
       </v-cols>
     </v-row>
 
-    <br />
-    <br />
+    <br>
+    <br>
+    <br>
 
     <v-row>
-      <v-col md="12" style="margin-top: 1px">
-        <h2>Packing Order Code : {{ this.packing_code }}</h2>
-        <h3>
-          Delivery Date
-          <span style="margin-left: 10px;">
-            : {{ this.delivery_date | moment('DD/MM/YYYY') }}
-          </span>
-        </h3>
-        <td>
-          <div v-if="status == 1">
-            <h3>
-              Status <span style="margin-left: 67px;"> : {{ 'Active' }} </span>
-            </h3>
-          </div>
-          <div v-if="status == 2">
-            <h3>
-              Status
-              <span style="margin-left: 67px;"> : {{ 'Finished' }} </span>
-            </h3>
-          </div>
-          <div v-if="status == 3">
-            <h3>
-              Status
-              <span style="margin-left: 67px;"> : {{ 'Cancelled' }} </span>
-            </h3>
-          </div>
-        </td>
+      <v-col md="2" style="margin-top: 1px">
+        <h2>Packing Order Code </h2>
       </v-col>
+      <v-col>
+        <h2> : {{ this.packing_code }} </h2>
+      </v-col>  
+    </v-row>
+
+    <v-row>
+      <v-col md="2">
+        <h3> Delivery Date </h3>
+      </v-col>
+      <v-col>
+        <b> : {{ this.delivery_date | moment('DD/MM/YYYY') }} </b>
+      </v-col>
+    </v-row>
+
+    
+    <v-row>
+        <v-col md="2">
+          <h3>
+            Status
+          </h3>
+        </v-col>
+        <v-col> 
+          <span v-if="status == 1"> 
+           <b> : {{ 'Active' }} </b>
+          </span>
+           <span v-if="status == 2"> 
+           <b> : {{ 'Finished' }} </b>
+          </span>
+           <span v-if="status == 3"> 
+           <b> : {{ 'Cancelled' }} </b>
+          </span>
+          
+        </v-col>
     </v-row>
 
     <v-container>
