@@ -35,7 +35,7 @@
                     outlined
                     single-line
                     clearable
-                    hint="Format 20/12/2021"
+                    hint="Format ''DD/MM/YYYY''"
                     persistent-hint
                     dense
                     @click:clear="dateFormatted = ''"
