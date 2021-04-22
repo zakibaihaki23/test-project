@@ -6,22 +6,35 @@
       </v-cols>
     </v-row>
 
-    <br>
-    <br>
+    <br />
+    <br />
 
     <v-row>
       <v-col md="12" style="margin-top: 1px">
-        <h2> Packing Order Code : {{ this.packing_code }}</h2>
-        <h3> Delivery Date <span style="margin-left: 10px;"> : {{ this.delivery_date | moment('DD/MM/YYYY') }} </span></h3>
+        <h2>Packing Order Code : {{ this.packing_code }}</h2>
+        <h3>
+          Delivery Date
+          <span style="margin-left: 10px;">
+            : {{ this.delivery_date | moment('DD/MM/YYYY') }}
+          </span>
+        </h3>
         <td>
           <div v-if="status == 1">
-            <h3> Status <span style="margin-left: 67px;"> : {{ 'Active' }} </span></h3>
+            <h3>
+              Status <span style="margin-left: 67px;"> : {{ 'Active' }} </span>
+            </h3>
           </div>
           <div v-if="status == 2">
-            <h3> Status <span style="margin-left: 67px;"> : {{ 'Finished' }} </span></h3>
+            <h3>
+              Status
+              <span style="margin-left: 67px;"> : {{ 'Finished' }} </span>
+            </h3>
           </div>
           <div v-if="status == 3">
-            <h3> Status <span style="margin-left: 67px;"> : {{ 'Cancelled' }} </span></h3>
+            <h3>
+              Status
+              <span style="margin-left: 67px;"> : {{ 'Cancelled' }} </span>
+            </h3>
           </div>
         </td>
       </v-col>
@@ -170,7 +183,7 @@
             </v-card>
           </v-dialog>
         </v-col>
-        
+
         <v-col v-show="status != 1" cols="3" sm="6" md="6" lg="7"> </v-col>
         <v-col>
           <div>
@@ -215,8 +228,8 @@
       </v-row>
     </v-container>
 
-    <br>
-    <br>
+    <br />
+    <br />
 
     <div>
       <v-skeleton-loader
@@ -397,16 +410,16 @@
       </div>
     </v-dialog>
 
-    <br>
-    <br>
-    <br>
-    
+    <br />
+    <br />
+    <br />
+
     <v-divider></v-divider>
-    
-    <br>
-    <br>
-    <br>
-    
+
+    <br />
+    <br />
+    <br />
+
     <div class="btn">
       <v-row>
         <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
@@ -446,32 +459,32 @@
 
     data() {
       return {
-        file            : 0,
-        status          : '',
-        packing_code    : '',
-        delivery_date   : '',
-        sendFile        : '',
-        index           : '',
-        uom             : '',
-        search          : '',
-        download        : '',
-        send            : '',
-        disabledBtnSend : true,
-        firstLoad       : true,
-        isLoading       : true,
-        dwnLoading      : false,
-        uploadLoading   : false,
-        btnLoading      : false,
-        btnDisable      : false,
-        dialog          : false,
-        dialogPacker    : false,
-        dialog3         : false,
-        item            : null,
-        warehouse       : [],
-        packer          : [],
-        helper          : [],
-        packings        : [],
-        data            : [],
+        file: 0,
+        status: '',
+        packing_code: '',
+        delivery_date: '',
+        sendFile: '',
+        index: '',
+        uom: '',
+        search: '',
+        download: '',
+        send: '',
+        disabledBtnSend: true,
+        firstLoad: true,
+        isLoading: true,
+        dwnLoading: false,
+        uploadLoading: false,
+        btnLoading: false,
+        btnDisable: false,
+        dialog: false,
+        dialogPacker: false,
+        dialog3: false,
+        item: null,
+        warehouse: [],
+        packer: [],
+        helper: [],
+        packings: [],
+        data: [],
         headers: [
           {
             text: 'Item',
@@ -640,7 +653,6 @@
             this.$toast.success('Data has been uploaded successfully')
             window.location.reload()
           })
-        
       },
 
       renderData() {
@@ -676,11 +688,11 @@
               .catch((error) => {
                 console.log(error)
               })
+            setTimeout(() => {
+              if (this.firstLoad) this.firstLoad = false
+              this.isLoading = false
+            }, 1000)
           })
-        setTimeout(() => {
-          if (this.firstLoad) this.firstLoad = false
-          this.isLoading = false
-        }, 2000)
       }, // CLOSE RENDER DATA
 
       save() {
