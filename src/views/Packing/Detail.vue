@@ -629,10 +629,10 @@
         let data = []
         convertedData.body.forEach((item) => {
           data.push({
-            'packing_item_id': item.Packing_Item_Id,
-            'total_pack': parseFloat(item.Total_Pack),
-            'total_kg': parseFloat(item.Total_Kg),
-            'helper_id': item.Packer_Id,
+            packing_item_id: item.Packing_Item_Id,
+            total_pack: parseFloat(item.Total_Pack),
+            total_kg: parseFloat(item.Total_Kg),
+            helper_id: item.Packer_Id,
           })
         })
         this.sendFile = { packings: data }
