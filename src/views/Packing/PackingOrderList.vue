@@ -511,14 +511,15 @@
             if (this.dataTable === null) {
               this.dataTable = []
             }
+                    setTimeout(() => {
+          if (this.firstLoad) this.firstLoad = false
+          this.isLoading = false
+        }, 1000)
           })
           .catch((error) => {
             console.log(error)
           })
-        setTimeout(() => {
-          if (this.firstLoad) this.firstLoad = false
-          this.isLoading = false
-        }, 2000)
+
       },
       areaSelected(area) {
         this.area = null

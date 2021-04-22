@@ -439,11 +439,11 @@
               }
             }
             this.isLoading = false
-          })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
           this.isLoading = false
-        }, 2000)
+        }, 1000)
+          })
       },
       unpackable(id) {
         this.firstLoad = true
