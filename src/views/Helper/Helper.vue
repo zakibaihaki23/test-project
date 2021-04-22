@@ -394,11 +394,11 @@
             if (this.dataTable === null) {
               this.dataTable = []
             }
-          })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
           this.isLoading = false
         }, 1000)
+          })
       },
 
       //fungsi untuk unarchive
