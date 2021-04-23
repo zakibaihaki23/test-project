@@ -628,9 +628,10 @@
     margin-top: 50px;
   }
   .search2 {
-    margin-top: 150px;
+    margin-top: 50px;
     margin-right: 150px;
     box-sizing: content-box;
+    width: 200px;
   }
   thead {
     border-radius: 60px;

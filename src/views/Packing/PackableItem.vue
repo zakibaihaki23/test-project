@@ -539,6 +539,7 @@
     box-sizing: content-box;
     margin-top: 100px;
     margin-right: 150px;
+    width: 160px;
   }
   thead {
     border-radius: 60px;

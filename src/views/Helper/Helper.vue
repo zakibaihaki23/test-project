@@ -516,6 +516,7 @@
     margin-top: 150px;
     margin-right: 150px;
     box-sizing: content-box;
+    width: 150px;
   }
   .v-menu__content {
     border-radius: 8px;

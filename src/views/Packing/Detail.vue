@@ -78,7 +78,7 @@
                   Upload
                 </v-btn>
               </div>
-              <div style="margin-top: 90px;    margin-right: 150px;">
+              <div style="margin-top: 90px;">
                 <v-btn
                   class="d-sm-none d-md-none d-lg-none d-xl-none"
                   v-bind="attrs"
@@ -748,6 +748,7 @@
     margin-top: 150px;
     margin-right: 150px;
     box-sizing: content-box;
+    width: 150px;
   }
   thead[data-v-8056b2e8] {
     background: #f0f2f7;
