@@ -19,6 +19,18 @@
       </v-col>  
     </v-row>
 
+
+     <v-row style="margin-top: -20px;">
+        <v-col md="2">
+          <h3>
+            Warehouse
+          </h3>
+        </v-col>
+        <v-col> 
+          <b>: {{warehouse_name}}</b>
+        </v-col>
+    </v-row>
+
     <v-row style="margin-top: -20px;">
       <v-col md="2">
         <h3> Delivery Date </h3>
@@ -32,22 +44,24 @@
     <v-row style="margin-top: -20px;">
         <v-col md="2">
           <h3>
-            Status
+            Status 
           </h3>
         </v-col>
         <v-col> 
+          <b>: </b>
           <span v-if="status == 1"> 
-           <b> : {{ 'Active' }} </b>
+           <b>{{ 'Active' }} </b>
           </span>
            <span v-if="status == 2"> 
-           <b> : {{ 'Finished' }} </b>
+           <b>{{ 'Finished' }} </b>
           </span>
            <span v-if="status == 3"> 
-           <b> : {{ 'Cancelled' }} </b>
+           <b>{{ 'Cancelled' }} </b>
           </span>
           
         </v-col>
     </v-row>
+
 
     <v-container>
       <v-row no-gutters style="margin-top: -3px; ">
@@ -607,7 +621,6 @@
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
       handleSelectedFile(convertedData) {
-        console.log(convertedData)
         let that = this
         let data = []
         convertedData.body.forEach((item) => {
@@ -625,7 +638,6 @@
       }, // CLOSE handleSelectedFile
 
       kirimfiledata() {
-        console.log(this.sendFile)
         this.uploadLoading = true
         this.dialogblock = true
         this.$http
@@ -650,6 +662,7 @@
             this.firstLoad = false
             this.isLoading = false
             this.status = response.data.data
+            this.warehouse_name = response.data.data.warehouse.warehouse_name
             this.warehouse = response.data.data.warehouse.id
             this.packing_code = response.data.data.document_code
             this.data = response.data.data.packing_items
@@ -690,7 +703,6 @@
           })
           .catch((error) => {
             this.error = error.response.data.errors
-            console.log(this.error)
           })
       },
     }, // CLOSE METHODS
