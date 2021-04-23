@@ -19,7 +19,7 @@
       </v-col>  
     </v-row>
 
-    <v-row>
+    <v-row style="margin-top: -20px;">
       <v-col md="2">
         <h3> Delivery Date </h3>
       </v-col>
@@ -29,7 +29,7 @@
     </v-row>
 
     
-    <v-row>
+    <v-row style="margin-top: -20px;">
         <v-col md="2">
           <h3>
             Status
@@ -431,11 +431,11 @@
 
     <div class="btn">
       <v-row>
-        <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
+        <v-col md="1" sm="1" cols="1" lg="1" class="text-left">
           <v-btn
             :to="{ path: '/packing-order' }"
             color="#E6E9ED"
-            style="bottom: 5px;color: #768F9C; width: 111px; height: 45px; border-radius: 15px; font-size: 14px; margin-left: 87px"
+            style="bottom: 5px;color: #768F9C; width: 111px; height: 50px; border-radius: 25px; font-size: 14px; margin-left: 0px"
             link
             >Back</v-btn
           >
