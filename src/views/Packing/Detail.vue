@@ -83,6 +83,7 @@
             max-width="430px"
           >
             <template v-slot:activator="{ on, attrs }">
+              <!-- SHOW ON LARGE DISPLAY -->
               <div style="padding-left: 250px">
                 <v-btn
                   class="d-none d-sm-none d-sm-flex"
@@ -92,6 +93,7 @@
                   Upload
                 </v-btn>
               </div>
+              <!-- SHOW ON SMALL DEVICE -->
               <div style="margin-top: 90px;">
                 <v-btn
                   class="d-sm-none d-md-none d-lg-none d-xl-none"
@@ -341,7 +343,6 @@
               fab
               small
               @click="dialogPacker = false"
-              :disabled="btnDisable"
             >
               <v-icon>
                 mdi-close

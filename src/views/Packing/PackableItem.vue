@@ -107,15 +107,6 @@
             </div>
           </template>
           <v-dialog v-model="dialog" persistent max-width="491px">
-            <div class="text-center">
-              <v-overlay :value="overlay">
-                <v-progress-circular
-                  color="primary"
-                  indeterminate
-                  :size="20"
-                ></v-progress-circular>
-              </v-overlay>
-            </div>
             <v-card style="border-radius: 20px;width: 491px; height: 500px;">
               <v-card-title>
                 <br />
@@ -353,8 +344,7 @@
         packable_item: null,
         uom: '',
         clear: '',
-        firstLoad: true,
-        dialogOverlay: false,
+        firstLoad: true,      
         isLoading: true,
         headers: [
           {
@@ -393,8 +383,7 @@
     },
 
     methods: {
-      openDialog() {
-        this.renderData('')
+      openDialog() {  
         this.uom = null
         this.dialog = true
       },
@@ -437,6 +426,7 @@
             this.dialogOverlay = false
             this.isLoading = false
             this.dialog2 = false
+            
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
           this.isLoading = false
@@ -497,7 +487,7 @@
           })
           .catch((error) => {
             this.$toast.error('Please Fill Item')
-            this.overlay = false
+            this.dialogOverlay = false
           })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
