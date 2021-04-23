@@ -23,7 +23,7 @@ import 'vue-toastification/dist/index.css'
 
 Vue.use(Toast, {
   position: 'top-right',
-  timeout: 3000,
+  timeout: 5000,
   closeOnClick: true,
   pauseOnFocusLoss: false,
   pauseOnHover: false,
