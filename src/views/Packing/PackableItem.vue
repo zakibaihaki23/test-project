@@ -112,7 +112,7 @@
                 <v-progress-circular
                   color="primary"
                   indeterminate
-                  :size="70"
+                  :size="20"
                 ></v-progress-circular>
               </v-overlay>
             </div>
@@ -288,15 +288,6 @@
         </template>
       </v-data-table>
       <v-dialog v-model="dialog2" persistent max-width="360px">
-        <div class="text-center">
-          <v-overlay :value="overlay">
-            <v-progress-circular
-              color="primary"
-              indeterminate
-              :size="20"
-            ></v-progress-circular>
-          </v-overlay>
-        </div>
         <v-card style="height: 200px">
           <v-card-title class="headline"> </v-card-title>
           <v-card-text
@@ -329,6 +320,17 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="dialogOverlay" persistent max-width="1px">
+        <div class="text-center">
+          <v-overlay :value="overlay">
+            <v-progress-circular
+              color="primary"
+              indeterminate
+              :size="20"
+            ></v-progress-circular>
+          </v-overlay>
+        </div>
+      </v-dialog>
     </div>
   </div>
 </template>
@@ -352,8 +354,8 @@
         uom: '',
         clear: '',
         firstLoad: true,
+        dialogOverlay: false,
         isLoading: true,
-        overlay: false,
         headers: [
           {
             text: 'Item Code',
@@ -385,12 +387,6 @@
         },
         deep: true,
       },
-      overlay(val) {
-        val &&
-          setTimeout(() => {
-            this.overlay = false
-          }, 2000)
-      },
     },
     created() {
       this.renderData()
@@ -410,7 +406,7 @@
         this.dataTable = [this.dataTable]
       },
       renderData(search) {
-        this.isLoading = true
+        this.dialogOverlay = true
         // GET PACKABLE WHEN 1
         this.$http
           .get('/inventory/item', {
@@ -438,7 +434,9 @@
                 this.dataTable = []
               }
             }
+            this.dialogOverlay = false
             this.isLoading = false
+            this.dialog2 = false
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
           this.isLoading = false
@@ -446,23 +444,33 @@
           })
       },
       unpackable(id) {
+        this.isLoading = true
         this.firstLoad = true
-        this.overlay = true
+        this.dialog2 = true
+        this.dialogOverlay = true
         this.clear = false
         this.$http
           .put('/inventory/item/unpackable/' + id, {})
           .then((response) => {
+            this.dialog2 = false
             let self = this
             setTimeout(function() {
-              self.overlay = false
+              self.renderData()
+              self.dialogOverlay = false
               self.clear = true
-              self.renderData()
               self.$toast.success('Item not packable')
-              self.dialog2 = false
-              self.loading = false
-              self.btnDisabled = false
+              // self.dialog2 = false
+              self.firstLoad = true
+              self.isLoading = true
               self.renderData()
-            }, 1000)
+            }, 2000)
+          })
+          .catch((error)=> {
+            this.dialog2 = false
+            this.dialogOverlay = false
+            this.clear = true
+            this.renderData()
+            this.loading = false
           })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
@@ -471,20 +479,25 @@
       },
       save() {
         this.firstLoad = true
-        this.overlay = true
+        this.dialogOverlay = true
+        this.dialog = true
         this.clear = false
         this.$http
           .put('/inventory/item/packable/' + this.packable_item, {})
           .then((response) => {
-            this.overlay = false
-            this.loading = false
             this.dialog = false
-            this.renderData()
-            this.clear = true
-            this.$toast.success('Add packable ' + response.data.status)
+            let self = this
+            setTimeout(function() {
+            self.renderData()
+            self.dialogOverlay = false
+            self.loading = false
+            self.clear = true
+            self.$toast.success('Add packable ' + response.data.status)
+            },2000)
           })
           .catch((error) => {
             this.$toast.error('Please Fill Item')
+            this.overlay = false
           })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
@@ -539,6 +552,7 @@
     box-sizing: content-box;
     margin-top: 100px;
     margin-right: 150px;
+    width: 160px;
   }
   thead {
     border-radius: 60px;

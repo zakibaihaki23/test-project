@@ -204,7 +204,7 @@
       return {
         edit: '',
         search: null,
-        rules: [(v) => v.length <= 20 || 'Max 250 characters'],
+        rules: [(v) => v.length <= 250 || 'Max 250 characters'],
         value: String,
         val_confirm: String,
         editedIndex: -1,
@@ -233,15 +233,6 @@
     created() {
       this.renderData('')
     },
-    watch: {
-      search: {
-        handler: function(val) {
-          this.renderData(val)
-        },
-        deep: true,
-      },
-    },
-
     methods: {
       openDialog() {
         this.dialog = true
@@ -250,6 +241,7 @@
       },
       //untuk mendapatkan data dari API ke dalam format text-field
       renderData(search) {
+        this.dialog = true
         this.$http
           .get('/helper/' + this.$route.params.id, {
             params: {
@@ -294,6 +286,10 @@
                       id: array[i].id,
                     })
                   }
+                  this.dialog = false
+                })
+                .catch((error)=>{
+                  this.dialog = false
                 })
             })
           })

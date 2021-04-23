@@ -246,15 +246,6 @@
         </template>
       </v-data-table>
       <v-dialog v-model="dialog" persistent max-width="360px">
-        <div class="text-center">
-          <v-overlay :value="overlay">
-            <v-progress-circular
-              color="primary"
-              indeterminate
-              :size="20"
-            ></v-progress-circular>
-          </v-overlay>
-        </div>
         <v-card style="height: 200px">
           <v-card-title class="headline"> </v-card-title>
           <v-card-text
@@ -296,6 +287,17 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="dialogOverlay" persistent max-width="1px">
+        <div class="text-center">
+          <v-overlay :value="overlay">
+            <v-progress-circular
+              color="primary"
+              indeterminate
+              :size="20"
+            ></v-progress-circular>
+          </v-overlay>
+        </div>
+      </v-dialog>
     </div>
   </div>
 </template>
@@ -311,8 +313,8 @@
     data() {
       return {
         dates: '',
-        overlay: false,
         dialog: false,
+        dialogOverlay: false,
         page: 1,
         warehouseList: '',
         firstLoad: true,
@@ -380,12 +382,6 @@
         },
         deep: true,
       },
-      overlay(val) {
-        val &&
-          setTimeout(() => {
-            this.overlay = false
-          }, 1000)
-      },
     },
     computed: {
       format_delivery_date() {
@@ -430,6 +426,7 @@
       },
 
       renderData(search) {
+        this.dialogOverlay = true
         this.isLoading = true
         this.firstLoad = true
         let areaId = ''
@@ -507,6 +504,8 @@
             this.dataTable = response.data.data
             this.total = response.data.total
             this.isLoading = false
+            this.firstLoad = false
+            this.dialogOverlay = false
 
             if (this.dataTable === null) {
               this.dataTable = []
@@ -557,21 +556,24 @@
       cancel(id) {
         this.firstLoad = true
         this.isLoading = true
+        this.dialogOverlay = true
         this.overlay = true
         this.$http
           .put('/packing/' + id + '/cancel', {})
           .then((response) => {
+            this.dialog = false
             let self = this
             setTimeout(function() {
-              self.$toast.success('Packing order cancelled')
-              self.dialog = false
               self.renderData()
+              self.dialogOverlay = false
+              self.$toast.success('Packing order cancelled')
               self.overlay = false
+              self.renderData()
             }, 1000)
           })
           .catch((error) => {
             this.dialog = false
-            this.overlay = false
+            this.dialogOverlay = false
           })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
@@ -581,21 +583,23 @@
       finish(id) {
         this.isLoading = true
         this.firstLoad = true
-        this.overlay = true
+        this.dialog = true
+        this.dialogOverlay = true
         this.$http
           .put('/packing/' + id + '/finish', {})
           .then((response) => {
+            this.dialog = false
             let self = this
             setTimeout(function() {
-              self.$toast.success('Packing order finished')
-              self.dialog = false
               self.renderData()
-              self.overlay = false
+              self.dialogOverlay = false
+              self.$toast.success('Packing order finished')
+              self.renderData()
             }, 1000)
           })
           .catch((error) => {
             this.dialog = false
-            this.overlay = false
+            this.dialogOverlay = false
           })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
@@ -628,9 +632,10 @@
     margin-top: 50px;
   }
   .search2 {
-    margin-top: 150px;
+    margin-top: 50px;
     margin-right: 150px;
     box-sizing: content-box;
+    width: 200px;
   }
   thead {
     border-radius: 60px;

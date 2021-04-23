@@ -19,7 +19,19 @@
       </v-col>  
     </v-row>
 
-    <v-row>
+
+     <v-row style="margin-top: -20px;">
+        <v-col md="2">
+          <h3>
+            Warehouse
+          </h3>
+        </v-col>
+        <v-col> 
+          <b>: {{warehouse_name}}</b>
+        </v-col>
+    </v-row>
+
+    <v-row style="margin-top: -20px;">
       <v-col md="2">
         <h3> Delivery Date </h3>
       </v-col>
@@ -29,25 +41,27 @@
     </v-row>
 
     
-    <v-row>
+    <v-row style="margin-top: -20px;">
         <v-col md="2">
           <h3>
-            Status
+            Status 
           </h3>
         </v-col>
         <v-col> 
+          <b>: </b>
           <span v-if="status == 1"> 
-           <b> : {{ 'Active' }} </b>
+           <b>{{ 'Active' }} </b>
           </span>
            <span v-if="status == 2"> 
-           <b> : {{ 'Finished' }} </b>
+           <b>{{ 'Finished' }} </b>
           </span>
            <span v-if="status == 3"> 
-           <b> : {{ 'Cancelled' }} </b>
+           <b>{{ 'Cancelled' }} </b>
           </span>
           
         </v-col>
     </v-row>
+
 
     <v-container>
       <v-row no-gutters style="margin-top: -3px; ">
@@ -78,7 +92,7 @@
                   Upload
                 </v-btn>
               </div>
-              <div style="margin-top: 90px;    margin-right: 150px;">
+              <div style="margin-top: 90px;">
                 <v-btn
                   class="d-sm-none d-md-none d-lg-none d-xl-none"
                   v-bind="attrs"
@@ -406,36 +420,21 @@
         </v-card>
       </v-dialog>
     </div>
-
-    <v-dialog v-model="dialog3" persistent max-width="1px">
-      <div class="text-center">
-        <v-overlay :value="overlay">
-          <v-progress-circular
-            color="primary"
-            indeterminate
-            :size="20"
-          ></v-progress-circular>
-        </v-overlay>
-      </div>
-    </v-dialog>
-
     <br />
     <br />
     <br />
-
     <v-divider></v-divider>
-
     <br />
     <br />
     <br />
 
     <div class="btn">
       <v-row>
-        <v-col md="10" sm="9" cols="5" lg="10" class="text-right">
+        <v-col md="1" sm="1" cols="1" lg="1" class="text-left">
           <v-btn
             :to="{ path: '/packing-order' }"
             color="#E6E9ED"
-            style="bottom: 5px;color: #768F9C; width: 111px; height: 45px; border-radius: 15px; font-size: 14px; margin-left: 87px"
+            style="bottom: 5px;color: #768F9C; width: 111px; height: 50px; border-radius: 25px; font-size: 14px; margin-left: 0px"
             link
             >Back</v-btn
           >
@@ -487,7 +486,6 @@
         btnDisable: false,
         dialog: false,
         dialogPacker: false,
-        dialog3: false,
         item: null,
         warehouse: [],
         packer: [],
@@ -538,19 +536,11 @@
       this.renderData()
     },
 
-    watch: {
-      overlay(val) {
-        val &&
-          setTimeout(() => {
-            this.overlay = false
-          }, 1000)
-      },
-    },
-
     methods: {
       savePacker() {
+        this.dialogblock = true
+        this.dialogPacker = true
         this.firstLoad = true
-        this.dialog3 = true
         this.btnDisable = true
         this.btnLoading = true
         this.$http
@@ -558,23 +548,21 @@
             helper: this.packerName,
           })
           .then((response) => {
+            this.dialogPacker = false
             let self = this
             setTimeout(function() {
-              self.firstLoad = false
-              self.dialog3 = false
-              self.dialogPacker = false
-              self.btnLoading = false
-              self.$toast.success('Assign Packer Success')
-              self.btnDisable = false
               self.renderData()
-            }, 15 * 15 * 15)
+              self.firstLoad = false
+              self.dialogOverlay = false
+              self.$toast.success('Assign Packer Success')
+              self.renderData()
+            }, 1000)
           })
           .catch((error) => {
             this.firstLoad = false
             this.dialogPacker = false
-            this.btnLoading = false
-            this.dialog3 = false
-            this.btnDisable = false
+            this.dialogblock = false
+            this.dialogPacker = false
           })
       }, //CLOSE savePacker
 
@@ -608,7 +596,7 @@
         this.packerName = packer
       },
       opendialogPacker() {
-        this.dialog3 = true
+        this.dialogOverlay = true
         this.overlay = true
         this.savePacker()
       },
@@ -633,7 +621,6 @@
 
       // BAGIAN UPLOAD FILE XLXS TO JSON
       handleSelectedFile(convertedData) {
-        console.log(convertedData)
         let that = this
         let data = []
         convertedData.body.forEach((item) => {
@@ -651,7 +638,6 @@
       }, // CLOSE handleSelectedFile
 
       kirimfiledata() {
-        console.log(this.sendFile)
         this.uploadLoading = true
         this.dialogblock = true
         this.$http
@@ -665,15 +651,18 @@
       },
 
       renderData() {
+        this.dialogblock = true
         this.firstLoad = true
         this.isLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
+            this.dialogblock = false
             this.firstLoad = false
             this.isLoading = false
             this.status = response.data.data
+            this.warehouse_name = response.data.data.warehouse.warehouse_name
             this.warehouse = response.data.data.warehouse.id
             this.packing_code = response.data.data.document_code
             this.data = response.data.data.packing_items
@@ -714,7 +703,6 @@
           })
           .catch((error) => {
             this.error = error.response.data.errors
-            console.log(this.error)
           })
       },
     }, // CLOSE METHODS
@@ -748,6 +736,7 @@
     margin-top: 150px;
     margin-right: 150px;
     box-sizing: content-box;
+    width: 150px;
   }
   thead[data-v-8056b2e8] {
     background: #f0f2f7;
