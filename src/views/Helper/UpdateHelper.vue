@@ -233,15 +233,6 @@
     created() {
       this.renderData('')
     },
-    watch: {
-      search: {
-        handler: function(val) {
-          this.renderData(val)
-        },
-        deep: true,
-      },
-    },
-
     methods: {
       openDialog() {
         this.dialog = true

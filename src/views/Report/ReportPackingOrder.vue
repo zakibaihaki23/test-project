@@ -99,15 +99,15 @@
         </div>
       </v-col>
     </v-row>
-    <v-flex pb-3 class=" pb-8 text-center" style="margin-top: 100px;">
+    <v-flex class="text-center" style="margin-top: 50px;">
       <div class="text-center">
         <v-layout justify-center>
           <v-img class="gbr" src="@/assets/download.png"> </v-img>
         </v-layout>
-        <div style="margin-top: 400px; font-size: 20px">
+      </div>
+        <div style="margin-top: 450px; font-size: 20px">
           Please download to view data
         </div>
-      </div>
     </v-flex>
   </div>
 </template>
@@ -317,6 +317,5 @@
   }
   .gbr {
     position: absolute;
-    bottom: 150px;
   }
 </style>

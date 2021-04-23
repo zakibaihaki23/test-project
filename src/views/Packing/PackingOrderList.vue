@@ -313,7 +313,6 @@
     data() {
       return {
         dates: '',
-        overlay: false,
         dialog: false,
         dialogOverlay: false,
         page: 1,
@@ -382,12 +381,6 @@
           that.renderData(val)
         },
         deep: true,
-      },
-      overlay(val) {
-        val &&
-          setTimeout(() => {
-            this.overlay = false
-          }, 1000)
       },
     },
     computed: {

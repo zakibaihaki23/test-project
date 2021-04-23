@@ -406,25 +406,10 @@
         </v-card>
       </v-dialog>
     </div>
-
-    <v-dialog v-model="dialog3" persistent max-width="1px">
-      <div class="text-center">
-        <v-overlay :value="overlay">
-          <v-progress-circular
-            color="primary"
-            indeterminate
-            :size="20"
-          ></v-progress-circular>
-        </v-overlay>
-      </div>
-    </v-dialog>
-
     <br />
     <br />
     <br />
-
     <v-divider></v-divider>
-
     <br />
     <br />
     <br />
@@ -487,7 +472,6 @@
         btnDisable: false,
         dialog: false,
         dialogPacker: false,
-        dialog3: false,
         item: null,
         warehouse: [],
         packer: [],
@@ -538,19 +522,11 @@
       this.renderData()
     },
 
-    watch: {
-      overlay(val) {
-        val &&
-          setTimeout(() => {
-            this.overlay = false
-          }, 1000)
-      },
-    },
-
     methods: {
       savePacker() {
+        this.dialogblock = true
+        this.dialogPacker = true
         this.firstLoad = true
-        this.dialog3 = true
         this.btnDisable = true
         this.btnLoading = true
         this.$http
@@ -558,23 +534,21 @@
             helper: this.packerName,
           })
           .then((response) => {
+            this.dialogPacker = false
             let self = this
             setTimeout(function() {
-              self.firstLoad = false
-              self.dialog3 = false
-              self.dialogPacker = false
-              self.btnLoading = false
-              self.$toast.success('Assign Packer Success')
-              self.btnDisable = false
               self.renderData()
-            }, 15 * 15 * 15)
+              self.firstLoad = false
+              self.dialogOverlay = false
+              self.$toast.success('Assign Packer Success')
+              self.renderData()
+            }, 1000)
           })
           .catch((error) => {
             this.firstLoad = false
             this.dialogPacker = false
-            this.btnLoading = false
-            this.dialog3 = false
-            this.btnDisable = false
+            this.dialogblock = false
+            this.dialogPacker = false
           })
       }, //CLOSE savePacker
 
@@ -608,7 +582,7 @@
         this.packerName = packer
       },
       opendialogPacker() {
-        this.dialog3 = true
+        this.dialogOverlay = true
         this.overlay = true
         this.savePacker()
       },
@@ -665,12 +639,14 @@
       },
 
       renderData() {
+        this.dialogblock = true
         this.firstLoad = true
         this.isLoading = true
         this.$http
           .get('/packing/' + this.$route.params.id)
 
           .then((response) => {
+            this.dialogblock = false
             this.firstLoad = false
             this.isLoading = false
             this.status = response.data.data

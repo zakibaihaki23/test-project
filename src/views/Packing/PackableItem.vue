@@ -356,7 +356,6 @@
         firstLoad: true,
         dialogOverlay: false,
         isLoading: true,
-        overlay: false,
         headers: [
           {
             text: 'Item Code',
@@ -387,12 +386,6 @@
           this.renderData(val)
         },
         deep: true,
-      },
-      overlay(val) {
-        val &&
-          setTimeout(() => {
-            this.overlay = false
-          }, 2000)
       },
     },
     created() {
@@ -441,9 +434,8 @@
                 this.dataTable = []
               }
             }
-            this.isLoading = false
             this.dialogOverlay = false
-            
+            this.isLoading = false
             this.dialog2 = false
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false

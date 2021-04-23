@@ -242,6 +242,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </div>
       <v-dialog v-model="dialogOverlay" persistent max-width="1px">
             <div class="text-center">
         <v-overlay :value="overlay">
@@ -253,7 +254,6 @@
         </v-overlay>
       </div>
       </v-dialog>
-    </div>
   </div>
 </template>
 
@@ -272,8 +272,7 @@
         loadingBtn: false,
         isLoading: true,
         loading: false,
-        dialogOverlay: false,
-        overlay: false,
+        dialogOverlay: false,        
         table: [
           {
             text: 'Helper Code',
@@ -341,14 +340,6 @@
     //     deep: true,
     //   },
     // },
-    watch: {
-      overlay(val) {
-        val &&
-          setTimeout(() => {
-            this.overlay = false
-          }, 2000)
-      },
-    },
     methods: {
       openDialog(status, id) {
         this.dialog = true
