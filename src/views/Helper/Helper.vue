@@ -201,15 +201,6 @@
         </template>
       </v-data-table>
       <v-dialog v-model="dialog" persistent max-width="360px">
-        <div class="text-center">
-          <v-overlay :value="overlay">
-            <v-progress-circular
-              color="primary"
-              indeterminate
-              :size="20"
-            ></v-progress-circular>
-          </v-overlay>
-        </div>
         <v-card style="height: 200px">
           <v-card-title class="headline"> </v-card-title>
           <v-card-text
@@ -251,6 +242,17 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="dialogOverlay" persistent max-width="1px">
+            <div class="text-center">
+        <v-overlay :value="overlay">
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            :size="20"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
+      </v-dialog>
     </div>
   </div>
 </template>
@@ -270,6 +272,7 @@
         loadingBtn: false,
         isLoading: true,
         loading: false,
+        dialogOverlay: false,
         overlay: false,
         table: [
           {
@@ -343,7 +346,7 @@
         val &&
           setTimeout(() => {
             this.overlay = false
-          }, 1000)
+          }, 2000)
       },
     },
     methods: {
@@ -359,6 +362,7 @@
       },
       //get data user dari API
       renderData() {
+        this.dialogOverlay = true
         this.isLoading = true
         this.firstLoad = true
         let isActive = ''
@@ -388,41 +392,52 @@
             },
           })
           .then((response) => {
-            this.isLoading = false
             this.dataTable = response.data.data
+            this.firstLoad = false
+            this.dialog = false
+            this.dialogOverlay = false
+            // this.overlay = true
+            this.isLoading = false
 
             if (this.dataTable === null) {
               this.dataTable = []
             }
-        setTimeout(() => {
-          if (this.firstLoad) this.firstLoad = false
-          this.isLoading = false
-        }, 1000)
+        // setTimeout(() => {
+        //   if (this.firstLoad) this.firstLoad = false
+        //   this.isLoading = false
+        // }, 1000)
+          })
+          .catch((error)=> {
+            this.dialogOverlay = false
           })
       },
 
       //fungsi untuk unarchive
       archive(id) {
         this.firstLoad = true
-        this.overlay = true
         this.isLoading = true
+        this.dialog = true
+        this.dialogOverlay = true
+        // this.isLoading = true
         this.$http
           .put('/helper/' + id + '/archive', {})
           .then((response) => {
             let self = this
+              this.dialog = false
             setTimeout(function() {
-              self.$toast.success('User Not Active')
-              self.dialog = false
               self.renderData()
+              self.dialogOverlay = false
+              self.$toast.success('User Not Active')
               self.loadingBtn = false
-              self.overlay = false
+              self.renderData()
             }, 1000)
           })
           .catch((error) => {
-            this.$toast.error(error.response.data.errors.id)
-            this.loadingBtn = false
             this.dialog = false
-            this.overlay = false
+            this.$toast.error(error.response.data.errors.id)
+            this.firstLoad = false
+            this.isLoading = false
+            this.dialogOverlay = false
           })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
@@ -431,25 +446,28 @@
       },
 
       //fungsi untuk archive
-      unarchive(id) {
-        this.firstLoad = true
-        this.overlay = true
+      unarchive(id) {        
         this.isLoading = true
+        this.firstLoad = true
+        this.dialog = true
+        // this.firstLoad = true
+        this.dialogOverlay = true
+        // this.isLoading = true
         this.$http
           .put('/helper/' + id + '/unarchive', {})
           .then((response) => {
+            this.dialog = false
             let self = this
             setTimeout(function() {
-              self.$toast.success('User Active')
-              self.dialog = false
               self.renderData()
-              self.loadingBtn = false
-              self.overlay = false
+              self.dialogOverlay = false
+              self.$toast.success('User Active')
+              self.renderData()
             }, 1000)
           })
           .catch((error) => {
             this.dialog = false
-            this.overlay = false
+            this.dialogOverlay = false
           })
         setTimeout(() => {
           if (this.firstLoad) this.firstLoad = false
