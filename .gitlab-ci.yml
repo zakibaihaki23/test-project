@@ -59,7 +59,7 @@ Deploy to Production:
     - cd /var/www/frontend && npm install
     - cd /var/www/frontend && npm i @vue/cli
     - cd /var/www/frontend && npm run build
-    - aws s3 sync /var/www/frontend/dist/ s3://$S3_BUCKET_NAME/magang_v2_prod/dist/ --no-progress
+    - aws s3 sync /var/www/frontend/dist/ s3://$S3_BUCKET_NAME/magang_v1_prod/dist/ --no-progress
     - sshpass -p $DEV_PRIVATE_KEY ssh -p $PORT -o StrictHostKeyChecking=no ec2-user@$SERVER_DEV "sh /usr/local/sbin/magang/dashboard-v1_prod.sh"
   only:
     - master
