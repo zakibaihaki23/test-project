@@ -1,4 +1,4 @@
-# mini-project
+# Packing Dashboard - Eden Farm
 
 ## Project setup
 ```
