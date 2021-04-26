@@ -1,0 +1,67 @@
+Push to Dev:
+  stage: build
+  script:
+    - git clone https://$CI_RUNNER_TOKEN:$CI_ACCESS_TOKEN@git.edenfarm.id/magang/frontend.git
+    - cd frontend
+    - git config --global user.name $GITLAB_USERNAME
+    - git config --global user.email $GITLAB_EMAIL
+    - git fetch origin
+    - git checkout dev
+    - git merge -X theirs $CI_COMMIT_SHA
+    - git push origin dev
+  except:
+    - master
+    - review
+    - dev
+    - test
+    - project-TB
+    - project-AR
+    - project-timi
+    - project
+  tags:
+    - push_to_dev
+
+Deploy to Dev:
+  stage: deploy
+  script:
+    - which ssh-agent || ( apt-get install openssh-client -y )
+    - eval $(ssh-agent -s)
+    - which sshpass || ( apt -y update && apt -y upgrade && apt -y install git && apt -y install sshpass )
+    - which pip || ( apt -y install python python-pip)
+    - which aws || ( pip install awscli )
+    - which git || ( apt -y update && apt -y upgrade && apt -y install git )
+    - git clone https://$GIT_USER:$GIT_PASS@git.edenfarm.id/magang/frontend.git /var/www/frontend
+    - cd /var/www/frontend && git fetch origin && git checkout dev && git add . && git stash &&  git pull origin dev
+    - cd /var/www/frontend && git branch
+    - cat /var/www/frontend.env
+    - cd /var/www/frontend && npm install
+    - cd /var/www/frontend && npm i @vue/cli
+    - cd /var/www/frontend && npm run build
+    - aws s3 sync /var/www/frontend/dist/ s3://$S3_BUCKET_NAME/magang_v1_dev/dist/ --no-progress
+    - sshpass -p $DEV_PRIVATE_KEY ssh -p $PORT -o StrictHostKeyChecking=no ec2-user@$SERVER_DEV "sh /usr/local/sbin/magang/magang-v1_dev.sh"
+  only:
+    - dev
+  tags:
+    - deploy_to_dev
+
+Deploy to Production:
+  stage: deploy
+  script:
+    - which ssh-agent || ( apt-get install openssh-client -y )
+    - eval $(ssh-agent -s)
+    - which sshpass || ( apt -y update && apt -y upgrade && apt -y install git && apt -y install sshpass )
+    - which pip || ( apt -y install python python-pip)
+    - which aws || ( pip install awscli )
+    - which git || ( apt -y update && apt -y upgrade && apt -y install git )
+    - cd /var/www/frontend && git fetch origin && git checkout master && git add . && git stash && git pull origin master
+    - cd /var/www/frontend && git branch
+    - cat /var/www/frontend/.env
+    - cd /var/www/frontend && npm install
+    - cd /var/www/frontend && npm i @vue/cli
+    - cd /var/www/frontend && npm run build
+    - aws s3 sync /var/www/frontend/dist/ s3://$S3_BUCKET_NAME/magang_v2_prod/dist/ --no-progress
+    - sshpass -p $DEV_PRIVATE_KEY ssh -p $PORT -o StrictHostKeyChecking=no ec2-user@$SERVER_DEV "sh /usr/local/sbin/magang/dashboard-v1_prod.sh"
+  only:
+    - master
+  tags:
+    - deploy_to_production
