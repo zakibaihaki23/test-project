@@ -32,7 +32,7 @@ Deploy to Dev:
     - git clone https://$GIT_USER:$GIT_PASS@git.edenfarm.id/magang/frontend.git /var/www/frontend
     - cd /var/www/frontend && git fetch origin && git checkout dev && git add . && git stash &&  git pull origin dev
     - cd /var/www/frontend && git branch
-    - cat /var/www/frontend.env
+    - cat /var/www/frontend/.env
     - cd /var/www/frontend && npm install
     - cd /var/www/frontend && npm i @vue/cli
     - cd /var/www/frontend && npm run build
