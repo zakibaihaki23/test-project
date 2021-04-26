@@ -6,7 +6,7 @@
       <v-row>
         <v-col cols="12" sm="6" lg="6" md="6" style="margin-right: 90px">
           <div class="form-right-1">
-            <p style="color: gray">Helper ID *</p>
+            <p style="color: gray">Helper Code *</p>
             <v-text-field
               disabled
               v-model="helper.code"
